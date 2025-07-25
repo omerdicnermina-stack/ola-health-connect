@@ -17,7 +17,7 @@ import {
 export default function Dashboard() {
   const { currentUser, hasPermission } = useUser();
 
-  const renderVirtualQueue = () => {
+  const renderVirtualQueueSummary = () => {
     if (!hasPermission('virtual_queue')) return null;
 
     return (
@@ -25,33 +25,34 @@ export default function Dashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            Virtual Queue
+            Virtual Queue Summary
           </CardTitle>
-          <CardDescription>Patients waiting for consultation</CardDescription>
+          <CardDescription>Quick overview of patient queue</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {[
-              { name: 'John Doe', waitTime: '15 min', priority: 'High' },
-              { name: 'Sarah Johnson', waitTime: '8 min', priority: 'Medium' },
-              { name: 'Mike Wilson', waitTime: '22 min', priority: 'Low' }
-            ].map((patient, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                <div>
-                  <p className="font-medium">{patient.name}</p>
-                  <p className="text-sm text-muted-foreground">Waiting: {patient.waitTime}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant={patient.priority === 'High' ? 'destructive' : patient.priority === 'Medium' ? 'default' : 'secondary'}>
-                    {patient.priority}
-                  </Badge>
-                  <Button size="sm" variant="outline">
-                    Start Call
-                  </Button>
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">4</div>
+              <p className="text-xs text-muted-foreground">Patients in Queue</p>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600">12.5</div>
+              <p className="text-xs text-muted-foreground">Avg Wait (min)</p>
+            </div>
           </div>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center text-sm">
+              <span>Next Patient:</span>
+              <span className="font-medium">John Doe</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span>High Priority:</span>
+              <Badge variant="destructive" className="text-xs">1</Badge>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" className="w-full mt-4" asChild>
+            <a href="/virtual-queue">View Full Queue</a>
+          </Button>
         </CardContent>
       </Card>
     );
@@ -106,7 +107,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        {renderVirtualQueue()}
+        {renderVirtualQueueSummary()}
         
         <Card className="col-span-3">
           <CardHeader>
@@ -188,7 +189,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {renderVirtualQueue()}
+        {renderVirtualQueueSummary()}
       </div>
     </div>
   );

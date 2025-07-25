@@ -7,6 +7,7 @@ import { UserProvider } from "@/contexts/UserContext";
 import { Layout } from "@/components/Layout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import VirtualQueue from "./pages/VirtualQueue";
 import Messages from "./pages/Messages";
 import Prescriptions from "./pages/Prescriptions";
 import Patients from "./pages/Patients";
@@ -32,6 +33,7 @@ const App = () => (
           <Layout>
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/virtual-queue" element={<VirtualQueue />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/prescriptions" element={<Prescriptions />} />
               <Route path="/patients" element={<Patients />} />

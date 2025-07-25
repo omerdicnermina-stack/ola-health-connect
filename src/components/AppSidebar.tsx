@@ -12,7 +12,8 @@ import {
   BarChart3,
   Stethoscope,
   CreditCard,
-  Calendar
+  Calendar,
+  Clock
 } from 'lucide-react';
 import {
   Sidebar,
@@ -38,6 +39,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
+  { title: 'Virtual Queue', url: '/virtual-queue', icon: Clock, permission: 'virtual_queue' },
   { title: 'Messages', url: '/messages', icon: MessageSquare },
   { title: 'Prescriptions', url: '/prescriptions', icon: Pill, permission: 'view_prescriptions' },
   { title: 'Patients', url: '/patients', icon: Users, permission: 'view_patients' },
