@@ -5,17 +5,20 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   Clock, 
   Search, 
   Filter, 
   Video, 
   UserPlus, 
-  ArrowUp, 
-  ArrowDown,
   Phone,
   Calendar,
-  Stethoscope
+  Stethoscope,
+  Mic,
+  MicOff,
+  VideoOff,
+  PhoneOff
 } from 'lucide-react';
 import {
   Select,
@@ -108,6 +111,11 @@ export default function VirtualQueue() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
+  const [callModalOpen, setCallModalOpen] = useState(false);
+  const [currentCallPatient, setCurrentCallPatient] = useState<QueuePatient | null>(null);
+  const [callStarted, setCallStarted] = useState(false);
+  const [micMuted, setMicMuted] = useState(false);
+  const [videoOff, setVideoOff] = useState(false);
 
   if (!hasPermission('virtual_queue')) {
     return (
@@ -146,6 +154,24 @@ export default function VirtualQueue() {
   };
 
   const canAssignProvider = currentUser?.role === 'Admin' || currentUser?.role === 'Super Admin' || currentUser?.role === 'Provider-Admin';
+
+  const handleStartCall = (patient: QueuePatient) => {
+    setCurrentCallPatient(patient);
+    setCallModalOpen(true);
+    setCallStarted(false);
+    setMicMuted(false);
+    setVideoOff(false);
+  };
+
+  const handleJoinCall = () => {
+    setCallStarted(true);
+  };
+
+  const handleEndCall = () => {
+    setCallModalOpen(false);
+    setCurrentCallPatient(null);
+    setCallStarted(false);
+  };
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -276,7 +302,12 @@ export default function VirtualQueue() {
                     {patient.status}
                   </Badge>
                   <div className="flex flex-wrap gap-1">
-                    <Button size="sm" variant="default" className="h-8">
+                    <Button 
+                      size="sm" 
+                      variant="default" 
+                      className="h-8"
+                      onClick={() => handleStartCall(patient)}
+                    >
                       <Video className="h-3 w-3 mr-1" />
                       Start Call
                     </Button>
@@ -296,28 +327,153 @@ export default function VirtualQueue() {
                   <span className="font-medium">Reason:</span> {patient.reason}
                 </p>
               </div>
-
-              {/* Queue Management Actions for Admins */}
-              {canAssignProvider && (
-                <div className="mt-4 pt-4 border-t flex gap-2">
-                  <Button size="sm" variant="ghost" className="h-8">
-                    <ArrowUp className="h-3 w-3 mr-1" />
-                    Move Up
-                  </Button>
-                  <Button size="sm" variant="ghost" className="h-8">
-                    <ArrowDown className="h-3 w-3 mr-1" />
-                    Move Down
-                  </Button>
-                  <Button size="sm" variant="ghost" className="h-8">
-                    <Phone className="h-3 w-3 mr-1" />
-                    Call Patient
-                  </Button>
-                </div>
-              )}
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Call Modal */}
+      <Dialog open={callModalOpen} onOpenChange={setCallModalOpen}>
+        <DialogContent className="max-w-4xl h-[600px]">
+          <DialogHeader>
+            <DialogTitle>
+              Video Call - {currentCallPatient?.name}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="flex-1 grid grid-cols-2 gap-4 h-full">
+            {/* Patient Video */}
+            <div className="relative bg-gray-900 rounded-lg overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                {callStarted ? (
+                  <div className="text-center text-white">
+                    <Avatar className="h-20 w-20 mx-auto mb-4">
+                      <AvatarImage src={currentCallPatient?.avatar} />
+                      <AvatarFallback className="text-lg">
+                        {currentCallPatient?.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-lg font-semibold">{currentCallPatient?.name}</p>
+                    <p className="text-sm text-gray-300">Patient</p>
+                    <div className="mt-4 flex items-center justify-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm">Connected</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center text-white">
+                    <Avatar className="h-20 w-20 mx-auto mb-4">
+                      <AvatarImage src={currentCallPatient?.avatar} />
+                      <AvatarFallback className="text-lg">
+                        {currentCallPatient?.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-lg font-semibold">{currentCallPatient?.name}</p>
+                    <p className="text-sm text-gray-300">Waiting to join...</p>
+                  </div>
+                )}
+              </div>
+              <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+                Patient
+              </div>
+            </div>
+
+            {/* Provider Video */}
+            <div className="relative bg-gray-800 rounded-lg overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                {videoOff ? (
+                  <div className="text-center text-white">
+                    <Avatar className="h-20 w-20 mx-auto mb-4">
+                      <AvatarImage src={currentUser?.avatar} />
+                      <AvatarFallback className="text-lg">
+                        {currentUser?.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-lg font-semibold">{currentUser?.name}</p>
+                    <p className="text-sm text-gray-300">Video Off</p>
+                  </div>
+                ) : (
+                  <div className="text-center text-white">
+                    <Avatar className="h-20 w-20 mx-auto mb-4">
+                      <AvatarImage src={currentUser?.avatar} />
+                      <AvatarFallback className="text-lg">
+                        {currentUser?.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-lg font-semibold">{currentUser?.name}</p>
+                    <p className="text-sm text-gray-300">Provider</p>
+                  </div>
+                )}
+              </div>
+              <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+                You
+              </div>
+            </div>
+          </div>
+
+          {/* Call Controls */}
+          <div className="flex items-center justify-center gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+            {!callStarted ? (
+              <Button onClick={handleJoinCall} className="bg-green-600 hover:bg-green-700">
+                <Video className="h-4 w-4 mr-2" />
+                Join Call
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant={micMuted ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => setMicMuted(!micMuted)}
+                >
+                  {micMuted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                </Button>
+                
+                <Button
+                  variant={videoOff ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => setVideoOff(!videoOff)}
+                >
+                  {videoOff ? <VideoOff className="h-4 w-4" /> : <Video className="h-4 w-4" />}
+                </Button>
+                
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleEndCall}
+                >
+                  <PhoneOff className="h-4 w-4 mr-2" />
+                  End Call
+                </Button>
+              </>
+            )}
+          </div>
+
+          {/* Patient Info Panel */}
+          <div className="bg-muted p-4 rounded-lg">
+            <h3 className="font-semibold mb-2">Patient Information</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-medium">Age:</span> {currentCallPatient?.age}
+              </div>
+              <div>
+                <span className="font-medium">Service:</span> {currentCallPatient?.service}
+              </div>
+              <div>
+                <span className="font-medium">Visit Type:</span> {currentCallPatient?.visitType}
+              </div>
+              <div>
+                <span className="font-medium">Priority:</span> 
+                <Badge variant={getPriorityVariant(currentCallPatient?.priority || 'Low')} className="ml-2">
+                  {currentCallPatient?.priority}
+                </Badge>
+              </div>
+            </div>
+            <div className="mt-2">
+              <span className="font-medium">Reason:</span> {currentCallPatient?.reason}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {filteredPatients.length === 0 && (
         <Card>
