@@ -166,6 +166,7 @@ export default function VirtualQueue() {
     setCallStarted(false);
     setMicMuted(false);
     setVideoOff(false);
+    setCallNotes('');
   };
 
   const handleJoinCall = () => {
