@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
@@ -18,7 +19,10 @@ import {
   Mic,
   MicOff,
   VideoOff,
-  PhoneOff
+  PhoneOff,
+  FileText,
+  User,
+  MapPin
 } from 'lucide-react';
 import {
   Select,
@@ -116,6 +120,7 @@ export default function VirtualQueue() {
   const [callStarted, setCallStarted] = useState(false);
   const [micMuted, setMicMuted] = useState(false);
   const [videoOff, setVideoOff] = useState(false);
+  const [callNotes, setCallNotes] = useState('');
 
   if (!hasPermission('virtual_queue')) {
     return (
@@ -332,144 +337,263 @@ export default function VirtualQueue() {
         ))}
       </div>
 
-      {/* Call Modal */}
+      {/* Enhanced Call Modal */}
       <Dialog open={callModalOpen} onOpenChange={setCallModalOpen}>
-        <DialogContent className="max-w-4xl h-[600px]">
+        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
-              Video Call - {currentCallPatient?.name}
+            <DialogTitle className="flex items-center gap-2">
+              <Video className="h-5 w-5" />
+              Video Consultation - {currentCallPatient?.name}
             </DialogTitle>
           </DialogHeader>
           
-          <div className="flex-1 grid grid-cols-2 gap-4 h-full">
-            {/* Patient Video */}
-            <div className="relative bg-gray-900 rounded-lg overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                {callStarted ? (
-                  <div className="text-center text-white">
-                    <Avatar className="h-20 w-20 mx-auto mb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Video Section */}
+            <div className="lg:col-span-2 space-y-4">
+              {/* Video Windows */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Patient Video */}
+                <div className="relative bg-gray-900 rounded-lg aspect-video overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    {callStarted ? (
+                      <div className="text-center text-white">
+                        <Avatar className="h-16 w-16 mx-auto mb-3">
+                          <AvatarImage src={currentCallPatient?.avatar} className="object-cover" />
+                          <AvatarFallback className="text-lg bg-primary">
+                            {currentCallPatient?.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p className="text-lg font-semibold">{currentCallPatient?.name}</p>
+                        <p className="text-sm text-gray-300">Patient</p>
+                        <div className="mt-3 flex items-center justify-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-sm">Connected</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center text-white">
+                        <Avatar className="h-16 w-16 mx-auto mb-3">
+                          <AvatarImage src={currentCallPatient?.avatar} className="object-cover" />
+                          <AvatarFallback className="text-lg bg-primary">
+                            {currentCallPatient?.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p className="text-lg font-semibold">{currentCallPatient?.name}</p>
+                        <p className="text-sm text-gray-300">Waiting to join...</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+                    Patient
+                  </div>
+                </div>
+
+                {/* Provider Video */}
+                <div className="relative bg-gray-800 rounded-lg aspect-video overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    {videoOff ? (
+                      <div className="text-center text-white">
+                        <Avatar className="h-16 w-16 mx-auto mb-3">
+                          <AvatarImage src={currentUser?.avatar} className="object-cover" />
+                          <AvatarFallback className="text-lg bg-secondary">
+                            {currentUser?.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p className="text-lg font-semibold">{currentUser?.name}</p>
+                        <p className="text-sm text-gray-300">Video Off</p>
+                      </div>
+                    ) : (
+                      <div className="text-center text-white">
+                        <Avatar className="h-16 w-16 mx-auto mb-3">
+                          <AvatarImage src={currentUser?.avatar} className="object-cover" />
+                          <AvatarFallback className="text-lg bg-secondary">
+                            {currentUser?.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p className="text-lg font-semibold">{currentUser?.name}</p>
+                        <p className="text-sm text-gray-300">Provider</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+                    You ({currentUser?.role})
+                  </div>
+                </div>
+              </div>
+
+              {/* Call Controls */}
+              <div className="flex items-center justify-center gap-4 p-4 bg-muted rounded-lg">
+                {!callStarted ? (
+                  <Button onClick={handleJoinCall} className="bg-green-600 hover:bg-green-700">
+                    <Video className="h-4 w-4 mr-2" />
+                    Join Call
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant={micMuted ? "destructive" : "outline"}
+                      size="sm"
+                      onClick={() => setMicMuted(!micMuted)}
+                    >
+                      {micMuted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    </Button>
+                    
+                    <Button
+                      variant={videoOff ? "destructive" : "outline"}
+                      size="sm"
+                      onClick={() => setVideoOff(!videoOff)}
+                    >
+                      {videoOff ? <VideoOff className="h-4 w-4" /> : <Video className="h-4 w-4" />}
+                    </Button>
+                    
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleEndCall}
+                    >
+                      <PhoneOff className="h-4 w-4 mr-2" />
+                      End Call
+                    </Button>
+                  </>
+                )}
+              </div>
+
+              {/* Notes Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    Call Notes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    placeholder="Enter consultation notes, diagnosis, treatment plan, prescriptions, etc..."
+                    value={callNotes}
+                    onChange={(e) => setCallNotes(e.target.value)}
+                    rows={6}
+                    className="resize-none"
+                  />
+                  <div className="flex justify-end mt-3">
+                    <Button size="sm" variant="outline">
+                      Save Notes
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Information Sidebar */}
+            <div className="space-y-4">
+              {/* Patient Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Patient Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-10 w-10">
                       <AvatarImage src={currentCallPatient?.avatar} />
-                      <AvatarFallback className="text-lg">
+                      <AvatarFallback>
                         {currentCallPatient?.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
-                    <p className="text-lg font-semibold">{currentCallPatient?.name}</p>
-                    <p className="text-sm text-gray-300">Patient</p>
-                    <div className="mt-4 flex items-center justify-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-sm">Connected</span>
+                    <div>
+                      <p className="font-semibold">{currentCallPatient?.name}</p>
+                      <p className="text-sm text-muted-foreground">Age: {currentCallPatient?.age}</p>
                     </div>
                   </div>
-                ) : (
-                  <div className="text-center text-white">
-                    <Avatar className="h-20 w-20 mx-auto mb-4">
-                      <AvatarImage src={currentCallPatient?.avatar} />
-                      <AvatarFallback className="text-lg">
-                        {currentCallPatient?.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <p className="text-lg font-semibold">{currentCallPatient?.name}</p>
-                    <p className="text-sm text-gray-300">Waiting to join...</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Phone:</span>
+                      <span>{currentCallPatient?.phone}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Priority:</span>
+                      <Badge variant={getPriorityVariant(currentCallPatient?.priority || 'Low')}>
+                        {currentCallPatient?.priority}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Wait Time:</span>
+                      <span>{currentCallPatient?.waitTime}m</span>
+                    </div>
                   </div>
-                )}
-              </div>
-              <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
-                Patient
-              </div>
-            </div>
+                </CardContent>
+              </Card>
 
-            {/* Provider Video */}
-            <div className="relative bg-gray-800 rounded-lg overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                {videoOff ? (
-                  <div className="text-center text-white">
-                    <Avatar className="h-20 w-20 mx-auto mb-4">
+              {/* Provider Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4" />
+                    Provider Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-10 w-10">
                       <AvatarImage src={currentUser?.avatar} />
-                      <AvatarFallback className="text-lg">
+                      <AvatarFallback>
                         {currentUser?.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
-                    <p className="text-lg font-semibold">{currentUser?.name}</p>
-                    <p className="text-sm text-gray-300">Video Off</p>
+                    <div>
+                      <p className="font-semibold">{currentUser?.name}</p>
+                      <p className="text-sm text-muted-foreground">{currentUser?.role}</p>
+                    </div>
                   </div>
-                ) : (
-                  <div className="text-center text-white">
-                    <Avatar className="h-20 w-20 mx-auto mb-4">
-                      <AvatarImage src={currentUser?.avatar} />
-                      <AvatarFallback className="text-lg">
-                        {currentUser?.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <p className="text-lg font-semibold">{currentUser?.name}</p>
-                    <p className="text-sm text-gray-300">Provider</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Organization:</span>
+                      <span>{currentUser?.organization}</span>
+                    </div>
                   </div>
-                )}
-              </div>
-              <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
-                You
-              </div>
-            </div>
-          </div>
+                </CardContent>
+              </Card>
 
-          {/* Call Controls */}
-          <div className="flex items-center justify-center gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-            {!callStarted ? (
-              <Button onClick={handleJoinCall} className="bg-green-600 hover:bg-green-700">
-                <Video className="h-4 w-4 mr-2" />
-                Join Call
-              </Button>
-            ) : (
-              <>
-                <Button
-                  variant={micMuted ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => setMicMuted(!micMuted)}
-                >
-                  {micMuted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                </Button>
-                
-                <Button
-                  variant={videoOff ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => setVideoOff(!videoOff)}
-                >
-                  {videoOff ? <VideoOff className="h-4 w-4" /> : <Video className="h-4 w-4" />}
-                </Button>
-                
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={handleEndCall}
-                >
-                  <PhoneOff className="h-4 w-4 mr-2" />
-                  End Call
-                </Button>
-              </>
-            )}
-          </div>
-
-          {/* Patient Info Panel */}
-          <div className="bg-muted p-4 rounded-lg">
-            <h3 className="font-semibold mb-2">Patient Information</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium">Age:</span> {currentCallPatient?.age}
-              </div>
-              <div>
-                <span className="font-medium">Service:</span> {currentCallPatient?.service}
-              </div>
-              <div>
-                <span className="font-medium">Visit Type:</span> {currentCallPatient?.visitType}
-              </div>
-              <div>
-                <span className="font-medium">Priority:</span> 
-                <Badge variant={getPriorityVariant(currentCallPatient?.priority || 'Low')} className="ml-2">
-                  {currentCallPatient?.priority}
-                </Badge>
-              </div>
-            </div>
-            <div className="mt-2">
-              <span className="font-medium">Reason:</span> {currentCallPatient?.reason}
+              {/* Visit Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Visit Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Date:</span>
+                      <span>{currentCallPatient?.dateTime.split(' ')[0]}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Time:</span>
+                      <span>{currentCallPatient?.dateTime.split(' ')[1]}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Service:</span>
+                      <span>{currentCallPatient?.service}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Visit Type:</span>
+                      <Badge variant="outline">{currentCallPatient?.visitType}</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Status:</span>
+                      <Badge variant={getStatusVariant(currentCallPatient?.status || 'Waiting')}>
+                        {currentCallPatient?.status}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="pt-3 border-t">
+                    <p className="text-sm font-medium mb-1">Chief Complaint:</p>
+                    <p className="text-sm text-muted-foreground">{currentCallPatient?.reason}</p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </DialogContent>
