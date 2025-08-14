@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserCog, Plus, Edit, Trash2, Shield } from 'lucide-react';
 
 export default function Users() {
-  const { currentUser } = useUser();
+  const { user, canDeleteUser } = useAuth();
 
   const mockUsers = [
     {
@@ -65,11 +65,6 @@ export default function Users() {
     }
   };
 
-  const canDeleteUser = (userRole: string) => {
-    if (currentUser?.role === 'Super Admin') return true;
-    if (currentUser?.role === 'Admin' && userRole !== 'Admin' && userRole !== 'Super Admin') return true;
-    return false;
-  };
 
   return (
     <div className="animate-fade-in">
@@ -134,7 +129,7 @@ export default function Users() {
                     <Edit className="mr-2 h-4 w-4" />
                     Edit
                   </Button>
-                  {canDeleteUser(user.role) && (
+                   {canDeleteUser(user.role) && (
                     <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete

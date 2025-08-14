@@ -27,7 +27,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
 interface NavigationItem {
@@ -56,7 +56,7 @@ const navigationItems: NavigationItem[] = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
-  const { hasPermission } = useUser();
+  const { hasPermission } = useAuth();
   const currentPath = location.pathname;
 
   const filteredItems = navigationItems.filter(item => 

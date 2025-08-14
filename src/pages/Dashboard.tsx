@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 export default function Dashboard() {
-  const { currentUser, hasPermission } = useUser();
+  const { user, hasPermission } = useAuth();
 
   const renderVirtualQueueSummary = () => {
     if (!hasPermission('virtual_queue')) return null;
@@ -248,16 +248,16 @@ export default function Dashboard() {
     <div className="animate-fade-in">
       <div className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight">
-          Welcome back, {currentUser?.name}
+          Welcome back, {user?.profile?.name}
         </h1>
         <p className="text-muted-foreground">
-          Here's what's happening with your {currentUser?.role === 'HR Manager' ? 'organization' : 'practice'} today.
+          Here's what's happening with your {user?.profile?.role === 'HR Manager' ? 'organization' : 'practice'} today.
         </p>
       </div>
 
-      {currentUser?.role === 'HR Manager' && renderHRDashboard()}
-      {(currentUser?.role === 'Provider' || currentUser?.role === 'Provider-Admin') && renderProviderDashboard()}
-      {(currentUser?.role === 'Admin' || currentUser?.role === 'Super Admin') && renderAdminDashboard()}
+      {user?.profile?.role === 'HR Manager' && renderHRDashboard()}
+      {(user?.profile?.role === 'Provider' || user?.profile?.role === 'Provider-Admin') && renderProviderDashboard()}
+      {(user?.profile?.role === 'Admin' || user?.profile?.role === 'Super Admin') && renderAdminDashboard()}
     </div>
   );
 }

@@ -12,10 +12,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 
 export function Header() {
-  const { currentUser, logout } = useUser();
+  const { user, signOut } = useAuth();
 
   const getInitials = (name: string) => {
     return name
@@ -71,15 +71,15 @@ export function Header() {
               <Button variant="ghost" className="relative h-10 w-auto px-2">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={currentUser?.avatar} />
+                    <AvatarImage src={user?.profile?.avatar} />
                     <AvatarFallback className="bg-primary text-primary-foreground">
-                      {currentUser?.name ? getInitials(currentUser.name) : 'U'}
+                      {user?.profile?.name ? getInitials(user.profile.name) : 'U'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col items-start">
-                    <span className="text-sm font-medium">{currentUser?.name}</span>
-                    <Badge variant={getRoleBadgeVariant(currentUser?.role || '')} className="text-xs h-4">
-                      {currentUser?.role}
+                    <span className="text-sm font-medium">{user?.profile?.name}</span>
+                    <Badge variant={getRoleBadgeVariant(user?.profile?.role || '')} className="text-xs h-4">
+                      {user?.profile?.role}
                     </Badge>
                   </div>
                 </div>
@@ -88,13 +88,13 @@ export function Header() {
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{currentUser?.name}</p>
+                  <p className="text-sm font-medium leading-none">{user?.profile?.name}</p>
                   <p className="text-xs leading-none text-muted-foreground">
-                    {currentUser?.email}
+                    {user?.email}
                   </p>
-                  {currentUser?.organization && (
+                  {user?.profile?.organization && (
                     <p className="text-xs leading-none text-muted-foreground">
-                      {currentUser.organization}
+                      {user.profile.organization}
                     </p>
                   )}
                 </div>
@@ -108,7 +108,7 @@ export function Header() {
                 <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout} className="text-destructive">
+              <DropdownMenuItem onClick={signOut} className="text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>
