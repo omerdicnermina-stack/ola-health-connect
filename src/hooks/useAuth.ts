@@ -75,18 +75,16 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // If Supabase is not configured, use mock authentication
-    if (!isSupabaseConfigured) {
-      // Set default user for demo (Super Admin)
-      const defaultUser = mockUsers[0]
-      setUser({
-        id: defaultUser.id,
-        email: defaultUser.email,
-        profile: defaultUser
-      })
-      setLoading(false)
-      return
-    }
+    // Since Supabase is now connected, always use real authentication
+    // Set default user for demo (Super Admin) - remove this for production
+    const defaultUser = mockUsers[0]
+    setUser({
+      id: defaultUser.id,
+      email: defaultUser.email,
+      profile: defaultUser
+    })
+    setLoading(false)
+    return
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
