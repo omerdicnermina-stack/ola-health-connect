@@ -1,12 +1,92 @@
 import { useState, useEffect } from 'react'
-import { supabase, type UserProfile, type AuthUser } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured, type UserProfile, type AuthUser } from '@/lib/supabase'
 import { User as SupabaseUser } from '@supabase/supabase-js'
+
+// Mock users for when Supabase is not configured
+const mockUsers: (UserProfile & { password: string })[] = [
+  {
+    id: '1',
+    email: 'superadmin@olahealth.com',
+    name: 'John Smith',
+    role: 'Super Admin',
+    is_active: true,
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    password: 'password'
+  },
+  {
+    id: '2',
+    email: 'admin@olahealth.com',
+    name: 'Jane Doe',
+    role: 'Admin',
+    is_active: true,
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    password: 'password'
+  },
+  {
+    id: '3',
+    email: 'provideradmin@olahealth.com',
+    name: 'Dr. Michael Brown',
+    role: 'Provider-Admin',
+    is_active: true,
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    password: 'password'
+  },
+  {
+    id: '4',
+    email: 'provider@olahealth.com',
+    name: 'Dr. Sarah Johnson',
+    role: 'Provider',
+    is_active: true,
+    practice_states: ['CA', 'NY'],
+    specialty: 'Family Medicine',
+    services: ['Consultation', 'Prescription'],
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    password: 'password'
+  },
+  {
+    id: '5',
+    email: 'manager@olahealth.com',
+    name: 'Robert Wilson',
+    role: 'Manager',
+    is_active: true,
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    password: 'password'
+  },
+  {
+    id: '6',
+    email: 'hr@olahealth.com',
+    name: 'Mary Wilson',
+    role: 'HR Manager',
+    organization: 'Hilton Hotel',
+    is_active: true,
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    password: 'password'
+  }
+]
 
 export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // If Supabase is not configured, use mock authentication
+    if (!isSupabaseConfigured) {
+      // Set default user for demo (Super Admin)
+      const defaultUser = mockUsers[0]
+      setUser({
+        id: defaultUser.id,
+        email: defaultUser.email,
+        profile: defaultUser
+      })
+      setLoading(false)
+      return
+    }
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -56,6 +136,20 @@ export const useAuth = () => {
   }
 
   const signIn = async (email: string, password: string) => {
+    // If Supabase is not configured, use mock authentication
+    if (!isSupabaseConfigured) {
+      const mockUser = mockUsers.find(u => u.email === email && u.password === password)
+      if (mockUser) {
+        setUser({
+          id: mockUser.id,
+          email: mockUser.email,
+          profile: mockUser
+        })
+        return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
+      }
+      return { data: null, error: { message: 'Invalid credentials' } }
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
@@ -88,6 +182,12 @@ export const useAuth = () => {
   }
 
   const signOut = async () => {
+    // If Supabase is not configured, just clear the user
+    if (!isSupabaseConfigured) {
+      setUser(null)
+      return { error: null }
+    }
+
     const { error } = await supabase.auth.signOut()
     return { error }
   }
