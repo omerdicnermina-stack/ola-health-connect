@@ -26,6 +26,8 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   const { user, loading } = useAuth();
+  
+  console.log('AppContent - user:', user, 'loading:', loading);
 
   if (loading) {
     return (
