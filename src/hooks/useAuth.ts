@@ -124,9 +124,14 @@ export const useAuth = () => {
   }
 
   const signIn = async (email: string, password: string) => {
+    console.log('signIn called with:', { email, password })
+    
     // Check if it's a demo account first
     const mockUser = mockUsers.find(u => u.email === email && u.password === password)
+    console.log('Found mock user:', mockUser)
+    
     if (mockUser) {
+      console.log('Setting mock user:', mockUser)
       setUser({
         id: mockUser.id,
         email: mockUser.email,
@@ -136,6 +141,7 @@ export const useAuth = () => {
     }
 
     // Otherwise try Supabase authentication
+    console.log('Trying Supabase authentication')
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
