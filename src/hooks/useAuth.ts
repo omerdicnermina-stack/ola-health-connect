@@ -124,20 +124,18 @@ export const useAuth = () => {
   }
 
   const signIn = async (email: string, password: string) => {
-    // If Supabase is not configured, use mock authentication
-    if (!isSupabaseConfigured) {
-      const mockUser = mockUsers.find(u => u.email === email && u.password === password)
-      if (mockUser) {
-        setUser({
-          id: mockUser.id,
-          email: mockUser.email,
-          profile: mockUser
-        })
-        return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
-      }
-      return { data: null, error: { message: 'Invalid credentials' } }
+    // Check if it's a demo account first
+    const mockUser = mockUsers.find(u => u.email === email && u.password === password)
+    if (mockUser) {
+      setUser({
+        id: mockUser.id,
+        email: mockUser.email,
+        profile: mockUser
+      })
+      return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
     }
 
+    // Otherwise try Supabase authentication
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
@@ -170,14 +168,17 @@ export const useAuth = () => {
   }
 
   const signOut = async () => {
-    // If Supabase is not configured, just clear the user
-    if (!isSupabaseConfigured) {
-      setUser(null)
-      return { error: null }
+    // Clear the user state first (works for both demo and real users)
+    setUser(null)
+    
+    // Try to sign out from Supabase (will silently fail for demo users, which is fine)
+    try {
+      await supabase.auth.signOut()
+    } catch (error) {
+      // Ignore errors for demo accounts
     }
-
-    const { error } = await supabase.auth.signOut()
-    return { error }
+    
+    return { error: null }
   }
 
   const hasPermission = (permission: string): boolean => {
