@@ -73,6 +73,8 @@ const mockUsers: (UserProfile & { password: string })[] = [
 export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
+  
+  console.log('useAuth hook - current user:', user, 'loading:', loading)
 
   useEffect(() => {
     // Get initial session
