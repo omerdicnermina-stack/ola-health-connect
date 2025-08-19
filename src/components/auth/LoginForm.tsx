@@ -23,6 +23,10 @@ export const LoginForm = () => {
         toast.error(error.message)
       } else {
         toast.success('Successfully signed in!')
+        // Force page reload to ensure auth state is properly recognized
+        setTimeout(() => {
+          window.location.reload()
+        }, 100)
       }
     } catch (error) {
       toast.error('An unexpected error occurred')
