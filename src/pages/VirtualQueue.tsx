@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -111,7 +111,7 @@ const mockQueueData: QueuePatient[] = [
 ];
 
 export default function VirtualQueue() {
-  const { hasPermission, currentUser } = useUser();
+  const { hasPermission, user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
@@ -158,7 +158,7 @@ export default function VirtualQueue() {
     }
   };
 
-  const canAssignProvider = currentUser?.role === 'Admin' || currentUser?.role === 'Super Admin' || currentUser?.role === 'Provider-Admin';
+  const canAssignProvider = user?.profile?.role === 'Admin' || user?.profile?.role === 'Super Admin' || user?.profile?.role === 'Provider-Admin';
 
   const handleStartCall = (patient: QueuePatient) => {
     setCurrentCallPatient(patient);
@@ -394,30 +394,30 @@ export default function VirtualQueue() {
                   <div className="absolute inset-0 flex items-center justify-center p-4">
                     {videoOff ? (
                       <div className="text-center text-white">
-                        <Avatar className="h-16 w-16 mx-auto mb-3">
-                          <AvatarImage src={currentUser?.avatar} className="object-cover" />
-                          <AvatarFallback className="text-lg bg-secondary">
-                            {currentUser?.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <p className="text-lg font-semibold">{currentUser?.name}</p>
+                         <Avatar className="h-16 w-16 mx-auto mb-3">
+                           <AvatarImage src={user?.profile?.avatar} className="object-cover" />
+                           <AvatarFallback className="text-lg bg-secondary">
+                             {user?.profile?.name.split(' ').map(n => n[0]).join('')}
+                           </AvatarFallback>
+                         </Avatar>
+                         <p className="text-lg font-semibold">{user?.profile?.name}</p>
                         <p className="text-sm text-gray-300">Video Off</p>
                       </div>
                     ) : (
                       <div className="text-center text-white">
-                        <Avatar className="h-16 w-16 mx-auto mb-3">
-                          <AvatarImage src={currentUser?.avatar} className="object-cover" />
-                          <AvatarFallback className="text-lg bg-secondary">
-                            {currentUser?.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <p className="text-lg font-semibold">{currentUser?.name}</p>
+                         <Avatar className="h-16 w-16 mx-auto mb-3">
+                           <AvatarImage src={user?.profile?.avatar} className="object-cover" />
+                           <AvatarFallback className="text-lg bg-secondary">
+                             {user?.profile?.name.split(' ').map(n => n[0]).join('')}
+                           </AvatarFallback>
+                         </Avatar>
+                         <p className="text-lg font-semibold">{user?.profile?.name}</p>
                         <p className="text-sm text-gray-300">Provider</p>
                       </div>
                     )}
                   </div>
                   <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
-                    You ({currentUser?.role})
+                    You ({user?.profile?.role})
                   </div>
                 </div>
               </div>
@@ -537,20 +537,20 @@ export default function VirtualQueue() {
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={currentUser?.avatar} />
+                      <AvatarImage src={user?.profile?.avatar} />
                       <AvatarFallback>
-                        {currentUser?.name.split(' ').map(n => n[0]).join('')}
+                        {user?.profile?.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-semibold">{currentUser?.name}</p>
-                      <p className="text-sm text-muted-foreground">{currentUser?.role}</p>
+                      <p className="font-semibold">{user?.profile?.name}</p>
+                      <p className="text-sm text-muted-foreground">{user?.profile?.role}</p>
                     </div>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Organization:</span>
-                      <span>{currentUser?.organization}</span>
+                      <span>{user?.profile?.organization}</span>
                     </div>
                   </div>
                 </CardContent>
