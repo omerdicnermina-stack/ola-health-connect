@@ -59,11 +59,9 @@ export function AppSidebar() {
   const { hasPermission } = useAuth();
   const currentPath = location.pathname;
 
-  const filteredItems = navigationItems.filter(item => {
-    const hasAccess = !item.permission || hasPermission(item.permission);
-    console.log(`Navigation item ${item.title}: permission=${item.permission}, hasAccess=${hasAccess}`);
-    return hasAccess;
-  });
+  const filteredItems = navigationItems.filter(item => 
+    !item.permission || hasPermission(item.permission)
+  );
 
   const isActive = (path: string) => {
     if (path === '/') {

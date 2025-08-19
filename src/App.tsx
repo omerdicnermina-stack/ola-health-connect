@@ -25,12 +25,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const authResult = useAuth();
-  const { user, loading } = authResult;
-  
-  console.log('AppContent - full auth result:', authResult);
-  console.log('AppContent - user:', user, 'loading:', loading);
-  console.log('AppContent - user exists?', !!user, 'isAuthenticated?', authResult.isAuthenticated);
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
