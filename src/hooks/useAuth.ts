@@ -134,11 +134,14 @@ export const useAuth = () => {
     
     if (mockUser) {
       console.log('Setting mock user:', mockUser)
-      setUser({
+      setLoading(false)
+      const authUser = {
         id: mockUser.id,
         email: mockUser.email,
         profile: mockUser
-      })
+      }
+      setUser(authUser)
+      console.log('User state updated to:', authUser)
       return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
     }
 
