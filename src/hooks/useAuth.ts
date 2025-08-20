@@ -102,23 +102,35 @@ export const useAuth = () => {
   useEffect(() => {
     console.log('useAuth: useEffect running - initializing auth')
     
-    // Check for stored session first
-    const storedUser = localStorage.getItem('user_session')
-    if (storedUser) {
-      try {
-        const userData = JSON.parse(storedUser)
-        console.log('useAuth: Found stored user session:', userData.email)
-        setUser(userData)
+    const initializeAuth = async () => {
+      // Check for stored session first
+      const storedUser = localStorage.getItem('user_session')
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser)
+          console.log('useAuth: Found stored user session:', userData.email)
+          setUser(userData)
+          setLoading(false)
+          return
+        } catch (error) {
+          console.error('Error parsing stored user:', error)
+          localStorage.removeItem('user_session')
+        }
+      }
+      
+      // No stored session found
+      console.log('useAuth: No stored session, checking Supabase')
+      
+      // Check for existing Supabase session
+      const { data: { session } } = await supabase.auth.getSession()
+      console.log('useAuth: Initial Supabase session check:', !!session)
+      
+      if (session?.user) {
+        await fetchUserProfile(session.user)
+      } else {
         setLoading(false)
-        return
-      } catch (error) {
-        console.error('Error parsing stored user:', error)
-        localStorage.removeItem('user_session')
       }
     }
-    
-    // No stored session found
-    console.log('useAuth: No stored session, checking Supabase')
     
     // Set up Supabase auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -129,20 +141,17 @@ export const useAuth = () => {
         await fetchUserProfile(session.user)
       } else {
         console.log('useAuth: No Supabase session')
-        setUser(null)
-        setLoading(false)
+        // Only clear user if we don't have a stored session (for demo users)
+        const storedUser = localStorage.getItem('user_session')
+        if (!storedUser) {
+          setUser(null)
+          setLoading(false)
+        }
       }
     })
 
-    // Check for existing Supabase session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('useAuth: Initial Supabase session check:', !!session)
-      if (session?.user) {
-        fetchUserProfile(session.user)
-      } else {
-        setLoading(false)
-      }
-    })
+    // Initialize auth
+    initializeAuth()
 
     return () => subscription.unsubscribe()
   }, [])
