@@ -14,17 +14,23 @@ export const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('Form submitted with:', { email, password })
     setIsLoading(true)
 
     try {
+      console.log('Calling signIn...')
       const { error } = await signIn(email, password)
+      console.log('SignIn result:', { error })
       
       if (error) {
+        console.error('SignIn error:', error)
         toast.error(error.message)
       } else {
+        console.log('SignIn successful!')
         toast.success('Successfully signed in!')
       }
     } catch (error) {
+      console.error('Unexpected error:', error)
       toast.error('An unexpected error occurred')
     } finally {
       setIsLoading(false)
