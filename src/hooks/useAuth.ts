@@ -1,6 +1,29 @@
 import { useState, useEffect } from 'react'
-import { supabase, isSupabaseConfigured, type UserProfile, type AuthUser } from '@/lib/supabase'
+import { supabase } from '@/integrations/supabase/client'
 import { User as SupabaseUser } from '@supabase/supabase-js'
+
+export type UserRole = 'Admin' | 'Super Admin' | 'Provider' | 'Provider-Admin' | 'Manager' | 'HR Manager'
+
+export interface UserProfile {
+  id: string
+  email: string
+  name: string
+  role: UserRole
+  organization?: string
+  avatar?: string
+  is_active: boolean
+  practice_states?: string[]
+  specialty?: string
+  services?: string[]
+  created_at: string
+  updated_at: string
+}
+
+export interface AuthUser {
+  id: string
+  email: string
+  profile: UserProfile
+}
 
 // Mock users for when Supabase is not configured
 const mockUsers: (UserProfile & { password: string })[] = [
@@ -8,7 +31,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     id: '1',
     email: 'superadmin@olahealth.com',
     name: 'John Smith',
-    role: 'Super Admin',
+    role: 'Super Admin' as UserRole,
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
@@ -18,7 +41,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     id: '2',
     email: 'admin@olahealth.com',
     name: 'Jane Doe',
-    role: 'Admin',
+    role: 'Admin' as UserRole,
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
@@ -28,7 +51,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     id: '3',
     email: 'provideradmin@olahealth.com',
     name: 'Dr. Michael Brown',
-    role: 'Provider-Admin',
+    role: 'Provider-Admin' as UserRole,
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
@@ -38,7 +61,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     id: '4',
     email: 'provider@olahealth.com',
     name: 'Dr. Sarah Johnson',
-    role: 'Provider',
+    role: 'Provider' as UserRole,
     is_active: true,
     practice_states: ['CA', 'NY'],
     specialty: 'Family Medicine',
@@ -51,7 +74,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     id: '5',
     email: 'manager@olahealth.com',
     name: 'Robert Wilson',
-    role: 'Manager',
+    role: 'Manager' as UserRole,
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
@@ -61,7 +84,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     id: '6',
     email: 'hr@olahealth.com',
     name: 'Mary Wilson',
-    role: 'HR Manager',
+    role: 'HR Manager' as UserRole,
     organization: 'Hilton Hotel',
     is_active: true,
     created_at: '2024-01-01',
@@ -120,7 +143,10 @@ export const useAuth = () => {
       setUser({
         id: supabaseUser.id,
         email: supabaseUser.email!,
-        profile
+        profile: {
+          ...profile,
+          role: profile.role as UserRole
+        }
       })
     } catch (error) {
       console.error('Error:', error)
@@ -185,9 +211,16 @@ export const useAuth = () => {
       const { error: profileError } = await supabase
         .from('user_profiles')
         .insert({
-          id: data.user.id,
+          user_id: data.user.id,
           email,
-          ...userData
+          name: userData.name || '',
+          role: userData.role || 'Provider',
+          is_active: userData.is_active ?? true,
+          organization: userData.organization,
+          avatar: userData.avatar,
+          practice_states: userData.practice_states,
+          specialty: userData.specialty,
+          services: userData.services
         })
 
       if (profileError) {
