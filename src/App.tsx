@@ -25,9 +25,17 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
+
+  console.log('AppContent render:', { 
+    user: user ? { id: user.id, email: user.email, role: user.profile?.role } : null, 
+    loading, 
+    isAuthenticated,
+    timestamp: new Date().toISOString()
+  });
 
   if (loading) {
+    console.log('Showing loading spinner');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -35,10 +43,12 @@ const AppContent = () => {
     );
   }
 
-  if (!user) {
+  if (!user || !isAuthenticated) {
+    console.log('No user or not authenticated, showing login form');
     return <LoginForm />;
   }
 
+  console.log('User authenticated, showing dashboard');
   return (
     <Layout>
       <Routes>

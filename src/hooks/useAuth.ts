@@ -124,10 +124,12 @@ export const useAuth = () => {
   }
 
   const signIn = async (email: string, password: string) => {
+    console.log('signIn: Starting with loading=true')
     setLoading(true)
     
     // Check if it's a demo account first
     const mockUser = mockUsers.find(u => u.email === email && u.password === password)
+    console.log('signIn: Found mock user:', !!mockUser)
     
     if (mockUser) {
       const authUser = {
@@ -135,24 +137,30 @@ export const useAuth = () => {
         email: mockUser.email,
         profile: mockUser
       }
+      console.log('signIn: Setting user state to:', authUser)
       setUser(authUser)
+      console.log('signIn: Setting loading=false')
       setLoading(false)
+      console.log('signIn: Mock user sign-in complete')
       return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
     }
 
     // Otherwise try Supabase authentication
     try {
+      console.log('signIn: Trying Supabase authentication')
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       })
       
       if (error) {
+        console.log('signIn: Supabase error, setting loading=false')
         setLoading(false)
       }
       
       return { data, error }
     } catch (error) {
+      console.log('signIn: Supabase exception, setting loading=false')
       setLoading(false)
       return { data: null, error }
     }
