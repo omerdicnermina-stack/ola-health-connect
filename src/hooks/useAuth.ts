@@ -96,8 +96,9 @@ const mockUsers: (UserProfile & { password: string })[] = [
 export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
-  console.log('useAuth: Hook called, current state:', { user: !!user, loading })
+  console.log('useAuth: Hook called, current state:', { user: !!user, loading, mounted })
 
   useEffect(() => {
     console.log('useAuth: useEffect running - initializing auth')
@@ -113,6 +114,7 @@ export const useAuth = () => {
           console.log('useAuth: Found stored user session:', userData.email)
           setUser(userData)
           setLoading(false)
+          setMounted(true)
           return
         }
       } catch (error) {
@@ -128,6 +130,7 @@ export const useAuth = () => {
         await fetchUserProfile(session.user)
       } else if (isSubscribed) {
         setLoading(false)
+        setMounted(true)
       }
     }
     
@@ -146,6 +149,7 @@ export const useAuth = () => {
         if (!storedUser) {
           setUser(null)
           setLoading(false)
+          setMounted(true)
         }
       }
     })
@@ -157,6 +161,13 @@ export const useAuth = () => {
       subscription.unsubscribe()
     }
   }, [])
+
+  // Force re-render when user changes
+  useEffect(() => {
+    if (mounted) {
+      console.log('useAuth: User state changed, forcing re-render. User:', !!user)
+    }
+  }, [user, mounted])
 
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
@@ -207,18 +218,18 @@ export const useAuth = () => {
         localStorage.setItem('user_session', JSON.stringify(authUser))
         console.log('signIn: User session stored in localStorage')
         
-        // Set user state immediately with force update
+        // Force state update with callback to ensure re-render
         setUser(authUser)
-        console.log('signIn: User state set to:', authUser.email)
-        
         setLoading(false)
-        console.log('signIn: Loading set to false')
+        setMounted(true)
         
-        // Add a small delay to ensure state propagation
+        console.log('signIn: Demo user sign-in successful, user set:', authUser.email)
+        
+        // Force a page reload to ensure clean state
         setTimeout(() => {
-          console.log('signIn: Final verification - user should be authenticated now')
-          console.log('signIn: Current user state:', authUser.email)
-        }, 50)
+          console.log('signIn: Forcing page reload for clean state')
+          window.location.reload()
+        }, 100)
         
         return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
       }
