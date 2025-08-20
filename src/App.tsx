@@ -31,11 +31,14 @@ const AppContent = () => {
     hasUser: !!user, 
     loading, 
     isAuthenticated,
-    userEmail: user?.email
+    userEmail: user?.email,
+    userRole: user?.profile?.role,
+    timestamp: new Date().toISOString()
   });
 
   // Show loading spinner while auth is initializing
   if (loading) {
+    console.log('AppContent: Showing loading spinner')
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -44,11 +47,13 @@ const AppContent = () => {
   }
 
   // Show auth form if not authenticated
-  if (!isAuthenticated || !user) {
+  if (!user) {
+    console.log('AppContent: No user found, showing auth form')
     return <AuthForm />;
   }
 
   // Show dashboard if authenticated
+  console.log('AppContent: User authenticated, showing dashboard for:', user.email)
   return (
     <Layout>
       <Routes>
