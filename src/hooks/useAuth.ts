@@ -78,12 +78,7 @@ export const useAuth = () => {
 
   useEffect(() => {
     console.log('useAuth: useEffect running')
-    // Only check Supabase session if we're configured for real Supabase usage
-    // For demo purposes, we'll skip Supabase entirely
-    setLoading(false)
     
-    // Commented out Supabase session management since we're using mock users
-    /*
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -106,7 +101,6 @@ export const useAuth = () => {
     })
 
     return () => subscription.unsubscribe()
-    */
   }, [])
 
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
@@ -114,7 +108,7 @@ export const useAuth = () => {
       const { data: profile, error } = await supabase
         .from('user_profiles')
         .select('*')
-        .eq('id', supabaseUser.id)
+        .eq('user_id', supabaseUser.id)
         .single()
 
       if (error) {
