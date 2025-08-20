@@ -74,18 +74,23 @@ export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
 
+  console.log('useAuth: Hook called, current state:', { user: !!user, loading })
+
   useEffect(() => {
+    console.log('useAuth: useEffect running')
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         fetchUserProfile(session.user)
       } else {
+        console.log('useAuth: No session, setting loading=false')
         setLoading(false)
       }
     })
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('useAuth: Auth state change:', event)
       if (session?.user) {
         await fetchUserProfile(session.user)
       } else {
