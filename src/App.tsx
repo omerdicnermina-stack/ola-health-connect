@@ -27,19 +27,19 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const { user, loading, isAuthenticated } = useAuth();
   
-  // Force re-render logging
+  // Enhanced debugging with timestamp
+  const currentTime = new Date().toISOString();
   console.log('AppContent render:', { 
     user: user ? { id: user.id, email: user.email, role: user.profile?.role } : null, 
     loading, 
     isAuthenticated,
-    timestamp: new Date().toISOString(),
+    timestamp: currentTime,
     userExists: !!user,
-    profileExists: !!user?.profile,
-    renderTrigger: Math.random() // To ensure we see each render
+    profileExists: !!user?.profile
   });
 
   if (loading) {
-    console.log('Showing loading spinner');
+    console.log('Showing loading spinner at:', currentTime);
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -48,13 +48,13 @@ const AppContent = () => {
   }
 
   if (!user || !isAuthenticated) {
-    console.log('No user or not authenticated, showing auth form');
-    return <AuthForm />;
+    console.log('No user or not authenticated, showing auth form at:', currentTime);
+    return <AuthForm key="auth-form" />;
   }
 
-  console.log('User authenticated, showing dashboard');
+  console.log('User authenticated, showing dashboard at:', currentTime);
   return (
-    <Layout>
+    <Layout key={`layout-${user.id}`}>
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/virtual-queue" element={<VirtualQueue />} />

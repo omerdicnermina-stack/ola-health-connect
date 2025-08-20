@@ -156,7 +156,7 @@ export const useAuth = () => {
   }
 
   const signIn = async (email: string, password: string) => {
-    console.log('signIn: Starting with loading=true')
+    console.log('signIn: Starting with email:', email)
     setLoading(true)
     
     // Check if it's a demo account first
@@ -171,7 +171,7 @@ export const useAuth = () => {
       }
       console.log('signIn: Setting user state to:', authUser)
       
-      // Set user state directly
+      // Set user state directly and ensure re-render
       setUser(authUser)
       setLoading(false)
       
@@ -186,6 +186,8 @@ export const useAuth = () => {
         email,
         password
       })
+      
+      console.log('signIn: Supabase response:', { data: !!data, error: !!error })
       
       if (error) {
         console.log('signIn: Supabase error, setting loading=false')
