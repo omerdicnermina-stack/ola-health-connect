@@ -281,6 +281,9 @@ export const useAuth = () => {
       // Ignore errors for demo accounts
     }
     
+    // Redirect to login page after sign out
+    window.location.href = "/"
+    
     return { error: null }
   }
 
