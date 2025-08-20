@@ -102,23 +102,27 @@ export const useAuth = () => {
   useEffect(() => {
     console.log('useAuth: useEffect running')
     
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('useAuth: Auth state change:', event, 'session:', !!session)
+      
       if (session?.user) {
-        fetchUserProfile(session.user)
+        console.log('useAuth: Session found, fetching profile')
+        await fetchUserProfile(session.user)
       } else {
-        console.log('useAuth: No session, setting loading=false')
+        console.log('useAuth: No session, clearing user state')
+        setUser(null)
         setLoading(false)
       }
     })
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('useAuth: Auth state change:', event)
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('useAuth: Initial session check:', !!session)
       if (session?.user) {
-        await fetchUserProfile(session.user)
+        fetchUserProfile(session.user)
       } else {
-        setUser(null)
+        console.log('useAuth: No initial session, setting loading=false')
         setLoading(false)
       }
     })
@@ -171,9 +175,14 @@ export const useAuth = () => {
       }
       console.log('signIn: Setting user state to:', authUser)
       
-      // Set user state directly and ensure re-render
+      // Set user state and force refresh to bypass state issues
       setUser(authUser)
       setLoading(false)
+      
+      // Force page refresh after a brief delay to ensure state is set
+      setTimeout(() => {
+        window.location.reload()
+      }, 100)
       
       console.log('signIn: Mock user sign-in complete')
       return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
@@ -203,34 +212,37 @@ export const useAuth = () => {
   }
 
   const signUp = async (email: string, password: string, userData: Partial<UserProfile>) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password
-    })
+    setLoading(true)
+    
+    try {
+      const redirectUrl = `${window.location.origin}/`
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            name: userData.name,
+            role: userData.role
+          }
+        }
+      })
 
-    if (data.user && !error) {
-      // Create user profile
-      const { error: profileError } = await supabase
-        .from('user_profiles')
-        .insert({
-          user_id: data.user.id,
-          email,
-          name: userData.name || '',
-          role: userData.role || 'Provider',
-          is_active: userData.is_active ?? true,
-          organization: userData.organization,
-          avatar: userData.avatar,
-          practice_states: userData.practice_states,
-          specialty: userData.specialty,
-          services: userData.services
-        })
-
-      if (profileError) {
-        console.error('Error creating profile:', profileError)
+      if (error) {
+        console.error('SignUp error:', error)
+        setLoading(false)
+        return { data, error }
       }
-    }
 
-    return { data, error }
+      // Don't try to create profile manually since trigger handles it
+      setLoading(false)
+      return { data, error }
+    } catch (error) {
+      console.error('SignUp exception:', error)
+      setLoading(false)
+      return { data: null, error }
+    }
   }
 
   const signOut = async () => {
