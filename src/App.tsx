@@ -25,21 +25,12 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { user, loading, isAuthenticated } = useAuth();
+  const { user, loading } = useAuth();
   
-  console.log('AppContent render:', { 
-    hasUser: !!user, 
-    loading, 
-    isAuthenticated,
-    userEmail: user?.email,
-    userRole: user?.profile?.role,
-    timestamp: new Date().toISOString(),
-    userState: user ? 'AUTHENTICATED' : 'NOT_AUTHENTICATED'
-  });
+  console.log('AppContent: Rendering with user:', !!user, 'loading:', loading);
 
-  // Show loading spinner while auth is initializing
   if (loading) {
-    console.log('AppContent: Showing loading spinner')
+    console.log('AppContent: Still loading, showing spinner')
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -47,14 +38,12 @@ const AppContent = () => {
     );
   }
 
-  // Show auth form if not authenticated - be very explicit about the check
-  if (!user || !isAuthenticated) {
-    console.log('AppContent: No user found or not authenticated, showing auth form. User:', !!user, 'IsAuth:', isAuthenticated)
+  if (!user) {
+    console.log('AppContent: No user, showing auth form')
     return <AuthForm />;
   }
 
-  // Show dashboard if authenticated
-  console.log('AppContent: User authenticated, showing dashboard for:', user.email, 'Role:', user.profile?.role)
+  console.log('AppContent: User found, showing dashboard for:', user.email)
   return (
     <Layout>
       <Routes>

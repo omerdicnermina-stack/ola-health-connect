@@ -96,78 +96,30 @@ const mockUsers: (UserProfile & { password: string })[] = [
 export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
-  const [mounted, setMounted] = useState(false)
 
-  console.log('useAuth: Hook called, current state:', { user: !!user, loading, mounted })
+  console.log('useAuth: Current state - User:', !!user, 'Loading:', loading)
 
   useEffect(() => {
-    console.log('useAuth: useEffect running - initializing auth')
+    console.log('useAuth: Checking for existing session...')
     
-    let isSubscribed = true
-    
-    const initializeAuth = async () => {
+    // Simple check for stored user
+    const storedUser = localStorage.getItem('user_session')
+    if (storedUser) {
       try {
-        // Check for stored session first
-        const storedUser = localStorage.getItem('user_session')
-        if (storedUser && isSubscribed) {
-          const userData = JSON.parse(storedUser)
-          console.log('useAuth: Found stored user session:', userData.email)
-          setUser(userData)
-          setLoading(false)
-          setMounted(true)
-          return
-        }
+        const userData = JSON.parse(storedUser)
+        console.log('useAuth: Found user:', userData.email)
+        setUser(userData)
       } catch (error) {
-        console.error('Error parsing stored user:', error)
+        console.error('useAuth: Error parsing user:', error)
         localStorage.removeItem('user_session')
       }
-      
-      // Check Supabase session
-      const { data: { session } } = await supabase.auth.getSession()
-      console.log('useAuth: Initial Supabase session check:', !!session)
-      
-      if (session?.user && isSubscribed) {
-        await fetchUserProfile(session.user)
-      } else if (isSubscribed) {
-        setLoading(false)
-        setMounted(true)
-      }
+    } else {
+      console.log('useAuth: No stored user found')
     }
     
-    // Set up Supabase auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!isSubscribed) return
-      
-      console.log('useAuth: Auth state change:', event, 'session:', !!session)
-      
-      if (session?.user) {
-        console.log('useAuth: Supabase session found, fetching profile')
-        await fetchUserProfile(session.user)
-      } else {
-        console.log('useAuth: No Supabase session')
-        const storedUser = localStorage.getItem('user_session')
-        if (!storedUser) {
-          setUser(null)
-          setLoading(false)
-          setMounted(true)
-        }
-      }
-    })
-
-    initializeAuth()
-
-    return () => {
-      isSubscribed = false
-      subscription.unsubscribe()
-    }
+    setLoading(false)
+    console.log('useAuth: Initialization complete')
   }, [])
-
-  // Force re-render when user changes
-  useEffect(() => {
-    if (mounted) {
-      console.log('useAuth: User state changed, forcing re-render. User:', !!user)
-    }
-  }, [user, mounted])
 
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
@@ -199,62 +151,30 @@ export const useAuth = () => {
   }
 
   const signIn = async (email: string, password: string) => {
-    console.log('signIn: Starting sign-in for:', email)
-    setLoading(true)
+    console.log('signIn: Attempting sign-in for:', email)
     
-    try {
-      // Check for demo/mock users first
-      const mockUser = mockUsers.find(u => u.email === email && u.password === password)
+    // Find demo user
+    const mockUser = mockUsers.find(u => u.email === email && u.password === password)
+    
+    if (mockUser) {
+      console.log('signIn: Demo user found!')
       
-      if (mockUser) {
-        console.log('signIn: Demo user found, signing in')
-        const authUser = {
-          id: mockUser.id,
-          email: mockUser.email,
-          profile: mockUser
-        }
-        
-        // Store in localStorage and set state
-        localStorage.setItem('user_session', JSON.stringify(authUser))
-        console.log('signIn: User session stored in localStorage')
-        
-        // Force state update with callback to ensure re-render
-        setUser(authUser)
-        setLoading(false)
-        setMounted(true)
-        
-        console.log('signIn: Demo user sign-in successful, user set:', authUser.email)
-        
-        // Force a page reload to ensure clean state
-        setTimeout(() => {
-          console.log('signIn: Forcing page reload for clean state')
-          window.location.reload()
-        }, 100)
-        
-        return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
+      const authUser = {
+        id: mockUser.id,
+        email: mockUser.email,
+        profile: mockUser
       }
       
-      // Try Supabase authentication for real users
-      console.log('signIn: Trying Supabase authentication')
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
+      // Store and set user
+      localStorage.setItem('user_session', JSON.stringify(authUser))
+      setUser(authUser)
       
-      if (error) {
-        console.log('signIn: Supabase error:', error.message)
-        setLoading(false)
-        return { data, error }
-      }
-      
-      console.log('signIn: Supabase sign-in successful')
-      return { data, error }
-      
-    } catch (error) {
-      console.error('signIn: Unexpected error:', error)
-      setLoading(false)
-      return { data: null, error: error as any }
+      console.log('signIn: User authenticated successfully:', authUser.email)
+      return { data: { user: authUser }, error: null }
     }
+    
+    console.log('signIn: No demo user found with those credentials')
+    return { data: null, error: { message: 'Invalid credentials' } }
   }
 
   const signUp = async (email: string, password: string, userData: Partial<UserProfile>) => {
@@ -292,32 +212,11 @@ export const useAuth = () => {
   }
 
   const signOut = async () => {
-    console.log('signOut: Starting sign out process')
-    
-    try {
-      // Clear user state
-      setUser(null)
-      
-      // Clear stored session
-      localStorage.removeItem('user_session')
-      
-      // Sign out from Supabase (for real users)
-      await supabase.auth.signOut()
-      
-      console.log('signOut: Sign out complete')
-      
-      // Reload page to ensure clean state
-      window.location.reload()
-      
-      return { error: null }
-    } catch (error) {
-      console.error('signOut: Error during sign out:', error)
-      // Even if there's an error, clear local state and reload
-      setUser(null)
-      localStorage.removeItem('user_session')
-      window.location.reload()
-      return { error: null }
-    }
+    console.log('signOut: Signing out user')
+    localStorage.removeItem('user_session')
+    setUser(null)
+    console.log('signOut: User signed out successfully')
+    return { error: null }
   }
 
   const hasPermission = (permission: string): boolean => {
