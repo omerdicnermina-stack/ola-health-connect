@@ -35,7 +35,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
-    password: 'password'
+    password: '123456Aa'
   },
   {
     id: '2',
@@ -45,7 +45,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
-    password: 'password'
+    password: '123456Aa'
   },
   {
     id: '3',
@@ -55,7 +55,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
-    password: 'password'
+    password: '123456Aa'
   },
   {
     id: '4',
@@ -68,7 +68,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     services: ['Consultation', 'Prescription'],
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
-    password: 'password'
+    password: '123456Aa'
   },
   {
     id: '5',
@@ -78,7 +78,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
-    password: 'password'
+    password: '123456Aa'
   },
   {
     id: '6',
@@ -89,7 +89,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     is_active: true,
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
-    password: 'password'
+    password: '123456Aa'
   }
 ]
 
