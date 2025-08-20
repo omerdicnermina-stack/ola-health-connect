@@ -27,20 +27,13 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const { user, loading, isAuthenticated } = useAuth();
   
-  // Enhanced debugging with timestamp
-  const currentTime = new Date().toISOString();
   console.log('AppContent render:', { 
     user: user ? { id: user.id, email: user.email, role: user.profile?.role } : null, 
     loading, 
-    isAuthenticated,
-    timestamp: currentTime,
-    userExists: !!user,
-    profileExists: !!user?.profile,
-    authCheck: !!user && !!user.profile
+    isAuthenticated
   });
 
   if (loading) {
-    console.log('Showing loading spinner at:', currentTime);
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
@@ -48,12 +41,9 @@ const AppContent = () => {
     );
   }
 
-  if (!user || !isAuthenticated) {
-    console.log('No user or not authenticated, showing auth form at:', currentTime);
-    return <AuthForm key="auth-form" />;
+  if (!isAuthenticated) {
+    return <AuthForm />;
   }
-
-  console.log('User authenticated, showing dashboard at:', currentTime);
   return (
     <Layout key={`layout-${user.id}`}>
       <Routes>
