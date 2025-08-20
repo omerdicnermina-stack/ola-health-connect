@@ -27,11 +27,14 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const { user, loading, isAuthenticated } = useAuth();
 
+  // Enhanced debugging
   console.log('AppContent render:', { 
     user: user ? { id: user.id, email: user.email, role: user.profile?.role } : null, 
     loading, 
     isAuthenticated,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    userExists: !!user,
+    profileExists: !!user?.profile
   });
 
   if (loading) {
