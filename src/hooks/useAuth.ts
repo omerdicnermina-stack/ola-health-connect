@@ -267,12 +267,15 @@ export const useAuth = () => {
   }
 
   const signOut = async () => {
+    console.log('signOut: Starting sign out process')
+    
     // Clear the user state first (works for both demo and real users)
     setUser(null)
     setIsMockUser(false)
     
     // Clear mock user session from localStorage
     localStorage.removeItem('mock_user_session')
+    console.log('signOut: Cleared localStorage and state')
     
     // Try to sign out from Supabase (will silently fail for demo users, which is fine)
     try {
@@ -281,6 +284,12 @@ export const useAuth = () => {
       // Ignore errors for demo accounts
     }
     
+    // Force a page reload to ensure clean state
+    setTimeout(() => {
+      window.location.href = '/'
+    }, 100)
+    
+    console.log('signOut: Sign out complete')
     return { error: null }
   }
 
