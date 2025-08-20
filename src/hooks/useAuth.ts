@@ -96,8 +96,9 @@ const mockUsers: (UserProfile & { password: string })[] = [
 export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isMockUser, setIsMockUser] = useState(false)
 
-  console.log('useAuth: Hook called, current state:', { user: !!user, loading })
+  console.log('useAuth: Hook called, current state:', { user: !!user, loading, isMockUser })
 
   useEffect(() => {
     console.log('useAuth: useEffect running')
@@ -109,13 +110,18 @@ export const useAuth = () => {
         const mockUser = JSON.parse(storedMockUser)
         console.log('useAuth: Found stored mock user:', mockUser)
         setUser(mockUser)
+        setIsMockUser(true)
         setLoading(false)
-        return
+        // Return empty cleanup function for mock users - no Supabase listeners needed
+        return () => {}
       } catch (error) {
         console.error('Error parsing stored mock user:', error)
         localStorage.removeItem('mock_user_session')
       }
     }
+    
+    // Only set up Supabase auth listeners if we don't have a mock user
+    setIsMockUser(false)
     
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -193,8 +199,9 @@ export const useAuth = () => {
       // Store mock user in localStorage for persistence
       localStorage.setItem('mock_user_session', JSON.stringify(authUser))
       
-      // Set user state
+      // Set mock user state
       setUser(authUser)
+      setIsMockUser(true)
       setLoading(false)
       
       console.log('signIn: Mock user sign-in complete')
@@ -204,6 +211,7 @@ export const useAuth = () => {
     // Otherwise try Supabase authentication
     try {
       console.log('signIn: Trying Supabase authentication')
+      setIsMockUser(false)
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -261,6 +269,7 @@ export const useAuth = () => {
   const signOut = async () => {
     // Clear the user state first (works for both demo and real users)
     setUser(null)
+    setIsMockUser(false)
     
     // Clear mock user session from localStorage
     localStorage.removeItem('mock_user_session')
