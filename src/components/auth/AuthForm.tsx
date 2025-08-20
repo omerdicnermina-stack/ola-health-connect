@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 export const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('123456Aa')
   const [name, setName] = useState('')
   const [role, setRole] = useState<UserRole>('Manager')
   const [isLoading, setIsLoading] = useState(false)
