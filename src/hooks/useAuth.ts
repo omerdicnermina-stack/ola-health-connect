@@ -143,9 +143,18 @@ export const useAuth = () => {
         profile: mockUser
       }
       console.log('signIn: Setting user state to:', authUser)
-      setUser(authUser)
-      console.log('signIn: Setting loading=false')
-      setLoading(false)
+      
+      // Use React's state updater function to ensure re-render
+      setUser(() => {
+        console.log('signIn: User state updater called')
+        return authUser
+      })
+      
+      setLoading(() => {
+        console.log('signIn: Loading state updater called - setting to false')
+        return false
+      })
+      
       console.log('signIn: Mock user sign-in complete')
       return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
     }
