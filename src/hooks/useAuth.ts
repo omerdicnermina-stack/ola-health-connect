@@ -112,16 +112,17 @@ export const useAuth = () => {
         setUser(mockUser)
         setIsMockUser(true)
         setLoading(false)
-        // Return empty cleanup function for mock users - no Supabase listeners needed
-        return () => {}
+        // Return early - don't set up Supabase listeners for mock users
+        return
       } catch (error) {
         console.error('Error parsing stored mock user:', error)
         localStorage.removeItem('mock_user_session')
       }
     }
     
-    // Only set up Supabase auth listeners if we don't have a mock user
+    // Only reach here if no mock user - set up Supabase auth listeners
     setIsMockUser(false)
+    console.log('useAuth: Setting up Supabase auth listeners')
     
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
