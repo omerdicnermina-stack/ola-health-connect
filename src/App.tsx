@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { LoginForm } from "@/components/auth/LoginForm";
+import { AuthForm } from "@/components/auth/AuthForm";
 import { Layout } from "@/components/Layout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
@@ -48,8 +48,8 @@ const AppContent = () => {
   }
 
   if (!user || !isAuthenticated) {
-    console.log('No user or not authenticated, showing login form');
-    return <LoginForm />;
+    console.log('No user or not authenticated, showing auth form');
+    return <AuthForm />;
   }
 
   console.log('User authenticated, showing dashboard');
