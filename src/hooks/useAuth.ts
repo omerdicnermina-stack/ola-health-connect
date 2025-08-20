@@ -157,7 +157,7 @@ export const useAuth = () => {
     const mockUser = mockUsers.find(u => u.email === email && u.password === password)
     
     if (mockUser) {
-      console.log('signIn: Demo user found!')
+      console.log('signIn: Demo user found:', mockUser.role)
       
       const authUser = {
         id: mockUser.id,
@@ -169,7 +169,7 @@ export const useAuth = () => {
       localStorage.setItem('user_session', JSON.stringify(authUser))
       setUser(authUser)
       
-      console.log('signIn: User authenticated successfully:', authUser.email)
+      console.log('signIn: User authenticated successfully:', authUser.email, 'Role:', authUser.profile.role)
       return { data: { user: authUser }, error: null }
     }
     
@@ -212,10 +212,23 @@ export const useAuth = () => {
   }
 
   const signOut = async () => {
-    console.log('signOut: Signing out user')
+    console.log('signOut: Starting sign out process')
+    console.log('signOut: Current user before logout:', user?.email)
+    
+    // Clear localStorage first
     localStorage.removeItem('user_session')
+    console.log('signOut: Cleared localStorage')
+    
+    // Clear user state
     setUser(null)
-    console.log('signOut: User signed out successfully')
+    console.log('signOut: Cleared user state')
+    
+    // Force a small delay to ensure state update, then reload
+    setTimeout(() => {
+      console.log('signOut: Reloading page for clean state')
+      window.location.reload()
+    }, 100)
+    
     return { error: null }
   }
 

@@ -148,14 +148,14 @@ export const AuthForm = () => {
           
           {!isSignUp && (
             <div className="mt-6 space-y-2 text-sm text-muted-foreground">
-              <p className="font-medium">Demo accounts:</p>
+              <p className="font-medium">Demo accounts (password: 123456Aa):</p>
               <div className="space-y-1">
-                <p>Super Admin: superadmin@olahealth.com / 123456Aa</p>
-                <p>Admin: admin@olahealth.com / 123456Aa</p>
-                <p>Provider-Admin: provideradmin@olahealth.com / 123456Aa</p>
-                <p>Provider: provider@olahealth.com / 123456Aa</p>
-                <p>Manager: manager@olahealth.com / 123456Aa</p>
-                <p>HR Manager: hr@olahealth.com / 123456Aa</p>
+                <p><strong>Super Admin:</strong> superadmin@olahealth.com</p>
+                <p><strong>Provider:</strong> provider@olahealth.com</p>
+                <p><strong>HR Manager:</strong> hr@olahealth.com</p>
+                <p><strong>Admin:</strong> admin@olahealth.com</p>
+                <p><strong>Provider-Admin:</strong> provideradmin@olahealth.com</p>
+                <p><strong>Manager:</strong> manager@olahealth.com</p>
               </div>
             </div>
           )}
