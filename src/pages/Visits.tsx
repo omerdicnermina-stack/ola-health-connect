@@ -3,9 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, Plus, Video, FileText, Clock } from 'lucide-react';
+import { Calendar, Plus, Video, FileText, Clock, BarChart3, Users, TrendingUp } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Visits() {
+  const { user } = useAuth();
+  const isHRManager = user?.profile?.role === 'HR Manager';
+
   const mockVisits = [
     {
       id: 1,
@@ -71,6 +75,132 @@ export default function Visits() {
         return 'outline';
     }
   };
+
+  const visitStats = {
+    total: mockVisits.length,
+    completed: mockVisits.filter(v => v.status === 'Completed').length,
+    inProgress: mockVisits.filter(v => v.status === 'In Progress').length,
+    scheduled: mockVisits.filter(v => v.status === 'Scheduled').length,
+    averageDuration: '23 min',
+    types: {
+      'General Consultation': 1,
+      'Prescription Refill': 1,
+      'Follow-up': 1,
+      'Mental Health': 1
+    }
+  };
+
+  if (isHRManager) {
+    return (
+      <div className="animate-fade-in">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold tracking-tight">Visit Statistics</h1>
+          <p className="text-muted-foreground">
+            Healthcare utilization analytics and trends.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Visits</CardTitle>
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{visitStats.total}</div>
+              <p className="text-xs text-muted-foreground">
+                +12% from last month
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Completed Visits</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{visitStats.completed}</div>
+              <p className="text-xs text-muted-foreground">
+                {((visitStats.completed / visitStats.total) * 100).toFixed(0)}% completion rate
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{visitStats.inProgress}</div>
+              <p className="text-xs text-muted-foreground">
+                Currently in progress
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Avg Duration</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{visitStats.averageDuration}</div>
+              <p className="text-xs text-muted-foreground">
+                -2 min from last month
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Visit Status Distribution</CardTitle>
+              <CardDescription>Current status breakdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="default">Completed</Badge>
+                  </div>
+                  <span className="font-medium">{visitStats.completed}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">In Progress</Badge>
+                  </div>
+                  <span className="font-medium">{visitStats.inProgress}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">Scheduled</Badge>
+                  </div>
+                  <span className="font-medium">{visitStats.scheduled}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Visit Types</CardTitle>
+              <CardDescription>Consultation categories</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {Object.entries(visitStats.types).map(([type, count]) => (
+                  <div key={type} className="flex items-center justify-between">
+                    <span className="text-sm">{type}</span>
+                    <span className="font-medium">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in">
