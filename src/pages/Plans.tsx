@@ -1,14 +1,14 @@
 import React from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CreditCard, Plus, Edit, Users, Check } from 'lucide-react';
 
 export default function Plans() {
-  const { hasPermission, currentUser } = useUser();
+  const { hasPermission, user } = useAuth();
   const canManagePlans = hasPermission('manage_plans');
-  const canAssignPlans = currentUser?.role === 'HR Manager';
+  const canAssignPlans = user?.profile?.role === 'HR Manager';
 
   const mockPlans = [
     {

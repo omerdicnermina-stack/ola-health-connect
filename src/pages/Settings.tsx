@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Settings as SettingsIcon, User, Bell, Shield, Globe } from 'lucide-react';
 
 export default function Settings() {
-  const { currentUser } = useUser();
+  const { user } = useAuth();
 
   return (
     <div className="animate-fade-in">
@@ -36,9 +36,9 @@ export default function Settings() {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={currentUser?.avatar} />
+                <AvatarImage src={user?.profile?.avatar} />
                 <AvatarFallback className="text-lg">
-                  {currentUser?.name?.split(' ').map(n => n[0]).join('') || 'U'}
+                  {user?.profile?.name?.split(' ').map(n => n[0]).join('') || 'U'}
                 </AvatarFallback>
               </Avatar>
               <Button variant="outline">Change Avatar</Button>
@@ -47,29 +47,29 @@ export default function Settings() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" defaultValue={currentUser?.name?.split(' ')[0]} />
+                <Input id="firstName" defaultValue={user?.profile?.name?.split(' ')[0]} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" defaultValue={currentUser?.name?.split(' ')[1]} />
+                <Input id="lastName" defaultValue={user?.profile?.name?.split(' ')[1]} />
               </div>
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" defaultValue={currentUser?.email} />
+              <Input id="email" type="email" defaultValue={user?.email} />
             </div>
 
-            {currentUser?.role === 'Provider' && (
+            {user?.profile?.role === 'Provider' && (
               <>
                 <div className="space-y-2">
                   <Label htmlFor="specialty">Specialty</Label>
-                  <Input id="specialty" defaultValue={currentUser?.specialty} />
+                  <Input id="specialty" defaultValue={user?.profile?.specialty} />
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="practiceStates">Licensed States</Label>
-                  <Input id="practiceStates" defaultValue={currentUser?.practiceStates?.join(', ')} 
+                  <Input id="practiceStates" defaultValue={user?.profile?.practice_states?.join(', ')} 
                          placeholder="CA, NY, TX" />
                 </div>
                 

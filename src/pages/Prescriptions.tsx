@@ -1,12 +1,12 @@
 import React from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Pill, Plus, Eye, Edit } from 'lucide-react';
 
 export default function Prescriptions() {
-  const { currentUser, hasPermission } = useUser();
+  const { user, hasPermission } = useAuth();
   const canEdit = hasPermission('edit_prescriptions');
 
   const mockPrescriptions = [

@@ -1,12 +1,12 @@
 import React from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Stethoscope, Plus, Edit, Trash2, Users } from 'lucide-react';
 
 export default function Services() {
-  const { hasPermission } = useUser();
+  const { hasPermission } = useAuth();
   const canManage = hasPermission('manage_services');
 
   const mockServices = [

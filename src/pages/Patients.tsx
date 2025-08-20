@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Users, Plus, MessageSquare, Calendar, FileText } from 'lucide-react';
 
 export default function Patients() {
-  const { currentUser } = useUser();
+  const { user } = useAuth();
 
   const mockPatients = [
     {
