@@ -124,32 +124,38 @@ export const useAuth = () => {
   }
 
   const signIn = async (email: string, password: string) => {
-    console.log('signIn called with:', { email, password })
+    setLoading(true)
     
     // Check if it's a demo account first
     const mockUser = mockUsers.find(u => u.email === email && u.password === password)
-    console.log('Found mock user:', mockUser)
     
     if (mockUser) {
-      console.log('Setting mock user:', mockUser)
-      setLoading(false)
       const authUser = {
         id: mockUser.id,
         email: mockUser.email,
         profile: mockUser
       }
       setUser(authUser)
-      console.log('User state updated to:', authUser)
+      setLoading(false)
       return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
     }
 
     // Otherwise try Supabase authentication
-    console.log('Trying Supabase authentication')
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-    return { data, error }
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+      
+      if (error) {
+        setLoading(false)
+      }
+      
+      return { data, error }
+    } catch (error) {
+      setLoading(false)
+      return { data: null, error }
+    }
   }
 
   const signUp = async (email: string, password: string, userData: Partial<UserProfile>) => {
