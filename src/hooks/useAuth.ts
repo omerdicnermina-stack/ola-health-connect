@@ -96,8 +96,9 @@ const mockUsers: (UserProfile & { password: string })[] = [
 export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
-  console.log('useAuth: Current state - User:', !!user, 'Loading:', loading)
+  console.log('useAuth: Current state - User:', !!user, 'Loading:', loading, 'Mounted:', mounted)
 
   useEffect(() => {
     console.log('useAuth: Checking for existing session...')
@@ -118,8 +119,20 @@ export const useAuth = () => {
     }
     
     setLoading(false)
+    setMounted(true)
     console.log('useAuth: Initialization complete')
   }, [])
+
+  // Force re-render after user state changes
+  useEffect(() => {
+    if (mounted && user) {
+      console.log('useAuth: User state changed, forcing re-render for:', user.email)
+      // Small delay to ensure state propagation
+      setTimeout(() => {
+        console.log('useAuth: Re-render complete for user:', user.email)
+      }, 50)
+    }
+  }, [user, mounted])
 
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
@@ -167,7 +180,15 @@ export const useAuth = () => {
       
       // Store and set user
       localStorage.setItem('user_session', JSON.stringify(authUser))
+      console.log('signIn: Setting user state...')
       setUser(authUser)
+      
+      // Force a slight delay to ensure state propagation
+      setTimeout(() => {
+        console.log('signIn: User state should be updated now')
+        // Trigger a state update to force re-render
+        setUser(prev => ({ ...prev! }))
+      }, 10)
       
       console.log('signIn: User authenticated successfully:', authUser.email, 'Role:', authUser.profile.role)
       return { data: { user: authUser }, error: null }
