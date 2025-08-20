@@ -13,7 +13,8 @@ import {
   Stethoscope,
   CreditCard,
   Calendar,
-  Clock
+  Clock,
+  FileBarChart
 } from 'lucide-react';
 import {
   Sidebar,
@@ -49,6 +50,7 @@ const navigationItems: NavigationItem[] = [
   { title: 'Services', url: '/services', icon: Stethoscope, permission: 'manage_services' },
   { title: 'Plans', url: '/plans', icon: CreditCard, permission: 'manage_plans' },
   { title: 'Visits', url: '/visits', icon: Calendar },
+  { title: 'Utilization Report', url: '/utilization-report', icon: FileBarChart, permission: 'utilization_report' },
   { title: 'Settings', url: '/settings', icon: Settings },
   { title: 'Help', url: '/help', icon: HelpCircle }
 ];

@@ -18,6 +18,7 @@ import Statistics from "./pages/Statistics";
 import Services from "./pages/Services";
 import Plans from "./pages/Plans";
 import Visits from "./pages/Visits";
+import UtilizationReport from "./pages/UtilizationReport";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
@@ -58,6 +59,7 @@ const AppContent = () => {
         <Route path="/services" element={<Services />} />
         <Route path="/plans" element={<Plans />} />
         <Route path="/visits" element={<Visits />} />
+        <Route path="/utilization-report" element={<UtilizationReport />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />
         <Route path="*" element={<NotFound />} />
