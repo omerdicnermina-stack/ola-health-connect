@@ -205,17 +205,20 @@ export const useAuth = () => {
         
         // Store in localStorage and set state
         localStorage.setItem('user_session', JSON.stringify(authUser))
+        console.log('signIn: User session stored in localStorage')
         
-        // Set user state immediately
+        // Set user state immediately with force update
         setUser(authUser)
+        console.log('signIn: User state set to:', authUser.email)
+        
         setLoading(false)
+        console.log('signIn: Loading set to false')
         
-        console.log('signIn: Demo user sign-in successful, user set:', authUser.email)
-        
-        // Force a small delay to ensure state is updated
+        // Add a small delay to ensure state propagation
         setTimeout(() => {
-          console.log('signIn: Verifying user state after sign-in')
-        }, 100)
+          console.log('signIn: Final verification - user should be authenticated now')
+          console.log('signIn: Current user state:', authUser.email)
+        }, 50)
         
         return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
       }

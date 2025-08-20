@@ -33,7 +33,8 @@ const AppContent = () => {
     isAuthenticated,
     userEmail: user?.email,
     userRole: user?.profile?.role,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    userState: user ? 'AUTHENTICATED' : 'NOT_AUTHENTICATED'
   });
 
   // Show loading spinner while auth is initializing
@@ -46,14 +47,14 @@ const AppContent = () => {
     );
   }
 
-  // Show auth form if not authenticated
-  if (!user) {
-    console.log('AppContent: No user found, showing auth form')
+  // Show auth form if not authenticated - be very explicit about the check
+  if (!user || !isAuthenticated) {
+    console.log('AppContent: No user found or not authenticated, showing auth form. User:', !!user, 'IsAuth:', isAuthenticated)
     return <AuthForm />;
   }
 
   // Show dashboard if authenticated
-  console.log('AppContent: User authenticated, showing dashboard for:', user.email)
+  console.log('AppContent: User authenticated, showing dashboard for:', user.email, 'Role:', user.profile?.role)
   return (
     <Layout>
       <Routes>
