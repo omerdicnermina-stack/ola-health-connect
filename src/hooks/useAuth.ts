@@ -102,6 +102,21 @@ export const useAuth = () => {
   useEffect(() => {
     console.log('useAuth: useEffect running')
     
+    // Check for stored mock user session first
+    const storedMockUser = localStorage.getItem('mock_user_session')
+    if (storedMockUser) {
+      try {
+        const mockUser = JSON.parse(storedMockUser)
+        console.log('useAuth: Found stored mock user:', mockUser)
+        setUser(mockUser)
+        setLoading(false)
+        return
+      } catch (error) {
+        console.error('Error parsing stored mock user:', error)
+        localStorage.removeItem('mock_user_session')
+      }
+    }
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('useAuth: Auth state change:', event, 'session:', !!session)
@@ -175,14 +190,12 @@ export const useAuth = () => {
       }
       console.log('signIn: Setting user state to:', authUser)
       
-      // Set user state and force refresh to bypass state issues
+      // Store mock user in localStorage for persistence
+      localStorage.setItem('mock_user_session', JSON.stringify(authUser))
+      
+      // Set user state
       setUser(authUser)
       setLoading(false)
-      
-      // Force page refresh after a brief delay to ensure state is set
-      setTimeout(() => {
-        window.location.reload()
-      }, 100)
       
       console.log('signIn: Mock user sign-in complete')
       return { data: { user: { id: mockUser.id, email: mockUser.email } }, error: null }
@@ -248,6 +261,9 @@ export const useAuth = () => {
   const signOut = async () => {
     // Clear the user state first (works for both demo and real users)
     setUser(null)
+    
+    // Clear mock user session from localStorage
+    localStorage.removeItem('mock_user_session')
     
     // Try to sign out from Supabase (will silently fail for demo users, which is fine)
     try {

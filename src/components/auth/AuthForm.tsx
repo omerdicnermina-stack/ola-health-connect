@@ -150,12 +150,12 @@ export const AuthForm = () => {
             <div className="mt-6 space-y-2 text-sm text-muted-foreground">
               <p className="font-medium">Demo accounts:</p>
               <div className="space-y-1">
-                <p>Super Admin: superadmin@olahealth.com / password</p>
-                <p>Admin: admin@olahealth.com / password</p>
-                <p>Provider-Admin: provideradmin@olahealth.com / password</p>
-                <p>Provider: provider@olahealth.com / password</p>
-                <p>Manager: manager@olahealth.com / password</p>
-                <p>HR Manager: hr@olahealth.com / password</p>
+                <p>Super Admin: superadmin@olahealth.com / 123456Aa</p>
+                <p>Admin: admin@olahealth.com / 123456Aa</p>
+                <p>Provider-Admin: provideradmin@olahealth.com / 123456Aa</p>
+                <p>Provider: provider@olahealth.com / 123456Aa</p>
+                <p>Manager: manager@olahealth.com / 123456Aa</p>
+                <p>HR Manager: hr@olahealth.com / 123456Aa</p>
               </div>
             </div>
           )}
