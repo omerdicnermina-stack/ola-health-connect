@@ -35,7 +35,8 @@ const AppContent = () => {
     isAuthenticated,
     timestamp: currentTime,
     userExists: !!user,
-    profileExists: !!user?.profile
+    profileExists: !!user?.profile,
+    authCheck: !!user && !!user.profile
   });
 
   if (loading) {

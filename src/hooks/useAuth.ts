@@ -332,6 +332,6 @@ export const useAuth = () => {
     signOut,
     hasPermission,
     canDeleteUser,
-    isAuthenticated: !!user
+    isAuthenticated: !!user && !!user.profile
   }
 }
