@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { Layout } from "@/components/Layout";
@@ -28,11 +28,13 @@ const AppContent = () => {
   const { user, loading, isAuthenticated } = useAuth();
   
   console.log('AppContent render:', { 
-    user: user ? { id: user.id, email: user.email, role: user.profile?.role } : null, 
+    hasUser: !!user, 
     loading, 
-    isAuthenticated
+    isAuthenticated,
+    userEmail: user?.email
   });
 
+  // Show loading spinner while auth is initializing
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -41,11 +43,14 @@ const AppContent = () => {
     );
   }
 
-  if (!isAuthenticated) {
+  // Show auth form if not authenticated
+  if (!isAuthenticated || !user) {
     return <AuthForm />;
   }
+
+  // Show dashboard if authenticated
   return (
-    <Layout key={`layout-${user.id}`}>
+    <Layout>
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/virtual-queue" element={<VirtualQueue />} />
