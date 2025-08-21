@@ -31,6 +31,30 @@ const departmentData = [
   { department: 'Finance', employees: 45, consultations: 31, utilization: 69, avgCost: 128 }
 ];
 
+// YTD Data
+const ytdData = {
+  consultations: 2025,
+  employees: 525,
+  utilization: 73,
+  totalCost: 257175,
+  savings: 68500,
+  previousYearConsultations: 1820,
+  previousYearCost: 235480,
+  growth: 11.3
+};
+
+// MTD Data (Current month: June)
+const mtdData = {
+  consultations: 425,
+  employees: 498,
+  utilization: 85,
+  totalCost: 53975,
+  savings: 14200,
+  previousMonthConsultations: 398,
+  previousMonthCost: 50546,
+  growth: 6.8
+};
+
 const UtilizationReport = () => {
   const totalEmployees = 525;
   const totalConsultations = 1425;
@@ -122,6 +146,85 @@ const UtilizationReport = () => {
                 +22% from last month
               </span>
             </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* YTD and MTD Reports */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Year to Date Report</CardTitle>
+            <CardDescription>January - June 2024 performance summary</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-sm text-muted-foreground">Total Consultations</div>
+                <div className="text-2xl font-bold">{ytdData.consultations.toLocaleString()}</div>
+                <div className="text-xs text-green-600 flex items-center">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +{ytdData.growth}% vs last year
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">Utilization Rate</div>
+                <div className="text-2xl font-bold">{ytdData.utilization}%</div>
+                <Progress value={ytdData.utilization} className="mt-2" />
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">Total Cost</div>
+                <div className="text-2xl font-bold">${ytdData.totalCost.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">
+                  vs ${ytdData.previousYearCost.toLocaleString()} last year
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">Total Savings</div>
+                <div className="text-2xl font-bold text-green-600">${ytdData.savings.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">
+                  Cost avoidance & efficiency
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Month to Date Report</CardTitle>
+            <CardDescription>June 2024 current month performance</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-sm text-muted-foreground">MTD Consultations</div>
+                <div className="text-2xl font-bold">{mtdData.consultations}</div>
+                <div className="text-xs text-green-600 flex items-center">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +{mtdData.growth}% vs last month
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">MTD Utilization</div>
+                <div className="text-2xl font-bold">{mtdData.utilization}%</div>
+                <Progress value={mtdData.utilization} className="mt-2" />
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">MTD Cost</div>
+                <div className="text-2xl font-bold">${mtdData.totalCost.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">
+                  vs ${mtdData.previousMonthCost.toLocaleString()} last month
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">MTD Savings</div>
+                <div className="text-2xl font-bold text-green-600">${mtdData.savings.toLocaleString()}</div>
+                <div className="text-xs text-muted-foreground">
+                  Month-over-month improvement
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
