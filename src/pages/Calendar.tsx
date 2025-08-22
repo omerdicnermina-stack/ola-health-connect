@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { format, isToday, isFuture } from 'date-fns';
 
-// Mock future visits data with more diverse dates for demo
+// Mock future visits data with current and future dates for demo
 const futureVisits = [
   // Today's appointments
   {
     id: '1',
     patientName: 'John Smith',
-    date: new Date(2024, 11, 22, 14, 30), // Today, 2:30 PM
+    date: new Date(2025, 7, 22, 14, 30), // Today, 2:30 PM
     type: 'Video Consultation',
     duration: 30,
     location: 'Virtual',
@@ -22,7 +22,7 @@ const futureVisits = [
   {
     id: '2',
     patientName: 'Sarah Johnson',
-    date: new Date(2024, 11, 22, 16, 0), // Today, 4:00 PM
+    date: new Date(2025, 7, 22, 16, 0), // Today, 4:00 PM
     type: 'Phone Consultation',
     duration: 15,
     location: 'Phone',
@@ -34,7 +34,7 @@ const futureVisits = [
   {
     id: '3',
     patientName: 'Michael Brown',
-    date: new Date(2024, 11, 23, 9, 0), // Tomorrow, 9:00 AM
+    date: new Date(2025, 7, 23, 9, 0), // Tomorrow, 9:00 AM
     type: 'Video Consultation',
     duration: 45,
     location: 'Virtual',
@@ -44,7 +44,7 @@ const futureVisits = [
   {
     id: '4',
     patientName: 'Emily Davis',
-    date: new Date(2024, 11, 23, 11, 30), // Tomorrow, 11:30 AM
+    date: new Date(2025, 7, 23, 11, 30), // Tomorrow, 11:30 AM
     type: 'Video Consultation',
     duration: 20,
     location: 'Virtual',
@@ -54,7 +54,7 @@ const futureVisits = [
   {
     id: '5',
     patientName: 'Robert Wilson',
-    date: new Date(2024, 11, 23, 15, 0), // Tomorrow, 3:00 PM
+    date: new Date(2025, 7, 23, 15, 0), // Tomorrow, 3:00 PM
     type: 'Phone Consultation',
     duration: 30,
     location: 'Phone',
@@ -66,7 +66,7 @@ const futureVisits = [
   {
     id: '6',
     patientName: 'Lisa Anderson',
-    date: new Date(2024, 11, 24, 10, 0), // Day after tomorrow, 10:00 AM
+    date: new Date(2025, 7, 24, 10, 0), // Aug 24, 10:00 AM
     type: 'Video Consultation',
     duration: 25,
     location: 'Virtual',
@@ -76,7 +76,7 @@ const futureVisits = [
   {
     id: '7',
     patientName: 'David Miller',
-    date: new Date(2024, 11, 25, 14, 0), // Dec 25, 2:00 PM
+    date: new Date(2025, 7, 25, 14, 0), // Aug 25, 2:00 PM
     type: 'Video Consultation',
     duration: 40,
     location: 'Virtual',
@@ -86,7 +86,7 @@ const futureVisits = [
   {
     id: '8',
     patientName: 'Jennifer Taylor',
-    date: new Date(2024, 11, 26, 9, 30), // Dec 26, 9:30 AM
+    date: new Date(2025, 7, 26, 9, 30), // Aug 26, 9:30 AM
     type: 'Phone Consultation',
     duration: 20,
     location: 'Phone',
@@ -96,7 +96,7 @@ const futureVisits = [
   {
     id: '9',
     patientName: 'Christopher Lee',
-    date: new Date(2024, 11, 26, 13, 30), // Dec 26, 1:30 PM
+    date: new Date(2025, 7, 26, 13, 30), // Aug 26, 1:30 PM
     type: 'Video Consultation',
     duration: 35,
     location: 'Virtual',
@@ -108,7 +108,7 @@ const futureVisits = [
   {
     id: '10',
     patientName: 'Amanda Rodriguez',
-    date: new Date(2024, 11, 30, 11, 0), // Dec 30, 11:00 AM
+    date: new Date(2025, 7, 30, 11, 0), // Aug 30, 11:00 AM
     type: 'Video Consultation',
     duration: 30,
     location: 'Virtual',
@@ -118,7 +118,7 @@ const futureVisits = [
   {
     id: '11',
     patientName: 'James Thompson',
-    date: new Date(2025, 0, 2, 10, 30), // Jan 2, 2025, 10:30 AM
+    date: new Date(2025, 8, 2, 10, 30), // Sep 2, 2025, 10:30 AM
     type: 'Phone Consultation',
     duration: 15,
     location: 'Phone',
@@ -128,7 +128,7 @@ const futureVisits = [
   {
     id: '12',
     patientName: 'Maria Garcia',
-    date: new Date(2025, 0, 3, 14, 15), // Jan 3, 2025, 2:15 PM
+    date: new Date(2025, 8, 3, 14, 15), // Sep 3, 2025, 2:15 PM
     type: 'Video Consultation',
     duration: 50,
     location: 'Virtual',
@@ -138,7 +138,7 @@ const futureVisits = [
   {
     id: '13',
     patientName: 'Kevin White',
-    date: new Date(2025, 0, 6, 16, 0), // Jan 6, 2025, 4:00 PM
+    date: new Date(2025, 8, 6, 16, 0), // Sep 6, 2025, 4:00 PM
     type: 'Video Consultation',
     duration: 25,
     location: 'Virtual',
@@ -148,7 +148,7 @@ const futureVisits = [
   {
     id: '14',
     patientName: 'Rachel Green',
-    date: new Date(2025, 0, 8, 9, 0), // Jan 8, 2025, 9:00 AM
+    date: new Date(2025, 8, 8, 9, 0), // Sep 8, 2025, 9:00 AM
     type: 'Phone Consultation',
     duration: 20,
     location: 'Phone',
@@ -158,7 +158,7 @@ const futureVisits = [
   {
     id: '15',
     patientName: 'Thomas Clark',
-    date: new Date(2025, 0, 10, 15, 30), // Jan 10, 2025, 3:30 PM
+    date: new Date(2025, 8, 10, 15, 30), // Sep 10, 2025, 3:30 PM
     type: 'Video Consultation',
     duration: 35,
     location: 'Virtual',
