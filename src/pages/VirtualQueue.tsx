@@ -22,7 +22,15 @@ import {
   PhoneOff,
   FileText,
   User,
-  MapPin
+  MapPin,
+  Bot,
+  Ear,
+  MessageSquare,
+  CheckCircle2,
+  Activity,
+  Droplets,
+  Moon,
+  Coffee
 } from 'lucide-react';
 import {
   Select,
@@ -121,6 +129,11 @@ export default function VirtualQueue() {
   const [micMuted, setMicMuted] = useState(false);
   const [videoOff, setVideoOff] = useState(false);
   const [callNotes, setCallNotes] = useState('');
+  const [olaCompanionActive, setOlaCompanionActive] = useState(false);
+  const [olaListening, setOlaListening] = useState(false);
+  const [olaTranscript, setOlaTranscript] = useState('');
+  const [olaNotes, setOlaNotes] = useState('');
+  const [followUpPlan, setFollowUpPlan] = useState('');
 
   if (!hasPermission('virtual_queue')) {
     return (
@@ -167,6 +180,11 @@ export default function VirtualQueue() {
     setMicMuted(false);
     setVideoOff(false);
     setCallNotes('');
+    setOlaCompanionActive(false);
+    setOlaListening(false);
+    setOlaTranscript('');
+    setOlaNotes('');
+    setFollowUpPlan('');
   };
 
   const handleJoinCall = () => {
@@ -177,6 +195,23 @@ export default function VirtualQueue() {
     setCallModalOpen(false);
     setCurrentCallPatient(null);
     setCallStarted(false);
+    setOlaCompanionActive(false);
+    setOlaListening(false);
+  };
+
+  const toggleOlaCompanion = () => {
+    setOlaCompanionActive(!olaCompanionActive);
+    if (!olaCompanionActive) {
+      setOlaListening(true);
+      // Simulate AI listening and taking notes
+      setOlaTranscript('OLA is now listening to the conversation...');
+      setTimeout(() => {
+        setOlaTranscript('Patient discussing chest pain symptoms, occurred 2 hours ago...');
+        setOlaNotes('• Chief complaint: Chest pain\n• Onset: 2 hours ago\n• Severity: 7/10\n• Associated symptoms: Shortness of breath\n• Patient reports anxiety about symptoms');
+      }, 3000);
+    } else {
+      setOlaListening(false);
+    }
   };
 
   return (
@@ -348,7 +383,7 @@ export default function VirtualQueue() {
             </DialogTitle>
           </DialogHeader>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Video Section */}
             <div className="lg:col-span-2 space-y-4">
               {/* Video Windows */}
@@ -447,17 +482,27 @@ export default function VirtualQueue() {
                       {videoOff ? <VideoOff className="h-4 w-4" /> : <Video className="h-4 w-4" />}
                     </Button>
                     
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={handleEndCall}
-                    >
-                      <PhoneOff className="h-4 w-4 mr-2" />
-                      End Call
-                    </Button>
-                  </>
-                )}
-              </div>
+                     <Button
+                       variant={olaCompanionActive ? "default" : "outline"}
+                       size="sm"
+                       onClick={toggleOlaCompanion}
+                       className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0"
+                     >
+                       <Bot className="h-4 w-4 mr-2" />
+                       OLA Companion
+                     </Button>
+                     
+                     <Button
+                       variant="destructive"
+                       size="sm"
+                       onClick={handleEndCall}
+                     >
+                       <PhoneOff className="h-4 w-4 mr-2" />
+                       End Call
+                     </Button>
+                   </>
+                 )}
+               </div>
 
               {/* Notes Section */}
               <Card>
@@ -482,6 +527,92 @@ export default function VirtualQueue() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* OLA Care Companion */}
+            <div className="space-y-4">
+              {olaCompanionActive && (
+                <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-blue-700">
+                      <Bot className="h-5 w-5" />
+                      OLA Care Companion
+                      {olaListening && (
+                        <div className="flex items-center gap-1 ml-auto">
+                          <Ear className="h-4 w-4 text-green-600" />
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        </div>
+                      )}
+                    </CardTitle>
+                    <CardDescription className="text-blue-600">
+                      AI assistant listening and taking HIPAA-compliant notes
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Live Transcript */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm font-medium text-blue-700">Live Transcript</span>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border text-sm max-h-24 overflow-y-auto">
+                        {olaTranscript || 'Waiting for conversation to start...'}
+                      </div>
+                    </div>
+
+                    {/* AI Notes */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm font-medium text-blue-700">AI Notes</span>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border text-sm max-h-32 overflow-y-auto">
+                        <pre className="whitespace-pre-wrap font-sans">
+                          {olaNotes || 'OLA will generate structured notes from the conversation...'}
+                        </pre>
+                      </div>
+                    </div>
+
+                    {/* Post-Visit Follow-up Plan */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-700">Follow-up Plan</span>
+                      </div>
+                      <div className="bg-green-50 p-3 rounded-lg border border-green-200 text-sm">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Droplets className="h-3 w-3 text-blue-500" />
+                            <span className="text-xs">Hydration reminders: 8 glasses daily</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Moon className="h-3 w-3 text-purple-500" />
+                            <span className="text-xs">Sleep tracking: 7-8 hours nightly</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Activity className="h-3 w-3 text-orange-500" />
+                            <span className="text-xs">Exercise reminder: 30min walk daily</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Coffee className="h-3 w-3 text-green-500" />
+                            <span className="text-xs">Wellness check-in: 48 hours</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Compare Notes */}
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="flex-1">
+                        Compare Notes
+                      </Button>
+                      <Button size="sm" variant="default" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                        Export Notes
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Information Sidebar */}
