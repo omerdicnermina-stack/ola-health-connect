@@ -56,8 +56,14 @@ export default function Settings() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" defaultValue={user?.email} />
+              <Label htmlFor="organization">Organization</Label>
+              <Input id="organization" defaultValue={user?.profile?.organization} />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="tags">Profile Tags</Label>
+              <Input id="tags" defaultValue={user?.profile?.tags?.join(', ')} 
+                     placeholder="Veteran, Frequent Traveler, Wellness Program" />
             </div>
 
             {user?.profile?.role === 'Provider' && (
