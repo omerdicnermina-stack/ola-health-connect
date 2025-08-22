@@ -12,7 +12,7 @@ const patientVisits = [
   // Past appointments (completed)
   {
     id: 'past1',
-    patientName: 'Current User',
+    patientName: 'Keoni',
     date: new Date(2025, 7, 15, 10, 0), // Aug 15, 10:00 AM
     type: 'Video Consultation',
     modality: 'Video Call',
@@ -24,7 +24,7 @@ const patientVisits = [
   },
   {
     id: 'past2',
-    patientName: 'Emma (daughter)',
+    patientName: 'Kai (son)',
     date: new Date(2025, 7, 18, 14, 30), // Aug 18, 2:30 PM
     type: 'Video Consultation',
     modality: 'Video Call',
@@ -36,7 +36,7 @@ const patientVisits = [
   },
   {
     id: 'past3',
-    patientName: 'Current User',
+    patientName: 'Keoni',
     date: new Date(2025, 7, 20, 16, 0), // Aug 20, 4:00 PM
     type: 'Phone Consultation',
     modality: 'Phone Call',
@@ -50,7 +50,7 @@ const patientVisits = [
   // Today's appointments
   {
     id: '1',
-    patientName: 'Current User',
+    patientName: 'Keoni',
     date: new Date(2025, 7, 22, 14, 30), // Today, 2:30 PM
     type: 'Video Consultation',
     modality: 'Video Call',
@@ -63,7 +63,7 @@ const patientVisits = [
   // Future appointments
   {
     id: '2',
-    patientName: 'Emma (daughter)',
+    patientName: 'Kai (son)',
     date: new Date(2025, 7, 25, 11, 0), // Aug 25, 11:00 AM
     type: 'Video Consultation',
     modality: 'Video Call',
@@ -74,7 +74,7 @@ const patientVisits = [
   },
   {
     id: '3',
-    patientName: 'Current User',
+    patientName: 'Keoni',
     date: new Date(2025, 7, 28, 9, 30), // Aug 28, 9:30 AM
     type: 'Video Consultation',
     modality: 'Video Call',
@@ -85,7 +85,7 @@ const patientVisits = [
   },
   {
     id: '4',
-    patientName: 'Max (son)',
+    patientName: 'Kai (son)',
     date: new Date(2025, 7, 30, 15, 0), // Aug 30, 3:00 PM
     type: 'Video Consultation',
     modality: 'Video Call',

@@ -178,7 +178,7 @@ export default function InstantVisitFlow() {
   const getAIRecommendation = () => {
     if (!selectedService || selectedService.id !== 'mental-health') {
       return {
-        provider: 'Dr. Sarah Johnson, MD',
+        provider: 'Dr. Maria Martinez, MD',
         specialty: 'General Practice',
         matchScore: 85,
         reason: 'Available now for general care'
@@ -193,11 +193,11 @@ export default function InstantVisitFlow() {
     if (isVeteran || backgroundAnswer === 'veteran' || backgroundAnswer === 'active') {
       if (symptomsAnswer === 'trauma' || urgencyAnswer === 'immediate') {
         return {
-          provider: 'Dr. James Martinez, MD',
-          specialty: 'Psychiatrist - Veteran PTSD Specialist',
+          provider: 'Dr. Maria Martinez, MD',
+          specialty: 'Psychiatrist - Veteran Mental Health Specialist',
           matchScore: 98,
-          reason: 'Perfect match - Military trauma specialist with immediate availability',
-          tags: ['Veteran', 'PTSD Specialist', 'Crisis Intervention', 'Military Experience']
+          reason: 'Perfect match - Mental health specialist with veteran care experience',
+          tags: ['Veteran', 'Mental Health Specialist', 'Anxiety Management', 'Military Experience']
         };
       }
       return {
