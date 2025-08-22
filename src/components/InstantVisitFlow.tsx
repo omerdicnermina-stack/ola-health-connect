@@ -17,7 +17,8 @@ import {
   ArrowRight,
   CheckCircle,
   Clock,
-  Zap
+  Zap,
+  User
 } from 'lucide-react';
 
 interface HouseholdMember {
@@ -198,16 +199,36 @@ const mentalHealthQuestions: AssessmentQuestion[] = [
 
 export default function InstantVisitFlow({ householdMember, trigger }: InstantVisitFlowProps = {}) {
   const { user } = useAuth();
-  const [step, setStep] = useState<'service' | 'assessment' | 'matching' | 'provider' | 'video-call'>('service');
+  const [step, setStep] = useState<'patient' | 'service' | 'assessment' | 'matching' | 'provider' | 'video-call'>('patient');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<HouseholdMember | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isOpen, setIsOpen] = useState(false);
   const [isMatching, setIsMatching] = useState(false);
 
   const isVeteran = user?.profile?.tags?.includes('Veteran');
-  const currentPatient = householdMember || { name: user?.profile?.name || 'Patient', tags: user?.profile?.tags || [] };
-  const isChildPatient = householdMember && householdMember.age < 18;
+  const currentPatient = selectedPatient || householdMember || { name: user?.profile?.name || 'Patient', tags: user?.profile?.tags || [] };
+  const isChildPatient = currentPatient && 'age' in currentPatient && currentPatient.age < 18;
+  
+  // Family members including the main user
+  const familyMembers = [
+    { 
+      id: 0, 
+      name: user?.profile?.name || 'Keoni', 
+      relationship: 'Self', 
+      age: 35, 
+      tags: user?.profile?.tags || [] 
+    },
+    { id: 1, name: 'Leilani', relationship: 'Spouse', age: 28, tags: [] },
+    { id: 2, name: 'Kai', relationship: 'Son', age: 8, tags: ['Athlete', 'Jiu Jitsu'] },
+    { id: 3, name: 'Makoa', relationship: 'Son', age: 6, tags: [] }
+  ];
+
+  const handlePatientSelect = (patient: any) => {
+    setSelectedPatient(patient);
+    setStep('service');
+  };
 
   const handleServiceSelect = (service: Service) => {
     setSelectedService(service);
@@ -341,8 +362,9 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
   };
 
   const resetFlow = () => {
-    setStep('service');
+    setStep('patient');
     setSelectedService(null);
+    setSelectedPatient(null);
     setCurrentQuestion(0);
     setAnswers({});
     setIsMatching(false);
@@ -358,8 +380,8 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button size="lg" className="w-full text-base py-4">
-            <Zap className="h-5 w-5 mr-2" />
+          <Button size="sm" className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg px-6 py-3">
+            <Zap className="h-4 w-4 mr-2" />
             Start Instant Visit
           </Button>
         )}
@@ -368,11 +390,12 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            {step === 'video-call' ? 'Video Call Session' : `Instant Visit${householdMember ? ` for ${householdMember.name}` : ''}`}
+            {step === 'video-call' ? 'Video Call Session' : `Instant Visit${selectedPatient ? ` for ${selectedPatient.name}` : ''}`}
             {isVeteran && <Shield className="h-5 w-5 text-amber-600" />}
           </DialogTitle>
           <DialogDescription>
-            {step === 'service' && `Select the type of care ${householdMember ? householdMember.name : 'you'} need${householdMember ? 's' : ''}`}
+            {step === 'patient' && 'Who is this visit for?'}
+            {step === 'service' && `Select the type of care ${selectedPatient ? selectedPatient.name : 'you'} need${selectedPatient ? 's' : ''}`}
             {step === 'assessment' && 'Answer a few questions for personalized care'}
             {step === 'matching' && 'Finding the best provider for you'}
             {step === 'provider' && 'Your matched healthcare provider'}
@@ -381,10 +404,46 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
         </DialogHeader>
 
         {/* Service Selection */}
+        {step === 'patient' && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Who is this visit for?</h3>
+            
+            <div className="grid gap-3">
+              {familyMembers.map((member) => (
+                <Button
+                  key={member.id}
+                  variant="outline"
+                  className="justify-start text-left h-auto p-4 hover:bg-blue-50"
+                  onClick={() => handlePatientSelect(member)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="font-medium">{member.name}</div>
+                      <div className="text-sm text-muted-foreground">{member.relationship}, {member.age} years</div>
+                      {member.tags.length > 0 && (
+                        <div className="flex gap-1 mt-1">
+                          {member.tags.map((tag, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {step === 'service' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">
-              What type of care {householdMember ? `does ${householdMember.name}` : 'do you'} need today?
+              What type of care {selectedPatient ? `does ${selectedPatient.name}` : 'do you'} need today?
             </h3>
             <div className="grid gap-4">
               {services.map((service) => (

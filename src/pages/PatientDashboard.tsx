@@ -83,8 +83,8 @@ export default function PatientDashboard() {
     },
     {
       id: 3,
-      name: 'Emma Nakamura',
-      relationship: 'Daughter',
+      name: 'Makoa Nakamura',
+      relationship: 'Son',
       age: 6,
       lastVisit: '2024-11-15',
       tags: []
@@ -197,7 +197,12 @@ export default function PatientDashboard() {
               </div>
             )}
             
-            <InstantVisitFlow />
+            <div className="flex gap-3 justify-center">
+              <InstantVisitFlow />
+              <Button size="sm" variant="outline" className="px-6 py-3">
+                Schedule a Visit
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -332,14 +337,7 @@ export default function PatientDashboard() {
                   Last visit: {member.lastVisit}
                 </div>
                 <div className="flex gap-2">
-                  <InstantVisitFlow 
-                    householdMember={member}
-                    trigger={
-                      <Button size="sm" variant="outline" className="flex-1">
-                        Start Visit
-                      </Button>
-                    }
-                  />
+                  <Button size="sm" variant="outline" className="flex-1">Schedule</Button>
                   <Button size="sm" variant="outline" className="flex-1">View Records</Button>
                 </div>
               </div>

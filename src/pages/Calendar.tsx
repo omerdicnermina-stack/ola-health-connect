@@ -85,7 +85,7 @@ const patientVisits = [
   },
   {
     id: '4',
-    patientName: 'Kai (son)',
+    patientName: 'Makoa (son)',
     date: new Date(2025, 7, 30, 15, 0), // Aug 30, 3:00 PM
     type: 'Video Consultation',
     modality: 'Video Call',
