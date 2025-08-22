@@ -6,8 +6,54 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { format, isToday, isFuture } from 'date-fns';
 
-// Mock future visits data with current and future dates for demo
-const futureVisits = [
+// Mock visits data with past, current and future dates for demo
+const allVisits = [
+  // Past appointments (completed)
+  {
+    id: 'past1',
+    patientName: 'Mary Johnson',
+    date: new Date(2025, 7, 15, 10, 0), // Aug 15, 10:00 AM
+    type: 'Video Consultation',
+    duration: 30,
+    location: 'Virtual',
+    status: 'completed',
+    reason: 'Annual check-up',
+    notes: 'Patient reports feeling well. Blood pressure normal. Recommended continued exercise routine.'
+  },
+  {
+    id: 'past2',
+    patientName: 'Robert Chen',
+    date: new Date(2025, 7, 18, 14, 30), // Aug 18, 2:30 PM
+    type: 'Phone Consultation',
+    duration: 15,
+    location: 'Phone',
+    status: 'completed',
+    reason: 'Medication review',
+    notes: 'Adjusted dosage for blood pressure medication. Patient tolerating well.'
+  },
+  {
+    id: 'past3',
+    patientName: 'Linda Williams',
+    date: new Date(2025, 7, 19, 9, 15), // Aug 19, 9:15 AM
+    type: 'Video Consultation',
+    duration: 45,
+    location: 'Virtual',
+    status: 'completed',
+    reason: 'Follow-up for diabetes',
+    notes: 'HbA1c levels improved. Continue current treatment plan.'
+  },
+  {
+    id: 'past4',
+    patientName: 'James Anderson',
+    date: new Date(2025, 7, 20, 16, 0), // Aug 20, 4:00 PM
+    type: 'Video Consultation',
+    duration: 25,
+    location: 'Virtual',
+    status: 'completed',
+    reason: 'Skin condition consultation',
+    notes: 'Prescribed topical treatment. Follow-up in 2 weeks.'
+  },
+  
   // Today's appointments
   {
     id: '1',
@@ -171,18 +217,19 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   
   const getVisitsForDate = (date: Date) => {
-    return futureVisits.filter(visit => 
+    return allVisits.filter(visit => 
       format(visit.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
     );
   };
 
   const selectedDateVisits = selectedDate ? getVisitsForDate(selectedDate) : [];
-  const upcomingVisits = futureVisits.filter(visit => isFuture(visit.date)).slice(0, 5);
+  const upcomingVisits = allVisits.filter(visit => isFuture(visit.date)).slice(0, 5);
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'confirmed': return 'bg-green-100 text-green-800 border-green-200';
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'completed': return 'bg-blue-100 text-blue-800 border-blue-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
@@ -220,7 +267,7 @@ const CalendarPage = () => {
               onSelect={setSelectedDate}
               className="rounded-md border"
               modifiers={{
-                hasVisits: futureVisits.map(visit => visit.date)
+                hasVisits: allVisits.map(visit => visit.date)
               }}
               modifiersStyles={{
                 hasVisits: { backgroundColor: 'hsl(var(--primary) / 0.1)', fontWeight: 'bold' }
@@ -250,7 +297,7 @@ const CalendarPage = () => {
             {selectedDateVisits.length > 0 ? (
               <div className="space-y-4">
                 {selectedDateVisits.map((visit) => (
-                  <div key={visit.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors">
+                  <div key={visit.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
                     <div className="flex items-center gap-3">
                       {getTypeIcon(visit.type)}
                       <div>
@@ -265,15 +312,26 @@ const CalendarPage = () => {
                           <MapPin className="h-3 w-3" />
                           {visit.location}
                         </div>
+                        {visit.notes && (
+                          <div className="text-xs text-muted-foreground mt-1 italic">
+                            "{visit.notes}"
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge className={getStatusColor(visit.status)}>
                         {visit.status}
                       </Badge>
-                      <Button size="sm" variant="outline">
-                        {visit.type.includes('Video') ? 'Join Call' : 'Start Call'}
-                      </Button>
+                      {visit.status === 'completed' ? (
+                        <Button size="sm" variant="outline">
+                          View Details
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="outline">
+                          {visit.type.includes('Video') ? 'Join Call' : 'Start Call'}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
