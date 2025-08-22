@@ -211,7 +211,7 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
   const currentPatient = selectedPatient || householdMember || { name: user?.profile?.name || 'Patient', tags: user?.profile?.tags || [] };
   const isChildPatient = currentPatient && 'age' in currentPatient && currentPatient.age < 18;
   
-  // Family members including the main user
+  // Family members including the main user (excluding spouse for selection)
   const familyMembers = [
     { 
       id: 0, 
@@ -220,7 +220,6 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
       age: 35, 
       tags: user?.profile?.tags || [] 
     },
-    { id: 1, name: 'Leilani', relationship: 'Spouse', age: 28, tags: [] },
     { id: 2, name: 'Kai', relationship: 'Son', age: 8, tags: ['Athlete', 'Jiu Jitsu'] },
     { id: 3, name: 'Makoa', relationship: 'Son', age: 6, tags: [] }
   ];

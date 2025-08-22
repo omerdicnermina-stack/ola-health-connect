@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import AIAssessment from '@/components/AIAssessment';
 import InstantVisitFlow from '@/components/InstantVisitFlow';
 import { 
   Calendar, 
@@ -345,6 +346,9 @@ export default function PatientDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* AI Health Assessment */}
+      <AIAssessment />
     </div>
   );
 }
