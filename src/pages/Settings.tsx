@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,10 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Settings as SettingsIcon, User, Bell, Shield, Globe } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Settings as SettingsIcon, User, Bell, Shield, Globe, X, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Settings() {
   const { user } = useAuth();
+  const [tags, setTags] = useState<string[]>(user?.profile?.tags || []);
+  const [newTag, setNewTag] = useState('');
 
   return (
     <div className="animate-fade-in">
@@ -65,8 +69,58 @@ export default function Settings() {
             
             <div className="space-y-2">
               <Label htmlFor="tags">Profile Tags</Label>
-              <Input id="tags" defaultValue={user?.profile?.tags?.join(', ')} 
-                     placeholder="Veteran, Frequent Traveler, Wellness Program" />
+              <div className="space-y-3">
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, index) => (
+                      <Badge 
+                        key={index} 
+                        variant="secondary" 
+                        className="flex items-center gap-1 cursor-pointer hover:bg-red-50 hover:text-red-800 transition-colors"
+                        onClick={() => {
+                          const newTags = tags.filter((_, i) => i !== index);
+                          setTags(newTags);
+                        }}
+                      >
+                        {tag}
+                        <X className="h-3 w-3" />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <Input 
+                    id="newTag" 
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    placeholder="Add a new tag (e.g., Veteran, Wellness Program)" 
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && newTag.trim()) {
+                        if (!tags.includes(newTag.trim())) {
+                          setTags([...tags, newTag.trim()]);
+                          setNewTag('');
+                        }
+                      }
+                    }}
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      if (newTag.trim() && !tags.includes(newTag.trim())) {
+                        setTags([...tags, newTag.trim()]);
+                        setNewTag('');
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Click on existing tags to remove them, or add new ones above
+                </p>
+              </div>
             </div>
 
             {user?.profile?.role === 'Provider' && (
@@ -89,7 +143,14 @@ export default function Settings() {
               </>
             )}
 
-            <Button>Save Changes</Button>
+            <Button onClick={() => {
+              // Here we would normally update the user profile via API
+              // For now, we'll update the mock user data directly
+              if (user?.profile) {
+                user.profile.tags = tags;
+              }
+              toast.success('Profile updated successfully!');
+            }}>Save Changes</Button>
           </CardContent>
         </Card>
 

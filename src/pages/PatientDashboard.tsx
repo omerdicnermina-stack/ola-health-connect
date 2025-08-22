@@ -131,21 +131,31 @@ export default function PatientDashboard() {
               <div className="flex items-center gap-2 mt-3">
                 <span className="text-sm font-medium text-blue-700">Your Profile:</span>
                 <div className="flex gap-2 flex-wrap">
-                  {user.profile.tags.map((tag, index) => (
-                    <Badge 
-                      key={index} 
-                      className={`${
-                        tag === 'Veteran' 
-                          ? 'bg-amber-100 text-amber-800 border border-amber-300' 
-                          : 'bg-blue-100 text-blue-800'
-                      }`}
-                    >
-                      {tag === 'Veteran' && '🎖️'} 
-                      {tag === 'Frequent Traveler' && '✈️'} 
-                      {tag === 'Wellness Program' && '🌿'} 
-                      {tag}
-                    </Badge>
-                  ))}
+                  {user.profile.tags.map((tag, index) => {
+                    const getTagIcon = (tagName: string) => {
+                      const tagLower = tagName.toLowerCase();
+                      if (tagLower.includes('veteran')) return '🎖️';
+                      if (tagLower.includes('travel')) return '✈️';
+                      if (tagLower.includes('wellness') || tagLower.includes('health')) return '🌿';
+                      if (tagLower.includes('athlete') || tagLower.includes('sport')) return '🏃‍♂️';
+                      if (tagLower.includes('vip')) return '⭐';
+                      if (tagLower.includes('senior')) return '👴';
+                      return '🏷️'; // Default icon for custom tags
+                    };
+                    
+                    return (
+                      <Badge 
+                        key={index} 
+                        className={`${
+                          tag.toLowerCase().includes('veteran') 
+                            ? 'bg-amber-100 text-amber-800 border border-amber-300' 
+                            : 'bg-blue-100 text-blue-800'
+                        }`}
+                      >
+                        {getTagIcon(tag)} {tag}
+                      </Badge>
+                    );
+                  })}
                 </div>
               </div>
             )}
