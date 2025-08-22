@@ -166,53 +166,19 @@ export default function PatientDashboard() {
         </div>
       </div>
 
-      {/* Instant Visit - Primary Action */}
-      <div className="max-w-2xl mx-auto mb-6">
-        <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-teal-50 hover:shadow-lg transition-all duration-300">
-          <CardContent className="p-6 text-center">
-            <div className="relative mb-4">
-              <div className="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg">
-                <Clock className="h-8 w-8 text-blue-600" />
-              </div>
-              {user?.profile?.tags?.includes('Veteran') && (
-                <div className="absolute -top-1 -right-1 w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center">
-                  <Shield className="h-4 w-4 text-amber-600" />
-                </div>
-              )}
-            </div>
-            
-            <h2 className="text-xl font-bold text-blue-900 mb-2">Start Instant Visit</h2>
-            <p className="text-blue-700 mb-4">
-              Get immediate care from our healthcare professionals
-            </p>
-            
-            {user?.profile?.tags?.includes('Veteran') && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Shield className="h-4 w-4 text-amber-600" />
-                  <span className="font-semibold text-amber-800 text-sm">Veteran Priority Access</span>
-                </div>
-                <p className="text-xs text-amber-700">
-                  You'll be matched with providers who understand military experience
-                </p>
-              </div>
-            )}
-            
-            <div className="flex gap-3 justify-center">
-              <InstantVisitFlow />
-              <Button size="sm" variant="outline" className="px-6 py-3">
-                Schedule a Visit
-              </Button>
-              <AIAssessment 
-                trigger={
-                  <Button size="sm" variant="outline" className="px-6 py-3">
-                    AI Health Assessment
-                  </Button>
-                }
-              />
-            </div>
-          </CardContent>
-        </Card>
+      {/* Action Buttons */}
+      <div className="flex gap-4 justify-center mb-6">
+        <InstantVisitFlow />
+        <Button size="lg" variant="outline" className="px-8 py-4">
+          Schedule a Visit
+        </Button>
+        <AIAssessment 
+          trigger={
+            <Button size="lg" variant="outline" className="px-8 py-4">
+              AI Health Assessment
+            </Button>
+          }
+        />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
