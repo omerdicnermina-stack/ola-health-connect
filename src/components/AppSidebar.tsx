@@ -41,6 +41,7 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
   { title: 'Virtual Queue', url: '/virtual-queue', icon: Clock, permission: 'virtual_queue' },
+  { title: 'Calendar', url: '/calendar', icon: Calendar, permission: 'view_calendar' },
   { title: 'Messages', url: '/messages', icon: MessageSquare },
   { title: 'Prescriptions', url: '/prescriptions', icon: Pill, permission: 'view_prescriptions' },
   { title: 'Patients', url: '/patients', icon: Users, permission: 'view_patients' },
@@ -49,7 +50,7 @@ const navigationItems: NavigationItem[] = [
   { title: 'Statistics', url: '/statistics', icon: BarChart3, permission: 'view_statistics' },
   { title: 'Services', url: '/services', icon: Stethoscope, permission: 'manage_services' },
   { title: 'Plans', url: '/plans', icon: CreditCard, permission: 'manage_plans' },
-  { title: 'Visits', url: '/visits', icon: Calendar },
+  { title: 'Visits', url: '/visits', icon: FileBarChart },
   { title: 'Utilization Report', url: '/utilization-report', icon: FileBarChart, permission: 'utilization_report' },
   { title: 'Settings', url: '/settings', icon: Settings },
   { title: 'Help', url: '/help', icon: HelpCircle }

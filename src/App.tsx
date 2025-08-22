@@ -9,6 +9,7 @@ import { Layout } from "@/components/Layout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import VirtualQueue from "./pages/VirtualQueue";
+import Calendar from "./pages/Calendar";
 import Messages from "./pages/Messages";
 import Prescriptions from "./pages/Prescriptions";
 import Patients from "./pages/Patients";
@@ -50,6 +51,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/virtual-queue" element={<VirtualQueue />} />
+        <Route path="/calendar" element={<Calendar />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/prescriptions" element={<Prescriptions />} />
         <Route path="/patients" element={<Patients />} />
