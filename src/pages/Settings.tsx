@@ -12,7 +12,7 @@ import { Settings as SettingsIcon, User, Bell, Shield, Globe, X, Plus } from 'lu
 import { toast } from 'sonner';
 
 export default function Settings() {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [tags, setTags] = useState<string[]>(user?.profile?.tags || []);
   const [newTag, setNewTag] = useState('');
 
@@ -144,11 +144,8 @@ export default function Settings() {
             )}
 
             <Button onClick={() => {
-              // Here we would normally update the user profile via API
-              // For now, we'll update the mock user data directly
-              if (user?.profile) {
-                user.profile.tags = tags;
-              }
+              // Update the user profile with new tags
+              updateProfile({ tags });
               toast.success('Profile updated successfully!');
             }}>Save Changes</Button>
           </CardContent>

@@ -299,12 +299,34 @@ export const useAuth = () => {
     return false
   }
 
+  const updateProfile = (updates: Partial<UserProfile>) => {
+    if (!user?.profile) return;
+    
+    const updatedUser = {
+      ...user,
+      profile: {
+        ...user.profile,
+        ...updates,
+        updated_at: new Date().toISOString()
+      }
+    };
+    
+    // Update localStorage
+    localStorage.setItem('user_session', JSON.stringify(updatedUser));
+    
+    // Update state to trigger re-render
+    setUser(updatedUser);
+    
+    console.log('Profile updated:', updates);
+  }
+
   return {
     user,
     loading,
     signIn,
     signUp,
     signOut,
+    updateProfile,
     hasPermission,
     canDeleteUser,
     isAuthenticated: !!user
