@@ -203,6 +203,13 @@ export default function PatientDashboard() {
               <Button size="sm" variant="outline" className="px-6 py-3">
                 Schedule a Visit
               </Button>
+              <AIAssessment 
+                trigger={
+                  <Button size="sm" variant="outline" className="px-6 py-3">
+                    AI Health Assessment
+                  </Button>
+                }
+              />
             </div>
           </CardContent>
         </Card>
@@ -346,9 +353,6 @@ export default function PatientDashboard() {
           </div>
         </CardContent>
       </Card>
-
-      {/* AI Health Assessment */}
-      <AIAssessment />
     </div>
   );
 }

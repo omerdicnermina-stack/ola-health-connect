@@ -20,6 +20,7 @@ const patientVisits = [
     location: 'Virtual Visit',
     status: 'completed',
     reason: 'Mental health check-in',
+    provider: 'Dr. Maria Martinez',
     notes: 'Patient reports improved mood and better sleep patterns. Continue current therapy approach.'
   },
   {
@@ -32,6 +33,7 @@ const patientVisits = [
     location: 'Virtual Visit',
     status: 'completed',
     reason: 'Routine pediatric checkup',
+    provider: 'Dr. Marcus Silva',
     notes: 'Child is developing normally. Updated vaccination schedule discussed with parent.'
   },
   {
@@ -44,6 +46,7 @@ const patientVisits = [
     location: 'Phone Call',
     status: 'completed',
     reason: 'Medication review',
+    provider: 'Dr. Maria Martinez',
     notes: 'Adjusted anxiety medication dosage. Patient tolerating well with minimal side effects.'
   },
   
@@ -305,10 +308,10 @@ const CalendarPage = () => {
               {/* Patient & Visit Info */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Patient</label>
+                  <label className="text-sm font-medium text-muted-foreground">Provider</label>
                   <div className="text-lg font-semibold flex items-center gap-2">
                     <User className="h-4 w-4" />
-                    {selectedVisit.patientName}
+                    {selectedVisit.provider}
                   </div>
                 </div>
                 <div>

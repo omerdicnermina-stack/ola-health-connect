@@ -53,7 +53,11 @@ const assessmentQuestions: AssessmentQuestion[] = [
   }
 ];
 
-export default function AIAssessment() {
+interface AIAssessmentProps {
+  trigger?: React.ReactNode;
+}
+
+export default function AIAssessment({ trigger }: AIAssessmentProps = {}) {
   const { user } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -127,19 +131,21 @@ export default function AIAssessment() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Card className="hover:shadow-md transition-shadow cursor-pointer border-2 border-dashed border-blue-200 bg-blue-50/50">
-          <CardContent className="p-6 text-center">
-            <Brain className="h-12 w-12 mx-auto mb-4 text-blue-600" />
-            <h3 className="font-semibold text-lg mb-2">AI Health Assessment</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Get personalized care recommendations based on your needs
-            </p>
-            <Button className="w-full">
-              <Brain className="h-4 w-4 mr-2" />
-              Start Assessment
-            </Button>
-          </CardContent>
-        </Card>
+        {trigger || (
+          <Card className="hover:shadow-md transition-shadow cursor-pointer border-2 border-dashed border-blue-200 bg-blue-50/50">
+            <CardContent className="p-6 text-center">
+              <Brain className="h-12 w-12 mx-auto mb-4 text-blue-600" />
+              <h3 className="font-semibold text-lg mb-2">AI Health Assessment</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Get personalized care recommendations based on your needs
+              </p>
+              <Button className="w-full">
+                <Brain className="h-4 w-4 mr-2" />
+                Start Assessment
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>

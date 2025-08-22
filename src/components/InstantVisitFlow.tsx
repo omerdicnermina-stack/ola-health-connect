@@ -313,8 +313,7 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
       const symptomsAnswer = answers['symptoms'];
       const backgroundAnswer = answers['background'];
       
-      if (isVeteran || backgroundAnswer === 'veteran' || backgroundAnswer === 'active') {
-        if (symptomsAnswer === 'trauma' || urgencyAnswer === 'immediate') {
+      if (selectedPatient && selectedPatient.name === 'Keoni' && selectedService?.id === 'mental-health') {
           return {
             provider: 'Dr. Maria Martinez, MD',
             specialty: 'Psychiatrist - Veteran Mental Health Specialist',
@@ -323,13 +322,15 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
             tags: ['Veteran', 'Mental Health Specialist', 'Anxiety Management', 'Military Experience']
           };
         }
-        return {
-          provider: 'Dr. Sarah Kim, LCSW',
-          specialty: 'Licensed Clinical Social Worker - Veteran Care',
-          matchScore: 95,
-          reason: 'Excellent match - Veteran therapist specializing in military mental health',
-          tags: ['Veteran', 'CBT', 'Military Families', 'Anxiety/Depression']
-        };
+
+        if (isVeteran || backgroundAnswer === 'veteran' || backgroundAnswer === 'active') {
+          return {
+            provider: 'Dr. Sarah Kim, LCSW',
+            specialty: 'Licensed Clinical Social Worker - Veteran Care',
+            matchScore: 95,
+            reason: 'Excellent match - Veteran therapist specializing in military mental health',
+            tags: ['Veteran', 'CBT', 'Military Families', 'Anxiety/Depression']
+          };
       }
       
       if (symptomsAnswer === 'anxiety' || symptomsAnswer === 'depression') {
