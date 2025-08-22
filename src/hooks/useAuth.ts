@@ -15,6 +15,7 @@ export interface UserProfile {
   practice_states?: string[]
   specialty?: string
   services?: string[]
+  tags?: string[]
   created_at: string
   updated_at: string
 }
@@ -66,6 +67,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     practice_states: ['CA', 'NY'],
     specialty: 'Family Medicine',
     services: ['Consultation', 'Prescription'],
+    tags: ['Telemedicine', 'Primary Care'],
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
     password: '123456Aa'
@@ -98,6 +100,7 @@ const mockUsers: (UserProfile & { password: string })[] = [
     role: 'Patient' as UserRole,
     organization: 'Hilton Hotel',
     is_active: true,
+    tags: ['Veteran', 'Frequent Traveler', 'Wellness Program'],
     created_at: '2024-01-01',
     updated_at: '2024-01-01',
     password: '123456Aa'

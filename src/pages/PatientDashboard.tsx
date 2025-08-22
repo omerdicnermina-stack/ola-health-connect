@@ -3,6 +3,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import AIAssessment from '@/components/AIAssessment';
+import InstantMentalHealthVisit from '@/components/InstantMentalHealthVisit';
 import { 
   Calendar, 
   Clock, 
@@ -14,7 +16,8 @@ import {
   Phone,
   Video,
   Plus,
-  Eye
+  Eye,
+  Shield
 } from 'lucide-react';
 
 export default function PatientDashboard() {
@@ -101,7 +104,7 @@ export default function PatientDashboard() {
       <div className="relative p-6 rounded-lg bg-gradient-to-r from-blue-50 to-teal-50 border border-blue-100">
         <div className="flex items-center gap-4">
           <div className="text-6xl">🌺</div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-3xl font-bold text-blue-900">
               Ola, {user?.profile?.name}!
             </h1>
@@ -112,15 +115,39 @@ export default function PatientDashboard() {
               <MapPin className="h-4 w-4" />
               <span>Hilton Hawaiian Village - Waikiki Beach, Honolulu, HI</span>
             </div>
+            {user?.profile?.tags && user.profile.tags.length > 0 && (
+              <div className="flex items-center gap-2 mt-3">
+                <span className="text-sm font-medium text-blue-700">Your Profile:</span>
+                <div className="flex gap-2 flex-wrap">
+                  {user.profile.tags.map((tag, index) => (
+                    <Badge 
+                      key={index} 
+                      className={`${
+                        tag === 'Veteran' 
+                          ? 'bg-amber-100 text-amber-800 border border-amber-300' 
+                          : 'bg-blue-100 text-blue-800'
+                      }`}
+                    >
+                      {tag === 'Veteran' && '🎖️'} 
+                      {tag === 'Frequent Traveler' && '✈️'} 
+                      {tag === 'Wellness Program' && '🌿'} 
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+        <InstantMentalHealthVisit />
+        
         <Card className="hover:shadow-md transition-shadow cursor-pointer">
           <CardContent className="p-4 text-center">
-            <Clock className="h-8 w-8 mx-auto mb-2 text-red-500" />
+            <Clock className="h-8 w-8 mx-auto mb-2 text-orange-500" />
             <h3 className="font-semibold">Instant Visit</h3>
             <p className="text-sm text-muted-foreground mb-3">Get care now</p>
             <Button size="sm" className="w-full">Start Now</Button>
@@ -153,6 +180,8 @@ export default function PatientDashboard() {
             <Button size="sm" variant="outline" className="w-full">Manage</Button>
           </CardContent>
         </Card>
+
+        <AIAssessment />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

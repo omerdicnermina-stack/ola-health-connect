@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import HouseholdMemberDetails from '@/components/HouseholdMemberDetails';
 import { 
   Users, 
   Plus, 
@@ -16,7 +17,8 @@ import {
   Video,
   Phone,
   UserPlus,
-  Baby
+  Baby,
+  Shield
 } from 'lucide-react';
 
 export default function Household() {
@@ -29,11 +31,17 @@ export default function Household() {
       relationship: 'Spouse',
       age: 28,
       dateOfBirth: '1996-03-15',
+      email: 'leilani.nakamura@gmail.com',
+      phone: '(808) 555-0123',
       lastVisit: '2024-11-20',
       nextAppointment: null,
       isMinor: false,
       emergencyContact: true,
-      avatar: '👩🏽'
+      avatar: '👩🏽',
+      medicalConditions: ['Seasonal Allergies'],
+      insurance: 'Hilton Employee Health Plan',
+      bloodType: 'A+',
+      tags: ['Wellness Program', 'Preventive Care']
     },
     {
       id: 2,
@@ -41,11 +49,17 @@ export default function Household() {
       relationship: 'Child',
       age: 8,
       dateOfBirth: '2016-07-22',
+      email: null,
+      phone: null,
       lastVisit: '2024-12-01',
       nextAppointment: '2024-12-28',
       isMinor: true,
       emergencyContact: false,
-      avatar: '👦🏽'
+      avatar: '👦🏽',
+      medicalConditions: ['Asthma'],
+      insurance: 'Hilton Family Health Plan',
+      bloodType: 'O+',
+      tags: ['Pediatric Care', 'Asthma Management']
     },
     {
       id: 3,
@@ -53,11 +67,17 @@ export default function Household() {
       relationship: 'Child',
       age: 5,
       dateOfBirth: '2019-09-10',
+      email: null,
+      phone: null,
       lastVisit: '2024-11-15',
       nextAppointment: null,
       isMinor: true,
       emergencyContact: false,
-      avatar: '👶🏽'
+      avatar: '👶🏽',
+      medicalConditions: ['None'],
+      insurance: 'Hilton Family Health Plan',
+      bloodType: 'A+',
+      tags: ['Pediatric Care', 'Well Child Visits']
     }
   ];
 
@@ -219,8 +239,18 @@ export default function Household() {
                         <Badge variant="secondary" className="text-xs">Minor</Badge>
                       )}
                       {member.emergencyContact && (
-                        <Badge variant="destructive" className="text-xs">Emergency Contact</Badge>
+                        <Badge className="text-xs bg-red-100 text-red-800">
+                          <Shield className="h-3 w-3 mr-1" />
+                          Emergency Contact
+                        </Badge>
                       )}
+                    </div>
+                    <div className="flex gap-1 mt-2 flex-wrap">
+                      {member.tags.map((tag, tagIndex) => (
+                        <Badge key={tagIndex} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -257,9 +287,7 @@ export default function Household() {
                     <Button size="sm" variant="outline" className="flex-1">
                       View Records
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1">
-                      Prescriptions
-                    </Button>
+                    <HouseholdMemberDetails member={member} />
                   </div>
                 </div>
               </div>
