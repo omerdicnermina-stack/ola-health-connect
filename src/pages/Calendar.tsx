@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, User, MapPin, Video } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, User, MapPin, Video, FileText, X } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { format, isToday, isFuture } from 'date-fns';
 
 // Mock visits data with past, current and future dates for demo
@@ -215,6 +216,8 @@ const allVisits = [
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedVisit, setSelectedVisit] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const getVisitsForDate = (date: Date) => {
     return allVisits.filter(visit => 
@@ -237,6 +240,13 @@ const CalendarPage = () => {
   const getTypeIcon = (type: string) => {
     if (type.includes('Video')) return <Video className="h-4 w-4" />;
     return <Clock className="h-4 w-4" />;
+  };
+
+  const handleVisitClick = (visit: any) => {
+    if (visit.status === 'completed') {
+      setSelectedVisit(visit);
+      setIsDialogOpen(true);
+    }
   };
 
   return (
@@ -297,7 +307,11 @@ const CalendarPage = () => {
             {selectedDateVisits.length > 0 ? (
               <div className="space-y-4">
                 {selectedDateVisits.map((visit) => (
-                  <div key={visit.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
+                  <div 
+                    key={visit.id} 
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
+                    onClick={() => handleVisitClick(visit)}
+                  >
                     <div className="flex items-center gap-3">
                       {getTypeIcon(visit.type)}
                       <div>
@@ -314,7 +328,7 @@ const CalendarPage = () => {
                         </div>
                         {visit.notes && (
                           <div className="text-xs text-muted-foreground mt-1 italic">
-                            "{visit.notes}"
+                            "{visit.notes.substring(0, 80)}{visit.notes.length > 80 ? '...' : ''}"
                           </div>
                         )}
                       </div>
@@ -324,7 +338,10 @@ const CalendarPage = () => {
                         {visit.status}
                       </Badge>
                       {visit.status === 'completed' ? (
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={(e) => {
+                          e.stopPropagation();
+                          handleVisitClick(visit);
+                        }}>
                           View Details
                         </Button>
                       ) : (
@@ -380,6 +397,88 @@ const CalendarPage = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Visit Details Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Visit Details
+            </DialogTitle>
+            <DialogDescription>
+              Complete consultation summary and notes
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedVisit && (
+            <div className="space-y-6">
+              {/* Patient & Visit Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Patient</label>
+                  <div className="text-lg font-semibold flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    {selectedVisit.patientName}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Date & Time</label>
+                  <div className="text-lg font-semibold flex items-center gap-2">
+                    <CalendarIcon className="h-4 w-4" />
+                    {format(selectedVisit.date, 'EEEE, MMMM d, yyyy')}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {format(selectedVisit.date, 'h:mm a')} ({selectedVisit.duration} minutes)
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Consultation Type</label>
+                  <div className="flex items-center gap-2 mt-1">
+                    {getTypeIcon(selectedVisit.type)}
+                    <span>{selectedVisit.type}</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Location</label>
+                  <div className="flex items-center gap-2 mt-1">
+                    <MapPin className="h-4 w-4" />
+                    <span>{selectedVisit.location}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Reason for Visit</label>
+                <div className="mt-1 p-3 bg-muted rounded-lg">
+                  {selectedVisit.reason}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Clinical Notes</label>
+                <div className="mt-1 p-4 bg-muted rounded-lg">
+                  <p className="text-sm leading-relaxed">
+                    {selectedVisit.notes || 'No clinical notes available for this visit.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t">
+                <Badge className={getStatusColor(selectedVisit.status)} variant="outline">
+                  {selectedVisit.status.toUpperCase()}
+                </Badge>
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
