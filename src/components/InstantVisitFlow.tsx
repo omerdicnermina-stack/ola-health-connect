@@ -20,6 +20,15 @@ import {
   Zap
 } from 'lucide-react';
 
+interface HouseholdMember {
+  id: number;
+  name: string;
+  relationship: string;
+  age: number;
+  lastVisit: string;
+  tags: string[];
+}
+
 interface Service {
   id: string;
   name: string;
@@ -28,6 +37,11 @@ interface Service {
   color: string;
   urgency: 'low' | 'medium' | 'high';
   estimatedTime: string;
+}
+
+interface InstantVisitFlowProps {
+  householdMember?: HouseholdMember;
+  trigger?: React.ReactNode;
 }
 
 const services: Service[] = [
@@ -68,6 +82,15 @@ const services: Service[] = [
     estimatedTime: '25-45 min'
   },
   {
+    id: 'dermatology',
+    name: 'Dermatology',
+    description: 'Skin conditions, sports injuries, and dermatological care',
+    icon: Heart,
+    color: 'text-orange-600 bg-orange-100',
+    urgency: 'medium',
+    estimatedTime: '20-35 min'
+  },
+  {
     id: 'wellness',
     name: 'Wellness & Prevention',
     description: 'Preventive care and wellness consultations',
@@ -75,6 +98,45 @@ const services: Service[] = [
     color: 'text-pink-600 bg-pink-100',
     urgency: 'low',
     estimatedTime: '30-45 min'
+  }
+];
+
+const dermatologyQuestions: AssessmentQuestion[] = [
+  {
+    id: 'urgency',
+    question: 'How urgent is this skin condition?',
+    options: [
+      { value: 'immediate', label: 'Severe reaction or injury', weight: 10 },
+      { value: 'today', label: 'Painful or concerning', weight: 7 },
+      { value: 'soon', label: 'Bothersome but manageable', weight: 4 },
+      { value: 'routine', label: 'Routine check or prevention', weight: 2 }
+    ],
+    category: 'urgency'
+  },
+  {
+    id: 'symptoms',
+    question: 'What type of skin issue are you experiencing?',
+    options: [
+      { value: 'sports-injury', label: 'Sports-related skin injury', weight: 8 },
+      { value: 'rash', label: 'Rash or irritation', weight: 5 },
+      { value: 'acne', label: 'Acne or breakouts', weight: 3 },
+      { value: 'mole', label: 'Mole or growth concern', weight: 7 },
+      { value: 'athlete-foot', label: 'Athlete\'s foot or fungal', weight: 6 },
+      { value: 'other', label: 'Other skin concern', weight: 4 }
+    ],
+    category: 'symptoms'
+  },
+  {
+    id: 'background',
+    question: 'Do you participate in contact sports?',
+    options: [
+      { value: 'jiu-jitsu', label: 'Brazilian Jiu Jitsu', weight: 10 },
+      { value: 'wrestling', label: 'Wrestling', weight: 8 },
+      { value: 'martial-arts', label: 'Other martial arts', weight: 7 },
+      { value: 'sports', label: 'Other contact sports', weight: 5 },
+      { value: 'none', label: 'No contact sports', weight: 0 }
+    ],
+    category: 'background'
   }
 ];
 
@@ -134,7 +196,7 @@ const mentalHealthQuestions: AssessmentQuestion[] = [
   }
 ];
 
-export default function InstantVisitFlow() {
+export default function InstantVisitFlow({ householdMember, trigger }: InstantVisitFlowProps = {}) {
   const { user } = useAuth();
   const [step, setStep] = useState<'service' | 'assessment' | 'matching' | 'provider' | 'video-call'>('service');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -144,10 +206,14 @@ export default function InstantVisitFlow() {
   const [isMatching, setIsMatching] = useState(false);
 
   const isVeteran = user?.profile?.tags?.includes('Veteran');
+  const currentPatient = householdMember || { name: user?.profile?.name || 'Patient', tags: user?.profile?.tags || [] };
+  const isChildPatient = householdMember && householdMember.age < 18;
 
   const handleServiceSelect = (service: Service) => {
     setSelectedService(service);
     if (service.id === 'mental-health') {
+      setStep('assessment');
+    } else if (service.id === 'dermatology' && currentPatient.tags?.includes('Jiu Jitsu')) {
       setStep('assessment');
     } else {
       // For other services, go directly to provider matching
@@ -159,7 +225,9 @@ export default function InstantVisitFlow() {
   const handleAnswer = (questionId: string, answer: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
     
-    if (currentQuestion < mentalHealthQuestions.length - 1) {
+    const currentQuestions = selectedService?.id === 'dermatology' ? dermatologyQuestions : mentalHealthQuestions;
+    
+    if (currentQuestion < currentQuestions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
       setStep('matching');
@@ -176,7 +244,7 @@ export default function InstantVisitFlow() {
   };
 
   const getAIRecommendation = () => {
-    if (!selectedService || selectedService.id !== 'mental-health') {
+    if (!selectedService) {
       return {
         provider: 'Dr. Maria Martinez, MD',
         specialty: 'General Practice',
@@ -185,46 +253,90 @@ export default function InstantVisitFlow() {
       };
     }
 
-    const urgencyAnswer = answers['urgency'];
-    const symptomsAnswer = answers['symptoms'];
-    const backgroundAnswer = answers['background'];
-    
-    // AI-powered matching logic
-    if (isVeteran || backgroundAnswer === 'veteran' || backgroundAnswer === 'active') {
-      if (symptomsAnswer === 'trauma' || urgencyAnswer === 'immediate') {
+    // Dermatology matching for athletes/jiu jitsu practitioners
+    if (selectedService.id === 'dermatology') {
+      const symptomsAnswer = answers['symptoms'];
+      const backgroundAnswer = answers['background'];
+      
+      if (backgroundAnswer === 'jiu-jitsu' || currentPatient.tags?.includes('Jiu Jitsu')) {
         return {
-          provider: 'Dr. Maria Martinez, MD',
-          specialty: 'Psychiatrist - Veteran Mental Health Specialist',
-          matchScore: 98,
-          reason: 'Perfect match - Mental health specialist with veteran care experience',
-          tags: ['Veteran', 'Mental Health Specialist', 'Anxiety Management', 'Military Experience']
+          provider: 'Dr. Marcus Silva, MD',
+          specialty: 'Dermatologist & Brazilian Jiu Jitsu Black Belt',
+          matchScore: 99,
+          reason: 'Perfect match - BJJ practitioner who understands martial arts skin conditions',
+          tags: ['Dermatology', 'Brazilian Jiu Jitsu', 'Sports Medicine', 'Athlete Care', 'Skin Infections']
         };
       }
+      
+      if (backgroundAnswer === 'wrestling' || backgroundAnswer === 'martial-arts') {
+        return {
+          provider: 'Dr. Sarah Kim, MD',
+          specialty: 'Sports Dermatologist',
+          matchScore: 92,
+          reason: 'Specialist in contact sports skin conditions',
+          tags: ['Sports Dermatology', 'Contact Sports', 'Athlete Care']
+        };
+      }
+      
       return {
-        provider: 'Dr. Sarah Kim, LCSW',
-        specialty: 'Licensed Clinical Social Worker - Veteran Care',
-        matchScore: 95,
-        reason: 'Excellent match - Veteran therapist specializing in military mental health',
-        tags: ['Veteran', 'CBT', 'Military Families', 'Anxiety/Depression']
-      };
-    }
-    
-    if (symptomsAnswer === 'anxiety' || symptomsAnswer === 'depression') {
-      return {
-        provider: 'Dr. Emily Chen, PhD',
-        specialty: 'Clinical Psychologist',
-        matchScore: 88,
-        reason: 'Specialist in anxiety and depression with immediate availability',
-        tags: ['Anxiety Disorders', 'Depression', 'CBT', 'Mindfulness']
+        provider: 'Dr. Jennifer Wong, MD',
+        specialty: 'General Dermatologist',
+        matchScore: 85,
+        reason: 'Available dermatologist for general skin care',
+        tags: ['General Dermatology', 'Skin Conditions']
       };
     }
 
+    // Mental health matching logic
+    if (selectedService.id === 'mental-health') {
+      const urgencyAnswer = answers['urgency'];
+      const symptomsAnswer = answers['symptoms'];
+      const backgroundAnswer = answers['background'];
+      
+      if (isVeteran || backgroundAnswer === 'veteran' || backgroundAnswer === 'active') {
+        if (symptomsAnswer === 'trauma' || urgencyAnswer === 'immediate') {
+          return {
+            provider: 'Dr. Maria Martinez, MD',
+            specialty: 'Psychiatrist - Veteran Mental Health Specialist',
+            matchScore: 98,
+            reason: 'Perfect match - Mental health specialist with veteran care experience',
+            tags: ['Veteran', 'Mental Health Specialist', 'Anxiety Management', 'Military Experience']
+          };
+        }
+        return {
+          provider: 'Dr. Sarah Kim, LCSW',
+          specialty: 'Licensed Clinical Social Worker - Veteran Care',
+          matchScore: 95,
+          reason: 'Excellent match - Veteran therapist specializing in military mental health',
+          tags: ['Veteran', 'CBT', 'Military Families', 'Anxiety/Depression']
+        };
+      }
+      
+      if (symptomsAnswer === 'anxiety' || symptomsAnswer === 'depression') {
+        return {
+          provider: 'Dr. Emily Chen, PhD',
+          specialty: 'Clinical Psychologist',
+          matchScore: 88,
+          reason: 'Specialist in anxiety and depression with immediate availability',
+          tags: ['Anxiety Disorders', 'Depression', 'CBT', 'Mindfulness']
+        };
+      }
+
+      return {
+        provider: 'Dr. Michael Brown, MD',
+        specialty: 'General Psychiatrist',
+        matchScore: 82,
+        reason: 'Available psychiatrist for comprehensive mental health care',
+        tags: ['General Psychiatry', 'Medication Management', 'Therapy']
+      };
+    }
+
+    // Default for other services
     return {
-      provider: 'Dr. Michael Brown, MD',
-      specialty: 'General Psychiatrist',
-      matchScore: 82,
-      reason: 'Available psychiatrist for comprehensive mental health care',
-      tags: ['General Psychiatry', 'Medication Management', 'Therapy']
+      provider: 'Dr. Maria Martinez, MD',
+      specialty: 'General Practice',
+      matchScore: 85,
+      reason: 'Available now for general care'
     };
   };
 
@@ -245,20 +357,22 @@ export default function InstantVisitFlow() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size="lg" className="w-full text-base py-4">
-          <Zap className="h-5 w-5 mr-2" />
-          Start Instant Visit
-        </Button>
+        {trigger || (
+          <Button size="lg" className="w-full text-base py-4">
+            <Zap className="h-5 w-5 mr-2" />
+            Start Instant Visit
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            {step === 'video-call' ? 'Video Call Session' : 'Instant Visit'}
+            {step === 'video-call' ? 'Video Call Session' : `Instant Visit${householdMember ? ` for ${householdMember.name}` : ''}`}
             {isVeteran && <Shield className="h-5 w-5 text-amber-600" />}
           </DialogTitle>
           <DialogDescription>
-            {step === 'service' && 'Select the type of care you need'}
+            {step === 'service' && `Select the type of care ${householdMember ? householdMember.name : 'you'} need${householdMember ? 's' : ''}`}
             {step === 'assessment' && 'Answer a few questions for personalized care'}
             {step === 'matching' && 'Finding the best provider for you'}
             {step === 'provider' && 'Your matched healthcare provider'}
@@ -269,7 +383,9 @@ export default function InstantVisitFlow() {
         {/* Service Selection */}
         {step === 'service' && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">What type of care do you need today?</h3>
+            <h3 className="text-lg font-semibold">
+              What type of care {householdMember ? `does ${householdMember.name}` : 'do you'} need today?
+            </h3>
             <div className="grid gap-4">
               {services.map((service) => (
                 <Card 
@@ -307,27 +423,27 @@ export default function InstantVisitFlow() {
         {step === 'assessment' && (
           <div className="space-y-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>Question {currentQuestion + 1} of {mentalHealthQuestions.length}</span>
+              <span>Question {currentQuestion + 1} of {(selectedService?.id === 'dermatology' ? dermatologyQuestions : mentalHealthQuestions).length}</span>
               <div className="flex-1 bg-gray-200 rounded-full h-2">
                 <div 
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${((currentQuestion + 1) / mentalHealthQuestions.length) * 100}%` }}
+                  style={{ width: `${((currentQuestion + 1) / (selectedService?.id === 'dermatology' ? dermatologyQuestions : mentalHealthQuestions).length) * 100}%` }}
                 />
               </div>
             </div>
 
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">
-                {mentalHealthQuestions[currentQuestion].question}
+                {(selectedService?.id === 'dermatology' ? dermatologyQuestions : mentalHealthQuestions)[currentQuestion].question}
               </h3>
               
               <div className="grid gap-3">
-                {mentalHealthQuestions[currentQuestion].options.map((option, index) => (
+                {(selectedService?.id === 'dermatology' ? dermatologyQuestions : mentalHealthQuestions)[currentQuestion].options.map((option, index) => (
                   <Button
                     key={index}
                     variant="outline"
                     className="justify-start text-left h-auto p-4 hover:bg-blue-50"
-                    onClick={() => handleAnswer(mentalHealthQuestions[currentQuestion].id, option.value)}
+                    onClick={() => handleAnswer((selectedService?.id === 'dermatology' ? dermatologyQuestions : mentalHealthQuestions)[currentQuestion].id, option.value)}
                   >
                     {option.label}
                   </Button>

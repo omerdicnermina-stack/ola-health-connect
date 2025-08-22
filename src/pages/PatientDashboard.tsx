@@ -70,14 +70,24 @@ export default function PatientDashboard() {
       name: 'Leilani Nakamura',
       relationship: 'Spouse',
       age: 28,
-      lastVisit: '2024-11-20'
+      lastVisit: '2024-11-20',
+      tags: []
     },
     {
       id: 2,
       name: 'Kai Nakamura',
-      relationship: 'Child',
+      relationship: 'Son',
       age: 8,
-      lastVisit: '2024-12-01'
+      lastVisit: '2024-12-01',
+      tags: ['Athlete', 'Jiu Jitsu']
+    },
+    {
+      id: 3,
+      name: 'Emma Nakamura',
+      relationship: 'Daughter',
+      age: 6,
+      lastVisit: '2024-11-15',
+      tags: []
     }
   ];
 
@@ -307,13 +317,29 @@ export default function PatientDashboard() {
                   <div>
                     <h4 className="font-semibold">{member.name}</h4>
                     <p className="text-sm text-muted-foreground">{member.relationship}, {member.age} years</p>
+                    {member.tags.length > 0 && (
+                      <div className="flex gap-1 mt-1">
+                        {member.tags.map((tag, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Last visit: {member.lastVisit}
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="flex-1">Schedule</Button>
+                  <InstantVisitFlow 
+                    householdMember={member}
+                    trigger={
+                      <Button size="sm" variant="outline" className="flex-1">
+                        Start Visit
+                      </Button>
+                    }
+                  />
                   <Button size="sm" variant="outline" className="flex-1">View Records</Button>
                 </div>
               </div>
