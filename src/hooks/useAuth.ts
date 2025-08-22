@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { User as SupabaseUser } from '@supabase/supabase-js'
 
-export type UserRole = 'Admin' | 'Super Admin' | 'Provider' | 'Provider-Admin' | 'Manager' | 'HR Manager'
+export type UserRole = 'Admin' | 'Super Admin' | 'Provider' | 'Provider-Admin' | 'Manager' | 'HR Manager' | 'Patient'
 
 export interface UserProfile {
   id: string
@@ -85,6 +85,17 @@ const mockUsers: (UserProfile & { password: string })[] = [
     email: 'hr@olahealth.com',
     name: 'Mary Wilson',
     role: 'HR Manager' as UserRole,
+    organization: 'Hilton Hotel',
+    is_active: true,
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    password: '123456Aa'
+  },
+  {
+    id: '7',
+    email: 'patient@hilton.com',
+    name: 'Keoni Nakamura',
+    role: 'Patient' as UserRole,
     organization: 'Hilton Hotel',
     is_active: true,
     created_at: '2024-01-01',
@@ -262,7 +273,8 @@ export const useAuth = () => {
       'Provider-Admin': ['manage_users', 'view_statistics', 'manage_services', 'manage_plans', 'view_prescriptions', 'edit_prescriptions', 'view_patients', 'virtual_queue'],
       'Provider': ['view_patients', 'edit_prescriptions', 'virtual_queue'],
       'Manager': ['basic_access'],
-      'HR Manager': ['manage_employees', 'assign_plans', 'utilization_report', 'census_upload', 'manage_organization_patients']
+      'HR Manager': ['manage_employees', 'assign_plans', 'utilization_report', 'census_upload', 'manage_organization_patients'],
+      'Patient': ['schedule_visits', 'view_visits', 'manage_profile', 'view_prescriptions', 'order_prescriptions', 'manage_household']
     }
 
     const userPermissions = rolePermissions[user.profile.role] || []

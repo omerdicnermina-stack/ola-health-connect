@@ -12,6 +12,7 @@ import VirtualQueue from "./pages/VirtualQueue";
 import Calendar from "./pages/Calendar";
 import Messages from "./pages/Messages";
 import Prescriptions from "./pages/Prescriptions";
+import PatientPrescriptions from "./pages/PatientPrescriptions";
 import Patients from "./pages/Patients";
 import Users from "./pages/Users";
 import Organizations from "./pages/Organizations";
@@ -19,6 +20,8 @@ import Statistics from "./pages/Statistics";
 import Services from "./pages/Services";
 import Plans from "./pages/Plans";
 import Visits from "./pages/Visits";
+import PatientVisits from "./pages/PatientVisits";
+import Household from "./pages/Household";
 import UtilizationReport from "./pages/UtilizationReport";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
@@ -45,6 +48,9 @@ const AppContent = () => {
     return <AuthForm />;
   }
 
+  // Patient-specific routing
+  const isPatient = user.profile?.role === 'Patient';
+
   console.log('AppContent: User found, showing dashboard for:', user.email)
   return (
     <Layout>
@@ -53,14 +59,15 @@ const AppContent = () => {
         <Route path="/virtual-queue" element={<VirtualQueue />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/messages" element={<Messages />} />
-        <Route path="/prescriptions" element={<Prescriptions />} />
+        <Route path="/prescriptions" element={isPatient ? <PatientPrescriptions /> : <Prescriptions />} />
         <Route path="/patients" element={<Patients />} />
         <Route path="/users" element={<Users />} />
         <Route path="/organizations" element={<Organizations />} />
         <Route path="/statistics" element={<Statistics />} />
         <Route path="/services" element={<Services />} />
         <Route path="/plans" element={<Plans />} />
-        <Route path="/visits" element={<Visits />} />
+        <Route path="/visits" element={isPatient ? <PatientVisits /> : <Visits />} />
+        <Route path="/household" element={<Household />} />
         <Route path="/utilization-report" element={<UtilizationReport />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />

@@ -51,6 +51,7 @@ const navigationItems: NavigationItem[] = [
   { title: 'Services', url: '/services', icon: Stethoscope, permission: 'manage_services' },
   { title: 'Plans', url: '/plans', icon: CreditCard, permission: 'manage_plans' },
   { title: 'Visits', url: '/visits', icon: FileBarChart },
+  { title: 'Household', url: '/household', icon: Users, permission: 'manage_household' },
   { title: 'Utilization Report', url: '/utilization-report', icon: FileBarChart, permission: 'utilization_report' },
   { title: 'Settings', url: '/settings', icon: Settings },
   { title: 'Help', url: '/help', icon: HelpCircle }

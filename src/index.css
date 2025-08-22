@@ -24,6 +24,13 @@ All colors MUST be HSL.
     --secondary: 170 65% 45%;
     --secondary-foreground: 0 0% 100%;
 
+    /* OLA Hawaiian Theme Colors */
+    --ola-ocean: 200 95% 27%;
+    --ola-tropical: 170 65% 45%; 
+    --ola-sunset: 25 95% 65%;
+    --ola-plumeria: 320 45% 85%;
+    --ola-lava: 15 85% 45%;
+
     --muted: 210 20% 94%;
     --muted-foreground: 215 15% 50%;
 

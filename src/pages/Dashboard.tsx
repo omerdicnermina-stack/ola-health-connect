@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import PatientDashboard from '@/pages/PatientDashboard';
 import { 
   Users, 
   Activity, 
@@ -243,6 +244,11 @@ export default function Dashboard() {
       </div>
     </div>
   );
+
+  // Redirect patients to their specific dashboard
+  if (user?.profile?.role === 'Patient') {
+    return <PatientDashboard />;
+  }
 
   return (
     <div className="animate-fade-in">
