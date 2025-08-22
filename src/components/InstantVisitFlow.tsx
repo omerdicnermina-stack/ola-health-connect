@@ -245,8 +245,8 @@ export default function InstantVisitFlow() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size="lg" className="w-full text-lg py-6">
-          <Zap className="h-6 w-6 mr-2" />
+        <Button size="lg" className="w-full text-base py-4">
+          <Zap className="h-5 w-5 mr-2" />
           Start Instant Visit
         </Button>
       </DialogTrigger>
@@ -433,7 +433,10 @@ export default function InstantVisitFlow() {
         {step === 'video-call' && (
           <VideoCallInterface 
             provider={recommendation}
-            onEndCall={resetFlow}
+            onEndCall={() => {
+              resetFlow();
+              setIsOpen(false); // Close dialog and return to dashboard
+            }}
             isVeteran={isVeteran}
           />
         )}
