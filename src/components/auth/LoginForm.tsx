@@ -88,6 +88,7 @@ export const LoginForm = () => {
               <p>Provider: provider@olahealth.com / password</p>
               <p>Manager: manager@olahealth.com / password</p>
               <p>HR Manager: hr@olahealth.com / password</p>
+              <p>Patient: patient@hilton.com / 123456Aa</p>
             </div>
           </div>
         </CardContent>
