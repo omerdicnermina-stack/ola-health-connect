@@ -3,8 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import AIAssessment from '@/components/AIAssessment';
-import InstantMentalHealthVisit from '@/components/InstantMentalHealthVisit';
+import InstantVisitFlow from '@/components/InstantVisitFlow';
 import { 
   Calendar, 
   Clock, 
@@ -141,48 +140,40 @@ export default function PatientDashboard() {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-        <InstantMentalHealthVisit />
-        
-        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-          <CardContent className="p-4 text-center">
-            <Clock className="h-8 w-8 mx-auto mb-2 text-orange-500" />
-            <h3 className="font-semibold">Instant Visit</h3>
-            <p className="text-sm text-muted-foreground mb-3">Get care now</p>
-            <Button size="sm" className="w-full">Start Now</Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-          <CardContent className="p-4 text-center">
-            <Calendar className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-            <h3 className="font-semibold">Schedule Visit</h3>
-            <p className="text-sm text-muted-foreground mb-3">Book future appointment</p>
-            <Button size="sm" variant="outline" className="w-full">Schedule</Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-          <CardContent className="p-4 text-center">
-            <Pill className="h-8 w-8 mx-auto mb-2 text-green-500" />
-            <h3 className="font-semibold">Prescriptions</h3>
-            <p className="text-sm text-muted-foreground mb-3">View & order</p>
-            <Button size="sm" variant="outline" className="w-full">View All</Button>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-          <CardContent className="p-4 text-center">
-            <Users className="h-8 w-8 mx-auto mb-2 text-purple-500" />
-            <h3 className="font-semibold">Family Care</h3>
-            <p className="text-sm text-muted-foreground mb-3">Manage household</p>
-            <Button size="sm" variant="outline" className="w-full">Manage</Button>
-          </CardContent>
-        </Card>
-
-        <AIAssessment />
-      </div>
+      {/* Instant Visit - Primary Action */}
+      <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-teal-50 hover:shadow-lg transition-all duration-300">
+        <CardContent className="p-8 text-center">
+          <div className="relative mb-6">
+            <div className="w-24 h-24 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg">
+              <Clock className="h-12 w-12 text-blue-600" />
+            </div>
+            {user?.profile?.tags?.includes('Veteran') && (
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                <Shield className="h-5 w-5 text-amber-600" />
+              </div>
+            )}
+          </div>
+          
+          <h2 className="text-2xl font-bold text-blue-900 mb-3">Start Instant Visit</h2>
+          <p className="text-blue-700 mb-6 text-lg">
+            Get immediate care from our healthcare professionals
+          </p>
+          
+          {user?.profile?.tags?.includes('Veteran') && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Shield className="h-5 w-5 text-amber-600" />
+                <span className="font-semibold text-amber-800">Veteran Priority Access</span>
+              </div>
+              <p className="text-sm text-amber-700">
+                You'll be matched with providers who understand military experience
+              </p>
+            </div>
+          )}
+          
+          <InstantVisitFlow />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Upcoming Visits */}
