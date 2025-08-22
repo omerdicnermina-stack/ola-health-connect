@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { format, isToday, isFuture } from 'date-fns';
 
-// Mock future visits data
+// Mock future visits data with more diverse dates for demo
 const futureVisits = [
+  // Today's appointments
   {
     id: '1',
     patientName: 'John Smith',
-    date: new Date(2024, 5, 25, 14, 30), // June 25, 2024, 2:30 PM
+    date: new Date(2024, 11, 22, 14, 30), // Today, 2:30 PM
     type: 'Video Consultation',
     duration: 30,
     location: 'Virtual',
@@ -21,17 +22,19 @@ const futureVisits = [
   {
     id: '2',
     patientName: 'Sarah Johnson',
-    date: new Date(2024, 5, 26, 10, 0), // June 26, 2024, 10:00 AM
+    date: new Date(2024, 11, 22, 16, 0), // Today, 4:00 PM
     type: 'Phone Consultation',
     duration: 15,
     location: 'Phone',
     status: 'confirmed',
     reason: 'Prescription review'
   },
+  
+  // Tomorrow's appointments
   {
     id: '3',
     patientName: 'Michael Brown',
-    date: new Date(2024, 5, 27, 16, 0), // June 27, 2024, 4:00 PM
+    date: new Date(2024, 11, 23, 9, 0), // Tomorrow, 9:00 AM
     type: 'Video Consultation',
     duration: 45,
     location: 'Virtual',
@@ -41,12 +44,126 @@ const futureVisits = [
   {
     id: '4',
     patientName: 'Emily Davis',
-    date: new Date(2024, 5, 28, 9, 30), // June 28, 2024, 9:30 AM
+    date: new Date(2024, 11, 23, 11, 30), // Tomorrow, 11:30 AM
     type: 'Video Consultation',
     duration: 20,
     location: 'Virtual',
     status: 'confirmed',
     reason: 'Mental health check-in'
+  },
+  {
+    id: '5',
+    patientName: 'Robert Wilson',
+    date: new Date(2024, 11, 23, 15, 0), // Tomorrow, 3:00 PM
+    type: 'Phone Consultation',
+    duration: 30,
+    location: 'Phone',
+    status: 'confirmed',
+    reason: 'Lab results discussion'
+  },
+
+  // This week's appointments
+  {
+    id: '6',
+    patientName: 'Lisa Anderson',
+    date: new Date(2024, 11, 24, 10, 0), // Day after tomorrow, 10:00 AM
+    type: 'Video Consultation',
+    duration: 25,
+    location: 'Virtual',
+    status: 'confirmed',
+    reason: 'Routine check-up'
+  },
+  {
+    id: '7',
+    patientName: 'David Miller',
+    date: new Date(2024, 11, 25, 14, 0), // Dec 25, 2:00 PM
+    type: 'Video Consultation',
+    duration: 40,
+    location: 'Virtual',
+    status: 'pending',
+    reason: 'Chronic condition management'
+  },
+  {
+    id: '8',
+    patientName: 'Jennifer Taylor',
+    date: new Date(2024, 11, 26, 9, 30), // Dec 26, 9:30 AM
+    type: 'Phone Consultation',
+    duration: 20,
+    location: 'Phone',
+    status: 'confirmed',
+    reason: 'Medication adjustment'
+  },
+  {
+    id: '9',
+    patientName: 'Christopher Lee',
+    date: new Date(2024, 11, 26, 13, 30), // Dec 26, 1:30 PM
+    type: 'Video Consultation',
+    duration: 35,
+    location: 'Virtual',
+    status: 'confirmed',
+    reason: 'Post-surgery follow-up'
+  },
+
+  // Next week's appointments
+  {
+    id: '10',
+    patientName: 'Amanda Rodriguez',
+    date: new Date(2024, 11, 30, 11, 0), // Dec 30, 11:00 AM
+    type: 'Video Consultation',
+    duration: 30,
+    location: 'Virtual',
+    status: 'confirmed',
+    reason: 'Wellness consultation'
+  },
+  {
+    id: '11',
+    patientName: 'James Thompson',
+    date: new Date(2025, 0, 2, 10, 30), // Jan 2, 2025, 10:30 AM
+    type: 'Phone Consultation',
+    duration: 15,
+    location: 'Phone',
+    status: 'pending',
+    reason: 'Quick health check'
+  },
+  {
+    id: '12',
+    patientName: 'Maria Garcia',
+    date: new Date(2025, 0, 3, 14, 15), // Jan 3, 2025, 2:15 PM
+    type: 'Video Consultation',
+    duration: 50,
+    location: 'Virtual',
+    status: 'confirmed',
+    reason: 'Comprehensive health assessment'
+  },
+  {
+    id: '13',
+    patientName: 'Kevin White',
+    date: new Date(2025, 0, 6, 16, 0), // Jan 6, 2025, 4:00 PM
+    type: 'Video Consultation',
+    duration: 25,
+    location: 'Virtual',
+    status: 'confirmed',
+    reason: 'Dermatology consultation'
+  },
+  {
+    id: '14',
+    patientName: 'Rachel Green',
+    date: new Date(2025, 0, 8, 9, 0), // Jan 8, 2025, 9:00 AM
+    type: 'Phone Consultation',
+    duration: 20,
+    location: 'Phone',
+    status: 'pending',
+    reason: 'Allergy consultation'
+  },
+  {
+    id: '15',
+    patientName: 'Thomas Clark',
+    date: new Date(2025, 0, 10, 15, 30), // Jan 10, 2025, 3:30 PM
+    type: 'Video Consultation',
+    duration: 35,
+    location: 'Virtual',
+    status: 'confirmed',
+    reason: 'Cardiology follow-up'
   }
 ];
 
