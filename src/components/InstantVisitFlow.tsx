@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
+import VideoCallInterface from '@/components/VideoCallInterface';
 import { 
   Brain, 
   Heart, 
@@ -135,7 +136,7 @@ const mentalHealthQuestions: AssessmentQuestion[] = [
 
 export default function InstantVisitFlow() {
   const { user } = useAuth();
-  const [step, setStep] = useState<'service' | 'assessment' | 'matching' | 'provider'>('service');
+  const [step, setStep] = useState<'service' | 'assessment' | 'matching' | 'provider' | 'video-call'>('service');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -235,6 +236,10 @@ export default function InstantVisitFlow() {
     setIsMatching(false);
   };
 
+  const startVideoCall = () => {
+    setStep('video-call');
+  };
+
   const recommendation = step === 'provider' ? getAIRecommendation() : null;
 
   return (
@@ -249,7 +254,7 @@ export default function InstantVisitFlow() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            Instant Visit
+            {step === 'video-call' ? 'Video Call Session' : 'Instant Visit'}
             {isVeteran && <Shield className="h-5 w-5 text-amber-600" />}
           </DialogTitle>
           <DialogDescription>
@@ -257,6 +262,7 @@ export default function InstantVisitFlow() {
             {step === 'assessment' && 'Answer a few questions for personalized care'}
             {step === 'matching' && 'Finding the best provider for you'}
             {step === 'provider' && 'Your matched healthcare provider'}
+            {step === 'video-call' && 'Live video consultation with AI Care Companion'}
           </DialogDescription>
         </DialogHeader>
 
@@ -409,7 +415,7 @@ export default function InstantVisitFlow() {
                     )}
 
                     <div className="flex gap-3">
-                      <Button className="flex-1">
+                      <Button className="flex-1" onClick={startVideoCall}>
                         Start Video Call Now
                       </Button>
                       <Button variant="outline" onClick={resetFlow}>
@@ -421,6 +427,15 @@ export default function InstantVisitFlow() {
               </CardContent>
             </Card>
           </div>
+        )}
+
+        {/* Video Call Interface */}
+        {step === 'video-call' && (
+          <VideoCallInterface 
+            provider={recommendation}
+            onEndCall={resetFlow}
+            isVeteran={isVeteran}
+          />
         )}
       </DialogContent>
     </Dialog>
