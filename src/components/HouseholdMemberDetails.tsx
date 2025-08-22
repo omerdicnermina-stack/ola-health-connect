@@ -29,6 +29,7 @@ interface HouseholdMemberDetailsProps {
     name: string;
     relationship: string;
     age: number;
+    gender: string;
     dateOfBirth: string;
     email?: string | null;
     phone?: string | null;
@@ -202,11 +203,22 @@ export default function HouseholdMemberDetails({ member }: HouseholdMemberDetail
                     <p className="text-sm">{member.dateOfBirth}</p>
                   </div>
                   <div>
+                    <p className="text-sm font-medium text-muted-foreground">Gender</p>
+                    <p className="text-sm">{member.gender}</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
                     <p className="text-sm font-medium text-muted-foreground">Blood Type</p>
                     <div className="flex items-center gap-2">
                       <Droplet className="h-4 w-4 text-red-500" />
                       <p className="text-sm">{member.bloodType}</p>
                     </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Insurance</p>
+                    <p className="text-sm">{member.insurance}</p>
                   </div>
                 </div>
                 
@@ -230,10 +242,6 @@ export default function HouseholdMemberDetails({ member }: HouseholdMemberDetail
                   </div>
                 )}
 
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Insurance</p>
-                  <p className="text-sm">{member.insurance}</p>
-                </div>
 
                 <div>
                   <p className="text-sm font-medium text-muted-foreground mb-2">Profile Tags</p>
