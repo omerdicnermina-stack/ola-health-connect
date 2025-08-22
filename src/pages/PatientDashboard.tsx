@@ -267,7 +267,7 @@ export default function PatientDashboard() {
                   <div>Date: {prescription.date}</div>
                 </div>
                 <Button size="sm" variant="outline" className="w-full">
-                  Order Refill to Hotel Room
+                  Order Refill
                 </Button>
               </div>
             ))}

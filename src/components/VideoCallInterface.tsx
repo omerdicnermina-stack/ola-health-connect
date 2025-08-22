@@ -152,7 +152,7 @@ export default function VideoCallInterface({ provider, onEndCall, isVeteran }: V
             <User className="h-6 w-6 text-blue-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-lg">{provider?.provider || 'Dr. Provider'}</h3>
+            <h3 className="font-semibold text-lg">{provider?.provider || 'Dr. Sarah Johnson'}</h3>
             <p className="text-sm text-muted-foreground">{provider?.specialty}</p>
             {isVeteran && (
               <Badge className="text-xs bg-amber-100 text-amber-800 mt-1">
@@ -183,7 +183,7 @@ export default function VideoCallInterface({ provider, onEndCall, isVeteran }: V
                 {isVideoOn ? (
                   <div className="text-white text-center">
                     <User className="h-16 w-16 mx-auto mb-2 opacity-75" />
-                    <p className="text-lg font-medium">{provider?.provider || 'Dr. Provider'}</p>
+                    <p className="text-lg font-medium">{provider?.provider || 'Dr. Sarah Johnson'}</p>
                     <p className="text-sm opacity-75">Connected via secure video</p>
                   </div>
                 ) : (

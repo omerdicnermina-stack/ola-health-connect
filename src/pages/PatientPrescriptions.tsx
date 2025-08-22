@@ -196,7 +196,7 @@ export default function PatientPrescriptions() {
                 {canRefill(prescription) && isRefillAvailable(prescription) && (
                   <Button size="sm">
                     <RefreshCw className="h-4 w-4 mr-2" />
-                    Order Refill to Hotel Room
+                    Order Refill
                   </Button>
                 )}
                 {prescription.status === 'Ready for pickup' && (

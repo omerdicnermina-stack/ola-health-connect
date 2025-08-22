@@ -7,229 +7,92 @@ import { Calendar } from '@/components/ui/calendar';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { format, isToday, isFuture } from 'date-fns';
 
-// Mock visits data with past, current and future dates for demo
-const allVisits = [
+// Patient's personal visits data (self and minor dependents only)
+const patientVisits = [
   // Past appointments (completed)
   {
     id: 'past1',
-    patientName: 'Mary Johnson',
+    patientName: 'Current User',
     date: new Date(2025, 7, 15, 10, 0), // Aug 15, 10:00 AM
     type: 'Video Consultation',
     modality: 'Video Call',
     duration: 30,
-    location: 'Austin, TX',
+    location: 'Virtual Visit',
     status: 'completed',
-    reason: 'Annual check-up',
-    notes: 'Patient reports feeling well. Blood pressure normal. Recommended continued exercise routine.'
+    reason: 'Mental health check-in',
+    notes: 'Patient reports improved mood and better sleep patterns. Continue current therapy approach.'
   },
   {
     id: 'past2',
-    patientName: 'Robert Chen',
+    patientName: 'Emma (daughter)',
     date: new Date(2025, 7, 18, 14, 30), // Aug 18, 2:30 PM
-    type: 'Phone Consultation',
-    modality: 'Phone Call',
-    duration: 15,
-    location: 'San Francisco, CA',
+    type: 'Video Consultation',
+    modality: 'Video Call',
+    duration: 20,
+    location: 'Virtual Visit',
     status: 'completed',
-    reason: 'Medication review',
-    notes: 'Adjusted dosage for blood pressure medication. Patient tolerating well.'
+    reason: 'Routine pediatric checkup',
+    notes: 'Child is developing normally. Updated vaccination schedule discussed with parent.'
   },
   {
     id: 'past3',
-    patientName: 'Linda Williams',
-    date: new Date(2025, 7, 19, 9, 15), // Aug 19, 9:15 AM
-    type: 'Video Consultation',
-    modality: 'Video Call',
-    duration: 45,
-    location: 'Denver, CO',
-    status: 'completed',
-    reason: 'Follow-up for diabetes',
-    notes: 'HbA1c levels improved. Continue current treatment plan.'
-  },
-  {
-    id: 'past4',
-    patientName: 'James Anderson',
+    patientName: 'Current User',
     date: new Date(2025, 7, 20, 16, 0), // Aug 20, 4:00 PM
-    type: 'Video Consultation',
-    modality: 'Video Call',
-    duration: 25,
-    location: 'Phoenix, AZ',
+    type: 'Phone Consultation',
+    modality: 'Phone Call',
+    duration: 15,
+    location: 'Phone Call',
     status: 'completed',
-    reason: 'Skin condition consultation',
-    notes: 'Prescribed topical treatment. Follow-up in 2 weeks.'
+    reason: 'Medication review',
+    notes: 'Adjusted anxiety medication dosage. Patient tolerating well with minimal side effects.'
   },
   
   // Today's appointments
   {
     id: '1',
-    patientName: 'John Smith',
+    patientName: 'Current User',
     date: new Date(2025, 7, 22, 14, 30), // Today, 2:30 PM
     type: 'Video Consultation',
     modality: 'Video Call',
     duration: 30,
-    location: 'Miami, FL',
+    location: 'Virtual Visit',
     status: 'confirmed',
-    reason: 'Follow-up consultation'
-  },
-  {
-    id: '2',
-    patientName: 'Sarah Johnson',
-    date: new Date(2025, 7, 22, 16, 0), // Today, 4:00 PM
-    type: 'Phone Consultation',
-    modality: 'Phone Call',
-    duration: 15,
-    location: 'New York, NY',
-    status: 'confirmed',
-    reason: 'Prescription review'
+    reason: 'Follow-up mental health consultation'
   },
   
-  // Tomorrow's appointments
+  // Future appointments
+  {
+    id: '2',
+    patientName: 'Emma (daughter)',
+    date: new Date(2025, 7, 25, 11, 0), // Aug 25, 11:00 AM
+    type: 'Video Consultation',
+    modality: 'Video Call',
+    duration: 25,
+    location: 'Virtual Visit',
+    status: 'confirmed',
+    reason: 'Pediatric wellness check'
+  },
   {
     id: '3',
-    patientName: 'Michael Brown',
-    date: new Date(2025, 7, 23, 9, 0), // Tomorrow, 9:00 AM
+    patientName: 'Current User',
+    date: new Date(2025, 7, 28, 9, 30), // Aug 28, 9:30 AM
     type: 'Video Consultation',
     modality: 'Video Call',
     duration: 45,
-    location: 'Chicago, IL',
-    status: 'pending',
-    reason: 'Initial consultation'
+    location: 'Virtual Visit',
+    status: 'confirmed',
+    reason: 'Therapy session'
   },
   {
     id: '4',
-    patientName: 'Emily Davis',
-    date: new Date(2025, 7, 23, 11, 30), // Tomorrow, 11:30 AM
+    patientName: 'Max (son)',
+    date: new Date(2025, 7, 30, 15, 0), // Aug 30, 3:00 PM
     type: 'Video Consultation',
     modality: 'Video Call',
     duration: 20,
-    location: 'Portland, OR',
-    status: 'confirmed',
-    reason: 'Mental health check-in'
-  },
-  {
-    id: '5',
-    patientName: 'Robert Wilson',
-    date: new Date(2025, 7, 23, 15, 0), // Tomorrow, 3:00 PM
-    type: 'Phone Consultation',
-    modality: 'Phone Call',
-    duration: 30,
-    location: 'Dallas, TX',
-    status: 'confirmed',
-    reason: 'Lab results discussion'
-  },
-
-  // This week's appointments
-  {
-    id: '6',
-    patientName: 'Lisa Anderson',
-    date: new Date(2025, 7, 24, 10, 0), // Aug 24, 10:00 AM
-    type: 'Video Consultation',
-    modality: 'Video Call',
-    duration: 25,
-    location: 'Seattle, WA',
-    status: 'confirmed',
-    reason: 'Routine check-up'
-  },
-  {
-    id: '7',
-    patientName: 'David Miller',
-    date: new Date(2025, 7, 25, 14, 0), // Aug 25, 2:00 PM
-    type: 'In-Person Visit',
-    modality: 'In-Person',
-    duration: 40,
-    location: 'Los Angeles, CA',
+    location: 'Virtual Visit',
     status: 'pending',
-    reason: 'Chronic condition management'
-  },
-  {
-    id: '8',
-    patientName: 'Jennifer Taylor',
-    date: new Date(2025, 7, 26, 9, 30), // Aug 26, 9:30 AM
-    type: 'Phone Consultation',
-    modality: 'Phone Call',
-    duration: 20,
-    location: 'Atlanta, GA',
-    status: 'confirmed',
-    reason: 'Medication adjustment'
-  },
-  {
-    id: '9',
-    patientName: 'Christopher Lee',
-    date: new Date(2025, 7, 26, 13, 30), // Aug 26, 1:30 PM
-    type: 'Video Consultation',
-    modality: 'Video Call',
-    duration: 35,
-    location: 'Boston, MA',
-    status: 'confirmed',
-    reason: 'Post-surgery follow-up'
-  },
-
-  // Next week's appointments
-  {
-    id: '10',
-    patientName: 'Amanda Rodriguez',
-    date: new Date(2025, 7, 30, 11, 0), // Aug 30, 11:00 AM
-    type: 'Video Consultation',
-    modality: 'Video Call',
-    duration: 30,
-    location: 'Las Vegas, NV',
-    status: 'confirmed',
-    reason: 'Wellness consultation'
-  },
-  {
-    id: '11',
-    patientName: 'James Thompson',
-    date: new Date(2025, 8, 2, 10, 30), // Sep 2, 2025, 10:30 AM
-    type: 'Phone Consultation',
-    modality: 'Phone Call',
-    duration: 15,
-    location: 'Tampa, FL',
-    status: 'pending',
-    reason: 'Quick health check'
-  },
-  {
-    id: '12',
-    patientName: 'Maria Garcia',
-    date: new Date(2025, 8, 3, 14, 15), // Sep 3, 2025, 2:15 PM
-    type: 'Video Consultation',
-    modality: 'Video Call',
-    duration: 50,
-    location: 'San Diego, CA',
-    status: 'confirmed',
-    reason: 'Comprehensive health assessment'
-  },
-  {
-    id: '13',
-    patientName: 'Kevin White',
-    date: new Date(2025, 8, 6, 16, 0), // Sep 6, 2025, 4:00 PM
-    type: 'In-Person Visit',
-    modality: 'In-Person',
-    duration: 25,
-    location: 'Nashville, TN',
-    status: 'confirmed',
-    reason: 'Dermatology consultation'
-  },
-  {
-    id: '14',
-    patientName: 'Rachel Green',
-    date: new Date(2025, 8, 8, 9, 0), // Sep 8, 2025, 9:00 AM
-    type: 'Phone Consultation',
-    modality: 'Phone Call',
-    duration: 20,
-    location: 'Minneapolis, MN',
-    status: 'pending',
-    reason: 'Allergy consultation'
-  },
-  {
-    id: '15',
-    patientName: 'Thomas Clark',
-    date: new Date(2025, 8, 10, 15, 30), // Sep 10, 2025, 3:30 PM
-    type: 'Video Consultation',
-    modality: 'Video Call',
-    duration: 35,
-    location: 'Charlotte, NC',
-    status: 'confirmed',
-    reason: 'Cardiology follow-up'
+    reason: 'ADHD follow-up consultation'
   }
 ];
 
@@ -239,13 +102,13 @@ const CalendarPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const getVisitsForDate = (date: Date) => {
-    return allVisits.filter(visit => 
+    return patientVisits.filter(visit => 
       format(visit.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
     );
   };
 
   const selectedDateVisits = selectedDate ? getVisitsForDate(selectedDate) : [];
-  const upcomingVisits = allVisits.filter(visit => isFuture(visit.date)).slice(0, 5);
+  const upcomingVisits = patientVisits.filter(visit => isFuture(visit.date)).slice(0, 5);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -276,8 +139,8 @@ const CalendarPage = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Calendar</h1>
-          <p className="text-muted-foreground">Manage your upcoming patient visits and appointments</p>
+          <h1 className="text-3xl font-bold">My Calendar</h1>
+          <p className="text-muted-foreground">View your visits and appointments for yourself and family members</p>
         </div>
       </div>
 
@@ -300,7 +163,7 @@ const CalendarPage = () => {
               onSelect={setSelectedDate}
               className="rounded-md border"
               modifiers={{
-                hasVisits: allVisits.map(visit => visit.date)
+                hasVisits: patientVisits.map(visit => visit.date)
               }}
               modifiersStyles={{
                 hasVisits: { backgroundColor: 'hsl(var(--primary) / 0.1)', fontWeight: 'bold' }
