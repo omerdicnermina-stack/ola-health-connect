@@ -156,6 +156,7 @@ export const AuthForm = () => {
                 <p><strong>Admin:</strong> admin@olahealth.com</p>
                 <p><strong>Provider-Admin:</strong> provideradmin@olahealth.com</p>
                 <p><strong>Manager:</strong> manager@olahealth.com</p>
+                <p><strong>Patient:</strong> patient@hilton.com</p>
               </div>
             </div>
           )}
