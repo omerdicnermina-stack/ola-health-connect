@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, User, MapPin, Video, FileText, X } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, User, MapPin, Video, FileText, X, Phone, UserCheck } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,8 +15,9 @@ const allVisits = [
     patientName: 'Mary Johnson',
     date: new Date(2025, 7, 15, 10, 0), // Aug 15, 10:00 AM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 30,
-    location: 'Virtual',
+    location: 'Austin, TX',
     status: 'completed',
     reason: 'Annual check-up',
     notes: 'Patient reports feeling well. Blood pressure normal. Recommended continued exercise routine.'
@@ -26,8 +27,9 @@ const allVisits = [
     patientName: 'Robert Chen',
     date: new Date(2025, 7, 18, 14, 30), // Aug 18, 2:30 PM
     type: 'Phone Consultation',
+    modality: 'Phone Call',
     duration: 15,
-    location: 'Phone',
+    location: 'San Francisco, CA',
     status: 'completed',
     reason: 'Medication review',
     notes: 'Adjusted dosage for blood pressure medication. Patient tolerating well.'
@@ -37,8 +39,9 @@ const allVisits = [
     patientName: 'Linda Williams',
     date: new Date(2025, 7, 19, 9, 15), // Aug 19, 9:15 AM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 45,
-    location: 'Virtual',
+    location: 'Denver, CO',
     status: 'completed',
     reason: 'Follow-up for diabetes',
     notes: 'HbA1c levels improved. Continue current treatment plan.'
@@ -48,8 +51,9 @@ const allVisits = [
     patientName: 'James Anderson',
     date: new Date(2025, 7, 20, 16, 0), // Aug 20, 4:00 PM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 25,
-    location: 'Virtual',
+    location: 'Phoenix, AZ',
     status: 'completed',
     reason: 'Skin condition consultation',
     notes: 'Prescribed topical treatment. Follow-up in 2 weeks.'
@@ -61,8 +65,9 @@ const allVisits = [
     patientName: 'John Smith',
     date: new Date(2025, 7, 22, 14, 30), // Today, 2:30 PM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 30,
-    location: 'Virtual',
+    location: 'Miami, FL',
     status: 'confirmed',
     reason: 'Follow-up consultation'
   },
@@ -71,8 +76,9 @@ const allVisits = [
     patientName: 'Sarah Johnson',
     date: new Date(2025, 7, 22, 16, 0), // Today, 4:00 PM
     type: 'Phone Consultation',
+    modality: 'Phone Call',
     duration: 15,
-    location: 'Phone',
+    location: 'New York, NY',
     status: 'confirmed',
     reason: 'Prescription review'
   },
@@ -83,8 +89,9 @@ const allVisits = [
     patientName: 'Michael Brown',
     date: new Date(2025, 7, 23, 9, 0), // Tomorrow, 9:00 AM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 45,
-    location: 'Virtual',
+    location: 'Chicago, IL',
     status: 'pending',
     reason: 'Initial consultation'
   },
@@ -93,8 +100,9 @@ const allVisits = [
     patientName: 'Emily Davis',
     date: new Date(2025, 7, 23, 11, 30), // Tomorrow, 11:30 AM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 20,
-    location: 'Virtual',
+    location: 'Portland, OR',
     status: 'confirmed',
     reason: 'Mental health check-in'
   },
@@ -103,8 +111,9 @@ const allVisits = [
     patientName: 'Robert Wilson',
     date: new Date(2025, 7, 23, 15, 0), // Tomorrow, 3:00 PM
     type: 'Phone Consultation',
+    modality: 'Phone Call',
     duration: 30,
-    location: 'Phone',
+    location: 'Dallas, TX',
     status: 'confirmed',
     reason: 'Lab results discussion'
   },
@@ -115,8 +124,9 @@ const allVisits = [
     patientName: 'Lisa Anderson',
     date: new Date(2025, 7, 24, 10, 0), // Aug 24, 10:00 AM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 25,
-    location: 'Virtual',
+    location: 'Seattle, WA',
     status: 'confirmed',
     reason: 'Routine check-up'
   },
@@ -124,9 +134,10 @@ const allVisits = [
     id: '7',
     patientName: 'David Miller',
     date: new Date(2025, 7, 25, 14, 0), // Aug 25, 2:00 PM
-    type: 'Video Consultation',
+    type: 'In-Person Visit',
+    modality: 'In-Person',
     duration: 40,
-    location: 'Virtual',
+    location: 'Los Angeles, CA',
     status: 'pending',
     reason: 'Chronic condition management'
   },
@@ -135,8 +146,9 @@ const allVisits = [
     patientName: 'Jennifer Taylor',
     date: new Date(2025, 7, 26, 9, 30), // Aug 26, 9:30 AM
     type: 'Phone Consultation',
+    modality: 'Phone Call',
     duration: 20,
-    location: 'Phone',
+    location: 'Atlanta, GA',
     status: 'confirmed',
     reason: 'Medication adjustment'
   },
@@ -145,8 +157,9 @@ const allVisits = [
     patientName: 'Christopher Lee',
     date: new Date(2025, 7, 26, 13, 30), // Aug 26, 1:30 PM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 35,
-    location: 'Virtual',
+    location: 'Boston, MA',
     status: 'confirmed',
     reason: 'Post-surgery follow-up'
   },
@@ -157,8 +170,9 @@ const allVisits = [
     patientName: 'Amanda Rodriguez',
     date: new Date(2025, 7, 30, 11, 0), // Aug 30, 11:00 AM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 30,
-    location: 'Virtual',
+    location: 'Las Vegas, NV',
     status: 'confirmed',
     reason: 'Wellness consultation'
   },
@@ -167,8 +181,9 @@ const allVisits = [
     patientName: 'James Thompson',
     date: new Date(2025, 8, 2, 10, 30), // Sep 2, 2025, 10:30 AM
     type: 'Phone Consultation',
+    modality: 'Phone Call',
     duration: 15,
-    location: 'Phone',
+    location: 'Tampa, FL',
     status: 'pending',
     reason: 'Quick health check'
   },
@@ -177,8 +192,9 @@ const allVisits = [
     patientName: 'Maria Garcia',
     date: new Date(2025, 8, 3, 14, 15), // Sep 3, 2025, 2:15 PM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 50,
-    location: 'Virtual',
+    location: 'San Diego, CA',
     status: 'confirmed',
     reason: 'Comprehensive health assessment'
   },
@@ -186,9 +202,10 @@ const allVisits = [
     id: '13',
     patientName: 'Kevin White',
     date: new Date(2025, 8, 6, 16, 0), // Sep 6, 2025, 4:00 PM
-    type: 'Video Consultation',
+    type: 'In-Person Visit',
+    modality: 'In-Person',
     duration: 25,
-    location: 'Virtual',
+    location: 'Nashville, TN',
     status: 'confirmed',
     reason: 'Dermatology consultation'
   },
@@ -197,8 +214,9 @@ const allVisits = [
     patientName: 'Rachel Green',
     date: new Date(2025, 8, 8, 9, 0), // Sep 8, 2025, 9:00 AM
     type: 'Phone Consultation',
+    modality: 'Phone Call',
     duration: 20,
-    location: 'Phone',
+    location: 'Minneapolis, MN',
     status: 'pending',
     reason: 'Allergy consultation'
   },
@@ -207,8 +225,9 @@ const allVisits = [
     patientName: 'Thomas Clark',
     date: new Date(2025, 8, 10, 15, 30), // Sep 10, 2025, 3:30 PM
     type: 'Video Consultation',
+    modality: 'Video Call',
     duration: 35,
-    location: 'Virtual',
+    location: 'Charlotte, NC',
     status: 'confirmed',
     reason: 'Cardiology follow-up'
   }
@@ -237,9 +256,13 @@ const CalendarPage = () => {
     }
   };
 
-  const getTypeIcon = (type: string) => {
-    if (type.includes('Video')) return <Video className="h-4 w-4" />;
-    return <Clock className="h-4 w-4" />;
+  const getTypeIcon = (modality: string) => {
+    switch (modality) {
+      case 'Video Call': return <Video className="h-4 w-4" />;
+      case 'Phone Call': return <Phone className="h-4 w-4" />;
+      case 'In-Person': return <UserCheck className="h-4 w-4" />;
+      default: return <Clock className="h-4 w-4" />;
+    }
   };
 
   const handleVisitClick = (visit: any) => {
@@ -313,7 +336,7 @@ const CalendarPage = () => {
                     onClick={() => handleVisitClick(visit)}
                   >
                     <div className="flex items-center gap-3">
-                      {getTypeIcon(visit.type)}
+                      {getTypeIcon(visit.modality)}
                       <div>
                         <div className="font-medium flex items-center gap-2">
                           <User className="h-4 w-4" />
@@ -324,7 +347,7 @@ const CalendarPage = () => {
                         </div>
                         <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                           <MapPin className="h-3 w-3" />
-                          {visit.location}
+                          {visit.location} • {visit.modality}
                         </div>
                         {visit.notes && (
                           <div className="text-xs text-muted-foreground mt-1 italic">
@@ -346,7 +369,7 @@ const CalendarPage = () => {
                         </Button>
                       ) : (
                         <Button size="sm" variant="outline">
-                          {visit.type.includes('Video') ? 'Join Call' : 'Start Call'}
+                          {visit.modality === 'Video Call' ? 'Join Call' : visit.modality === 'Phone Call' ? 'Start Call' : 'View Location'}
                         </Button>
                       )}
                     </div>
@@ -373,15 +396,18 @@ const CalendarPage = () => {
           <div className="space-y-3">
             {upcomingVisits.map((visit) => (
               <div key={visit.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors">
-                <div className="flex items-center gap-3">
-                  {getTypeIcon(visit.type)}
-                  <div>
-                    <div className="font-medium">{visit.patientName}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {format(visit.date, 'MMM d, h:mm a')} • {visit.reason}
-                    </div>
+              <div className="flex items-center gap-3">
+                {getTypeIcon(visit.modality)}
+                <div>
+                  <div className="font-medium">{visit.patientName}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {format(visit.date, 'MMM d, h:mm a')} • {visit.reason}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {visit.location} • {visit.modality}
                   </div>
                 </div>
+              </div>
                 <div className="flex items-center gap-2">
                   <Badge className={getStatusColor(visit.status)}>
                     {visit.status}
@@ -436,14 +462,14 @@ const CalendarPage = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Consultation Type</label>
+                  <label className="text-sm font-medium text-muted-foreground">Visit Modality</label>
                   <div className="flex items-center gap-2 mt-1">
-                    {getTypeIcon(selectedVisit.type)}
-                    <span>{selectedVisit.type}</span>
+                    {getTypeIcon(selectedVisit.modality)}
+                    <span>{selectedVisit.modality}</span>
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Location</label>
+                  <label className="text-sm font-medium text-muted-foreground">Patient Location</label>
                   <div className="flex items-center gap-2 mt-1">
                     <MapPin className="h-4 w-4" />
                     <span>{selectedVisit.location}</span>
