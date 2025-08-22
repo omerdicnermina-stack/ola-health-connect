@@ -37,11 +37,14 @@ export default function Settings() {
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
                 <AvatarImage src={user?.profile?.avatar} />
-                <AvatarFallback className="text-lg">
-                  {user?.profile?.name?.split(' ').map(n => n[0]).join('') || 'U'}
+                <AvatarFallback className="text-4xl bg-blue-100">
+                  {user?.profile?.avatar || user?.profile?.name?.split(' ').map(n => n[0]).join('') || 'KN'}
                 </AvatarFallback>
               </Avatar>
-              <Button variant="outline">Change Avatar</Button>
+              <div>
+                <Button variant="outline">Change Avatar</Button>
+                <p className="text-xs text-muted-foreground mt-1">Current: {user?.profile?.avatar || 'No avatar set'}</p>
+              </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4">

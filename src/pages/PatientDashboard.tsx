@@ -6,18 +6,20 @@ import { Badge } from '@/components/ui/badge';
 import AIAssessment from '@/components/AIAssessment';
 import InstantVisitFlow from '@/components/InstantVisitFlow';
 import { 
-  Calendar, 
-  Clock, 
-  Pill, 
   Users, 
-  Heart,
+  Plus, 
+  Heart, 
+  Phone, 
+  Video,
   MapPin,
   Star,
-  Phone,
-  Video,
-  Plus,
+  Clock,
   Eye,
-  Shield
+  Shield,
+  Zap,
+  Calendar,
+  Brain,
+  Pill
 } from 'lucide-react';
 
 export default function PatientDashboard() {
@@ -167,14 +169,16 @@ export default function PatientDashboard() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 justify-center mb-6">
+      <div className="flex gap-6 justify-center mb-8">
         <InstantVisitFlow />
-        <Button size="lg" variant="outline" className="px-8 py-4">
+        <Button size="lg" variant="outline" className="px-12 py-6 text-lg font-semibold h-auto">
+          <Calendar className="h-6 w-6 mr-3" />
           Schedule a Visit
         </Button>
         <AIAssessment 
           trigger={
-            <Button size="lg" variant="outline" className="px-8 py-4">
+            <Button size="lg" variant="outline" className="px-12 py-6 text-lg font-semibold h-auto">
+              <Brain className="h-6 w-6 mr-3" />
               AI Health Assessment
             </Button>
           }

@@ -380,8 +380,8 @@ export default function InstantVisitFlow({ householdMember, trigger }: InstantVi
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button size="lg" className="text-base font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg px-8 py-4">
-            <Zap className="h-5 w-5 mr-2" />
+          <Button size="lg" className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg px-12 py-6 h-auto">
+            <Zap className="h-6 w-6 mr-3" />
             Start Instant Visit
           </Button>
         )}
