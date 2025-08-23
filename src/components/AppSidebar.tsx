@@ -85,10 +85,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar className={collapsed ? 'w-14' : 'w-64'} collapsible="icon">
-      <div className="flex items-center justify-between p-4 border-b">
-        {!collapsed && (
-          <h2 className="text-xl font-bold text-primary">OLA HEALTH</h2>
-        )}
+      <div className="flex items-center justify-end p-4 border-b">
         <SidebarTrigger />
       </div>
 
