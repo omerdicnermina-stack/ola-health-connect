@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
+import { Link } from 'react-router-dom';
+import olaHealthLogo from '@/assets/ola-health-logo.png';
 
 export function Header() {
   const { user, signOut } = useAuth();
@@ -46,7 +48,18 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-4 flex-1">
-          <div className="relative max-w-sm">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <img 
+              src={olaHealthLogo} 
+              alt="OLA Health" 
+              className="h-10 w-10 object-contain"
+            />
+            <span className="font-bold text-xl text-primary">OLA Health</span>
+          </Link>
+          
+          {/* Search */}
+          <div className="relative max-w-sm ml-8">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search patients, prescriptions..."
