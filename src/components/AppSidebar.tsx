@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import olaHealthLogo from '@/assets/ola-health-logo.png';
 import {
   LayoutDashboard,
   MessageSquare,
@@ -85,7 +86,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar className={collapsed ? 'w-14' : 'w-64'} collapsible="icon">
-      <div className="flex items-center justify-end p-4 border-b">
+      <div className="flex items-center justify-between p-4 border-b">
+        {!collapsed && (
+          <div className="flex items-center">
+            <img 
+              src={olaHealthLogo} 
+              alt="OLA Health" 
+              className="h-8 w-auto"
+            />
+          </div>
+        )}
         <SidebarTrigger />
       </div>
 
