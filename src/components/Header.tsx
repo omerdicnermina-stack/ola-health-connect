@@ -14,7 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
-import olaHealthLogo from '@/assets/ola-health-logo.png';
+import olaHealthLogo from '/lovable-uploads/8b97806d-9c94-40f5-b59d-7dee6396a157.png';
 
 export function Header() {
   const { user, signOut } = useAuth();
