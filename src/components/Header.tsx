@@ -53,7 +53,7 @@ export function Header() {
             <img 
               src={olaHealthLogo} 
               alt="OLA Health" 
-              className="h-10 w-10 object-contain"
+              className="h-8 w-8 object-contain"
             />
             <span className="font-bold text-xl text-primary">OLA Health</span>
           </Link>
