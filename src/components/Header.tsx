@@ -14,7 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
-import { LogoProcessor } from '@/components/LogoProcessor';
+import olaHealthLogo from '@/assets/ola-health-logo.png';
 
 export function Header() {
   const { user, signOut } = useAuth();
@@ -50,7 +50,9 @@ export function Header() {
         <div className="flex items-center gap-4 flex-1">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <LogoProcessor 
+            <img 
+              src={olaHealthLogo} 
+              alt="OLA Health" 
               className="h-8 w-8 object-contain"
             />
             <span className="font-bold text-xl text-primary">OLA Health</span>
