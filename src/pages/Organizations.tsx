@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Building2, Plus, Users, TrendingUp, Settings, Upload, Download } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Building2, Plus, Users, TrendingUp, Settings, Upload, Download, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -14,6 +15,38 @@ export default function Organizations() {
   const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedOrgForEmployees, setSelectedOrgForEmployees] = useState<number | null>(null);
+
+  const mockEmployees: Record<number, Array<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    department: string;
+    jobTitle: string;
+    employeeId: string;
+    hireDate: string;
+    status: 'Active' | 'Inactive';
+  }>> = {
+    1: [ // Hilton Hotel
+      { id: '1', firstName: 'John', lastName: 'Smith', email: 'john.smith@hilton.com', department: 'Front Desk', jobTitle: 'Front Desk Manager', employeeId: 'HH001', hireDate: '2022-03-15', status: 'Active' },
+      { id: '2', firstName: 'Sarah', lastName: 'Johnson', email: 'sarah.johnson@hilton.com', department: 'Housekeeping', jobTitle: 'Housekeeping Supervisor', employeeId: 'HH002', hireDate: '2021-08-22', status: 'Active' },
+      { id: '3', firstName: 'Michael', lastName: 'Davis', email: 'michael.davis@hilton.com', department: 'Food & Beverage', jobTitle: 'Restaurant Manager', employeeId: 'HH003', hireDate: '2023-01-10', status: 'Active' },
+      { id: '4', firstName: 'Emily', lastName: 'Wilson', email: 'emily.wilson@hilton.com', department: 'HR', jobTitle: 'HR Coordinator', employeeId: 'HH004', hireDate: '2022-11-05', status: 'Active' },
+      { id: '5', firstName: 'David', lastName: 'Brown', email: 'david.brown@hilton.com', department: 'Maintenance', jobTitle: 'Maintenance Technician', employeeId: 'HH005', hireDate: '2020-06-18', status: 'Active' },
+    ],
+    2: [ // Tech Corp Inc
+      { id: '6', firstName: 'Lisa', lastName: 'Anderson', email: 'lisa.anderson@techcorp.com', department: 'Engineering', jobTitle: 'Senior Developer', employeeId: 'TC001', hireDate: '2021-09-12', status: 'Active' },
+      { id: '7', firstName: 'James', lastName: 'Martinez', email: 'james.martinez@techcorp.com', department: 'Marketing', jobTitle: 'Marketing Specialist', employeeId: 'TC002', hireDate: '2022-04-08', status: 'Active' },
+      { id: '8', firstName: 'Anna', lastName: 'Garcia', email: 'anna.garcia@techcorp.com', department: 'Design', jobTitle: 'UX Designer', employeeId: 'TC003', hireDate: '2023-02-20', status: 'Active' },
+      { id: '9', firstName: 'Robert', lastName: 'Lee', email: 'robert.lee@techcorp.com', department: 'Sales', jobTitle: 'Sales Manager', employeeId: 'TC004', hireDate: '2021-12-03', status: 'Active' },
+    ],
+    3: [ // Metro Hospital
+      { id: '10', firstName: 'Maria', lastName: 'Rodriguez', email: 'maria.rodriguez@metrohospital.com', department: 'Nursing', jobTitle: 'Registered Nurse', employeeId: 'MH001', hireDate: '2020-05-14', status: 'Active' },
+      { id: '11', firstName: 'Thomas', lastName: 'White', email: 'thomas.white@metrohospital.com', department: 'Administration', jobTitle: 'Admin Assistant', employeeId: 'MH002', hireDate: '2022-07-30', status: 'Active' },
+      { id: '12', firstName: 'Jessica', lastName: 'Taylor', email: 'jessica.taylor@metrohospital.com', department: 'Laboratory', jobTitle: 'Lab Technician', employeeId: 'MH003', hireDate: '2021-10-11', status: 'Active' },
+    ]
+  };
 
   const mockOrganizations = [
     {
@@ -146,79 +179,143 @@ export default function Organizations() {
         </TabsList>
 
         <TabsContent value="directory">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Building2 className="h-5 w-5" />
-                {isHRManager ? 'Organization Details' : 'Organization Directory'}
-              </CardTitle>
-              <CardDescription>
-                {isHRManager 
-                  ? `Details and employee information for ${userOrganization}`
-                  : 'Corporate clients and their telemedicine programs'
-                }
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {filteredOrganizations.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Building2 className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>No organization found matching your profile.</p>
-                  <p className="text-sm">Please contact your administrator to update your organization assignment.</p>
+          {selectedOrgForEmployees ? (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    <CardTitle>
+                      {filteredOrganizations.find(org => org.id === selectedOrgForEmployees)?.name} Employees
+                    </CardTitle>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setSelectedOrgForEmployees(null)}
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Organizations
+                  </Button>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredOrganizations.map((org) => (
-                    <div key={org.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                          <h3 className="font-semibold text-lg">{org.name}</h3>
-                          <Badge variant="outline">{org.type}</Badge>
-                          <Badge variant={org.status === 'Active' ? 'default' : 'secondary'}>
-                            {org.status}
+                <CardDescription>
+                  Employee directory and information
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Department</TableHead>
+                      <TableHead>Job Title</TableHead>
+                      <TableHead>Employee ID</TableHead>
+                      <TableHead>Hire Date</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {mockEmployees[selectedOrgForEmployees]?.map((employee) => (
+                      <TableRow key={employee.id}>
+                        <TableCell className="font-medium">
+                          {employee.firstName} {employee.lastName}
+                        </TableCell>
+                        <TableCell>{employee.email}</TableCell>
+                        <TableCell>{employee.department}</TableCell>
+                        <TableCell>{employee.jobTitle}</TableCell>
+                        <TableCell>{employee.employeeId}</TableCell>
+                        <TableCell>{employee.hireDate}</TableCell>
+                        <TableCell>
+                          <Badge variant={employee.status === 'Active' ? 'default' : 'secondary'}>
+                            {employee.status}
                           </Badge>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                          <div>
-                            <p className="text-muted-foreground">Total Employees</p>
-                            <p className="font-medium">{org.employees}</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground">Active Users</p>
-                            <p className="font-medium">{org.activeUsers}</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground">Plan</p>
-                            <p className="font-medium">{org.plan}</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground">Utilization</p>
-                            <p className="font-medium text-success">{org.utilization}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <Users className="mr-2 h-4 w-4" />
-                          Employees
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <TrendingUp className="mr-2 h-4 w-4" />
-                          Reports
-                        </Button>
-                        {canManageAllOrganizations && (
-                          <Button variant="outline" size="sm">
-                            <Settings className="mr-2 h-4 w-4" />
-                            Settings
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5" />
+                  {isHRManager ? 'Organization Details' : 'Organization Directory'}
+                </CardTitle>
+                <CardDescription>
+                  {isHRManager 
+                    ? `Details and employee information for ${userOrganization}`
+                    : 'Corporate clients and their telemedicine programs'
+                  }
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {filteredOrganizations.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Building2 className="mx-auto h-12 w-12 mb-4 opacity-50" />
+                    <p>No organization found matching your profile.</p>
+                    <p className="text-sm">Please contact your administrator to update your organization assignment.</p>
+                  </div>
+                ) : (
+                   <div className="space-y-4">
+                     {filteredOrganizations.map((org) => (
+                       <div key={org.id} className="flex items-center justify-between p-4 border rounded-lg">
+                         <div className="space-y-2">
+                           <div className="flex items-center gap-3">
+                             <h3 className="font-semibold text-lg">{org.name}</h3>
+                             <Badge variant="outline">{org.type}</Badge>
+                             <Badge variant={org.status === 'Active' ? 'default' : 'secondary'}>
+                               {org.status}
+                             </Badge>
+                           </div>
+                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                             <div>
+                               <p className="text-muted-foreground">Total Employees</p>
+                               <p className="font-medium">{org.employees}</p>
+                             </div>
+                             <div>
+                               <p className="text-muted-foreground">Active Users</p>
+                               <p className="font-medium">{org.activeUsers}</p>
+                             </div>
+                             <div>
+                               <p className="text-muted-foreground">Plan</p>
+                               <p className="font-medium">{org.plan}</p>
+                             </div>
+                             <div>
+                               <p className="text-muted-foreground">Utilization</p>
+                               <p className="font-medium text-success">{org.utilization}</p>
+                             </div>
+                           </div>
+                         </div>
+                         <div className="flex gap-2">
+                           <Button 
+                             variant="outline" 
+                             size="sm"
+                             onClick={() => setSelectedOrgForEmployees(org.id)}
+                           >
+                             <Users className="mr-2 h-4 w-4" />
+                             Employees
+                           </Button>
+                           <Button variant="outline" size="sm">
+                             <TrendingUp className="mr-2 h-4 w-4" />
+                             Reports
+                           </Button>
+                           {canManageAllOrganizations && (
+                             <Button variant="outline" size="sm">
+                               <Settings className="mr-2 h-4 w-4" />
+                               Settings
+                             </Button>
+                           )}
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="upload">
