@@ -16,6 +16,7 @@ export default function Organizations() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedOrgForEmployees, setSelectedOrgForEmployees] = useState<number | null>(null);
+  const [selectedOrgForIntegrations, setSelectedOrgForIntegrations] = useState<number | null>(null);
 
   const mockEmployees: Record<number, Array<{
     id: string;
@@ -175,11 +176,186 @@ export default function Organizations() {
           <TabsTrigger value="directory">
             {isHRManager ? 'Organization Details' : 'Organization Directory'}
           </TabsTrigger>
-          <TabsTrigger value="upload">Employee Census Upload</TabsTrigger>
         </TabsList>
 
         <TabsContent value="directory">
-          {selectedOrgForEmployees ? (
+          {selectedOrgForIntegrations ? (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Upload className="h-5 w-5" />
+                    <CardTitle>
+                      {filteredOrganizations.find(org => org.id === selectedOrgForIntegrations)?.name} Integrations
+                    </CardTitle>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setSelectedOrgForIntegrations(null)}
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Organizations
+                  </Button>
+                </div>
+                <CardDescription>
+                  Employee census upload and system integrations for this organization
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Organization-specific Integration Options */}
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {selectedOrgForIntegrations === 1 && ( // Hilton Hotel specific integrations
+                      <>
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                              <Building2 className="h-5 w-5" />
+                              Hilton PMS Integration
+                            </CardTitle>
+                            <CardDescription>
+                              Automatically sync guests from Hilton Property Management System
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="p-4 bg-muted rounded-lg">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium">Status:</span>
+                                <Badge variant="default">Connected</Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                Last sync: Today at 2:45 PM
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                Guests synced: 1,247 active reservations
+                              </p>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <h4 className="font-medium text-sm">Sync Settings:</h4>
+                              <ul className="text-sm text-muted-foreground space-y-1">
+                                <li>• Auto-sync every 15 minutes</li>
+                                <li>• Include check-in/check-out guests</li>
+                                <li>• Sync guest preferences</li>
+                                <li>• Enable OLA access during stay</li>
+                              </ul>
+                            </div>
+
+                            <Button variant="outline" className="w-full">
+                              Configure PMS Integration
+                            </Button>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                              <Users className="h-5 w-5" />
+                              Hilton HR System Integration
+                            </CardTitle>
+                            <CardDescription>
+                              Automatically sync employees from Hilton HR System
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="p-4 bg-muted rounded-lg">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium">Status:</span>
+                                <Badge variant="default">Connected</Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                Last sync: Today at 6:00 AM
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                Employees synced: 245 active employees
+                              </p>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <h4 className="font-medium text-sm">Sync Settings:</h4>
+                              <ul className="text-sm text-muted-foreground space-y-1">
+                                <li>• Auto-invite new hires immediately</li>
+                                <li>• Deactivate terminated employees (retain profiles)</li>
+                                <li>• Sync department and role changes</li>
+                                <li>• Daily sync at 6:00 AM</li>
+                              </ul>
+                            </div>
+
+                            <Button variant="outline" className="w-full">
+                              Configure HR Integration
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      </>
+                    )}
+
+                    {/* Manual Employee Census Upload - Available for all organizations */}
+                    <Card className={selectedOrgForIntegrations === 1 ? "md:col-span-2" : ""}>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Upload className="h-5 w-5" />
+                          Manual Employee Census Upload
+                        </CardTitle>
+                        <CardDescription>
+                          Upload employee data via CSV or Excel file
+                          {selectedOrgForIntegrations !== 1 && " (For organizations without automated HR/PMS systems)"}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Button 
+                              variant="outline" 
+                              onClick={downloadTemplate}
+                              size="sm"
+                            >
+                              <Download className="mr-2 h-4 w-4" />
+                              Download Template
+                            </Button>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor="employee-upload">Choose file</Label>
+                            <Input
+                              id="employee-upload"
+                              type="file"
+                              accept=".csv,.xlsx,.xls"
+                              onChange={handleFileUpload}
+                              className="cursor-pointer"
+                            />
+                            {selectedFile && (
+                              <p className="text-sm text-muted-foreground">
+                                Selected: {selectedFile.name}
+                              </p>
+                            )}
+                          </div>
+                          
+                          <Button 
+                            onClick={handleUploadSubmit}
+                            disabled={!selectedFile || isUploading}
+                            className="w-full"
+                          >
+                            {isUploading ? 'Uploading...' : 'Upload Employee Census'}
+                          </Button>
+                        </div>
+
+                        <div className="mt-4 p-4 bg-muted rounded-lg">
+                          <h4 className="font-medium text-sm mb-2">Upload Guidelines:</h4>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            <li>• Supported formats: CSV, Excel (.xlsx, .xls)</li>
+                            <li>• Required fields: First Name, Last Name, Email</li>
+                            <li>• Optional: Department, Job Title, Employee ID</li>
+                            <li>• Maximum file size: 10MB</li>
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : selectedOrgForEmployees ? (
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -289,26 +465,34 @@ export default function Organizations() {
                              </div>
                            </div>
                          </div>
-                         <div className="flex gap-2">
-                           <Button 
-                             variant="outline" 
-                             size="sm"
-                             onClick={() => setSelectedOrgForEmployees(org.id)}
-                           >
-                             <Users className="mr-2 h-4 w-4" />
-                             Employees
-                           </Button>
-                           <Button variant="outline" size="sm">
-                             <TrendingUp className="mr-2 h-4 w-4" />
-                             Reports
-                           </Button>
-                           {canManageAllOrganizations && (
-                             <Button variant="outline" size="sm">
-                               <Settings className="mr-2 h-4 w-4" />
-                               Settings
-                             </Button>
-                           )}
-                         </div>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => setSelectedOrgForEmployees(org.id)}
+                            >
+                              <Users className="mr-2 h-4 w-4" />
+                              Employees
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => setSelectedOrgForIntegrations(org.id)}
+                            >
+                              <Upload className="mr-2 h-4 w-4" />
+                              Integrations
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <TrendingUp className="mr-2 h-4 w-4" />
+                              Reports
+                            </Button>
+                            {canManageAllOrganizations && (
+                              <Button variant="outline" size="sm">
+                                <Settings className="mr-2 h-4 w-4" />
+                                Settings
+                              </Button>
+                            )}
+                          </div>
                        </div>
                      ))}
                    </div>
@@ -318,183 +502,6 @@ export default function Organizations() {
           )}
         </TabsContent>
 
-        <TabsContent value="upload">
-          <div className="space-y-6">
-            {/* Integration Options */}
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Building2 className="h-5 w-5" />
-                    Hilton PMS Integration
-                  </CardTitle>
-                  <CardDescription>
-                    Automatically sync guests from Hilton Property Management System
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-4 bg-muted rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Status:</span>
-                      <Badge variant="default">Connected</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Last sync: Today at 2:45 PM
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Guests synced: 1,247 active reservations
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-sm">Sync Settings:</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Auto-sync every 15 minutes</li>
-                      <li>• Include check-in/check-out guests</li>
-                      <li>• Sync guest preferences</li>
-                      <li>• Enable OLA access during stay</li>
-                    </ul>
-                  </div>
-
-                  <Button variant="outline" className="w-full">
-                    Configure PMS Integration
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5" />
-                    Hilton HR System Integration
-                  </CardTitle>
-                  <CardDescription>
-                    Automatically sync employees from Hilton HR System
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-4 bg-muted rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Status:</span>
-                      <Badge variant="default">Connected</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Last sync: Today at 6:00 AM
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Employees synced: 245 active employees
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-sm">Sync Settings:</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Auto-sync daily at 6:00 AM</li>
-                      <li>• Auto-invite new hires</li>
-                      <li>• Deactivate terminated employees</li>
-                      <li>• Retain profiles for terminated staff</li>
-                    </ul>
-                  </div>
-
-                  <Button variant="outline" className="w-full">
-                    Configure HR Integration
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Manual Upload Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="h-5 w-5" />
-                  Manual Employee Census Upload
-                </CardTitle>
-                <CardDescription>
-                  For smaller hotels without automated HR systems - Import employee data from CSV or Excel files
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="employee-upload">Select File</Label>
-                      <Input
-                        id="employee-upload"
-                        type="file"
-                        accept=".csv,.xlsx,.xls"
-                        onChange={handleFileUpload}
-                        disabled={isUploading}
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        Supported formats: CSV, Excel (.xlsx, .xls)
-                        {isHRManager && (
-                          <span className="block mt-1 text-primary">
-                            Upload employees for {userOrganization}
-                          </span>
-                        )}
-                      </p>
-                    </div>
-
-                    {selectedFile && (
-                      <div className="p-3 bg-muted rounded-lg">
-                        <p className="text-sm font-medium">Selected file:</p>
-                        <p className="text-sm text-muted-foreground">{selectedFile.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Size: {(selectedFile.size / 1024).toFixed(1)} KB
-                        </p>
-                      </div>
-                    )}
-
-                    <Button 
-                      onClick={handleUploadSubmit}
-                      disabled={!selectedFile || isUploading}
-                      className="w-full"
-                    >
-                      {isUploading ? (
-                        <>Processing...</>
-                      ) : (
-                        <>
-                          <Upload className="mr-2 h-4 w-4" />
-                          Upload Employee Data
-                        </>
-                      )}
-                    </Button>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-medium mb-2">Required Columns:</h4>
-                      <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-                        <li>First Name</li>
-                        <li>Last Name</li>
-                        <li>Email Address</li>
-                        <li>Department</li>
-                        <li>Job Title</li>
-                        <li>Employee ID</li>
-                      </ul>
-                    </div>
-                    
-                    <div>
-                      <h4 className="font-medium mb-2">Guidelines:</h4>
-                      <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-                        <li>Ensure all email addresses are unique</li>
-                        <li>Employee IDs must be unique</li>
-                        <li>Maximum file size: 10MB</li>
-                        <li>Maximum 5,000 employees per upload</li>
-                      </ul>
-                    </div>
-
-                    <Button onClick={downloadTemplate} variant="outline" className="w-full">
-                      <Download className="mr-2 h-4 w-4" />
-                      Download CSV Template
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
   );
