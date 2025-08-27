@@ -74,7 +74,7 @@ const mockQueueData: QueuePatient[] = [
   },
   {
     id: '2',
-    name: 'Sarah Johnson',
+    name: 'Emma Rodriguez',
     avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=32&h=32&fit=crop&crop=face',
     dateTime: '2024-01-25 14:45',
     provider: 'Dr. Mike Wilson',
@@ -438,18 +438,20 @@ export default function VirtualQueue() {
                          <p className="text-lg font-semibold">{user?.profile?.name}</p>
                         <p className="text-sm text-gray-300">Video Off</p>
                       </div>
-                    ) : (
-                      <div className="text-center text-white">
-                         <Avatar className="h-16 w-16 mx-auto mb-3">
-                           <AvatarImage src={user?.profile?.avatar} className="object-cover" />
-                           <AvatarFallback className="text-lg bg-secondary">
-                             {user?.profile?.name.split(' ').map(n => n[0]).join('')}
-                           </AvatarFallback>
-                         </Avatar>
-                         <p className="text-lg font-semibold">{user?.profile?.name}</p>
-                        <p className="text-sm text-gray-300">Provider</p>
-                      </div>
-                    )}
+                     ) : (
+                       <div className="text-center text-white">
+                          <Avatar className="h-16 w-16 mx-auto mb-3">
+                            <AvatarImage src={user?.profile?.avatar} className="object-cover" />
+                            <AvatarFallback className="text-lg bg-secondary">
+                              {user?.profile?.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <p className="text-lg font-semibold">{user?.profile?.name}</p>
+                         <p className="text-sm text-gray-300">
+                           {currentCallPatient?.provider === user?.profile?.name ? 'Provider' : 'Observer'}
+                         </p>
+                       </div>
+                     )}
                   </div>
                   <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
                     You ({user?.profile?.role})
@@ -668,22 +670,32 @@ export default function VirtualQueue() {
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={user?.profile?.avatar} />
                       <AvatarFallback>
-                        {user?.profile?.name.split(' ').map(n => n[0]).join('')}
+                        {currentCallPatient?.provider?.split(' ').slice(-1)[0].substring(0, 2).toUpperCase() || 'DR'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-semibold">{user?.profile?.name}</p>
-                      <p className="text-sm text-muted-foreground">{user?.profile?.role}</p>
+                      <p className="font-semibold">{currentCallPatient?.provider || 'Unassigned'}</p>
+                      <p className="text-sm text-muted-foreground">Assigned Provider</p>
                     </div>
                   </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Organization:</span>
-                      <span>{user?.profile?.organization}</span>
+                  {currentCallPatient?.provider !== user?.profile?.name && (
+                    <div className="mt-3 p-2 bg-muted rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1">You are observing as:</p>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage src={user?.profile?.avatar} />
+                          <AvatarFallback className="text-xs">
+                            {user?.profile?.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">{user?.profile?.name}</p>
+                          <p className="text-xs text-muted-foreground">{user?.profile?.role}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
 
