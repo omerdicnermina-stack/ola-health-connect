@@ -273,10 +273,10 @@ export const useAuth = () => {
 
     const rolePermissions: Record<string, string[]> = {
       'Super Admin': ['all'],
-      'Admin': ['manage_users', 'view_statistics', 'manage_services', 'manage_plans', 'view_prescriptions', 'virtual_queue'],
-      'Provider-Admin': ['manage_users', 'view_statistics', 'manage_services', 'manage_plans', 'view_prescriptions', 'edit_prescriptions', 'view_patients', 'virtual_queue'],
-      'Provider': ['view_patients', 'edit_prescriptions', 'virtual_queue'],
-      'Manager': ['basic_access'],
+      'Admin': ['manage_users', 'view_statistics', 'manage_services', 'manage_plans', 'view_prescriptions', 'virtual_queue', 'manage_questionnaires'],
+      'Provider-Admin': ['manage_users', 'view_statistics', 'manage_services', 'manage_plans', 'view_prescriptions', 'edit_prescriptions', 'view_patients', 'virtual_queue', 'manage_questionnaires'],
+      'Provider': ['view_patients', 'edit_prescriptions', 'virtual_queue', 'manage_questionnaires'],
+      'Manager': ['basic_access', 'manage_questionnaires'],
       'HR Manager': ['manage_employees', 'assign_plans', 'utilization_report', 'census_upload', 'manage_organization_patients', 'manage_users'],
       'Patient': ['schedule_visits', 'view_visits', 'manage_profile', 'view_prescriptions', 'order_prescriptions', 'manage_household']
     }

@@ -29,6 +29,214 @@ export type Database = {
         }
         Relationships: []
       }
+      question_answers: {
+        Row: {
+          answer_boolean: boolean | null
+          answer_date: string | null
+          answer_number: number | null
+          answer_options: Json | null
+          answer_text: string | null
+          created_at: string
+          id: string
+          question_id: string
+          response_id: string
+        }
+        Insert: {
+          answer_boolean?: boolean | null
+          answer_date?: string | null
+          answer_number?: number | null
+          answer_options?: Json | null
+          answer_text?: string | null
+          created_at?: string
+          id?: string
+          question_id: string
+          response_id: string
+        }
+        Update: {
+          answer_boolean?: boolean | null
+          answer_date?: string | null
+          answer_number?: number | null
+          answer_options?: Json | null
+          answer_text?: string | null
+          created_at?: string
+          id?: string
+          question_id?: string
+          response_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_answers_response_id_fkey"
+            columns: ["response_id"]
+            isOneToOne: false
+            referencedRelation: "questionnaire_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      question_conditions: {
+        Row: {
+          action: string
+          condition_operator: string
+          condition_question_id: string
+          condition_value: string
+          created_at: string
+          id: string
+          question_id: string
+        }
+        Insert: {
+          action?: string
+          condition_operator: string
+          condition_question_id: string
+          condition_value: string
+          created_at?: string
+          id?: string
+          question_id: string
+        }
+        Update: {
+          action?: string
+          condition_operator?: string
+          condition_question_id?: string
+          condition_value?: string
+          created_at?: string
+          id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_conditions_condition_question_id_fkey"
+            columns: ["condition_question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_conditions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questionnaire_responses: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          patient_id: string
+          questionnaire_id: string
+          visit_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          patient_id: string
+          questionnaire_id: string
+          visit_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          patient_id?: string
+          questionnaire_id?: string
+          visit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questionnaire_responses_questionnaire_id_fkey"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "questionnaires"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questionnaires: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_active: boolean
+          organization: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          organization?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          organization?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          created_at: string
+          id: string
+          is_required: boolean
+          options: Json | null
+          order_index: number
+          question_text: string
+          question_type: string
+          questionnaire_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          options?: Json | null
+          order_index?: number
+          question_text: string
+          question_type: string
+          questionnaire_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          options?: Json | null
+          order_index?: number
+          question_text?: string
+          question_type?: string
+          questionnaire_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_questionnaire_id_fkey"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "questionnaires"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_profiles: {
         Row: {
           avatar: string | null

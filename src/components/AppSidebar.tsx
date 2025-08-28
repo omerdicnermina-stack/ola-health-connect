@@ -15,7 +15,8 @@ import {
   CreditCard,
   Calendar,
   Clock,
-  FileBarChart
+  FileBarChart,
+  FileText
 } from 'lucide-react';
 import {
   Sidebar,
@@ -53,6 +54,7 @@ const navigationItems: NavigationItem[] = [
   { title: 'Plans', url: '/plans', icon: CreditCard, permission: 'manage_plans' },
   { title: 'Visits', url: '/visits', icon: FileBarChart },
   { title: 'Household', url: '/household', icon: Users, permission: 'manage_household' },
+  { title: 'Questionnaires', url: '/questionnaires', icon: FileText, permission: 'manage_questionnaires' },
   { title: 'Utilization Report', url: '/utilization-report', icon: FileBarChart, permission: 'utilization_report' },
   { title: 'Settings', url: '/settings', icon: Settings },
   { title: 'Help', url: '/help', icon: HelpCircle }

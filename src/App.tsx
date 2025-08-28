@@ -22,6 +22,7 @@ import Plans from "./pages/Plans";
 import Visits from "./pages/Visits";
 import PatientVisits from "./pages/PatientVisits";
 import Household from "./pages/Household";
+import Questionnaires from "./pages/Questionnaires";
 import UtilizationReport from "./pages/UtilizationReport";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
@@ -68,6 +69,7 @@ const AppContent = () => {
         <Route path="/plans" element={<Plans />} />
         <Route path="/visits" element={isPatient ? <PatientVisits /> : <Visits />} />
         <Route path="/household" element={<Household />} />
+        <Route path="/questionnaires" element={<Questionnaires />} />
         <Route path="/utilization-report" element={<UtilizationReport />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />
