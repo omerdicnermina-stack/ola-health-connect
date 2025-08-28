@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import HouseholdMemberDetails from '@/components/HouseholdMemberDetails';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   Users, 
   Plus, 
@@ -18,11 +20,37 @@ import {
   Phone,
   UserPlus,
   Baby,
-  Shield
+  Shield,
+  Lock
 } from 'lucide-react';
 
 export default function Household() {
+  const { user, hasPermission } = useAuth();
   const [showAddMember, setShowAddMember] = useState(false);
+
+  // Check if user has permission to view household data
+  const canViewHousehold = user?.profile.role === 'Patient' || hasPermission('manage_household');
+
+  // If user doesn't have permission, show access denied message
+  if (!canViewHousehold) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-12">
+          <Lock className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+          <h1 className="text-2xl font-bold mb-2">Access Restricted</h1>
+          <p className="text-muted-foreground mb-4">
+            Household management is only available to patients and authorized users.
+          </p>
+          <Alert className="max-w-md mx-auto">
+            <AlertDescription>
+              You are logged in as <strong>{user?.profile.name}</strong> ({user?.profile.role}). 
+              This feature is designed for patients to manage their family members' healthcare.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    );
+  }
 
   const householdMembers = [
     {
