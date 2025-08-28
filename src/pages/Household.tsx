@@ -28,8 +28,8 @@ export default function Household() {
   const { user, hasPermission } = useAuth();
   const [showAddMember, setShowAddMember] = useState(false);
 
-  // Check if user has permission to view household data
-  const canViewHousehold = user?.profile.role === 'Patient' || hasPermission('manage_household');
+  // Check if user has permission to view household data - only patients allowed
+  const canViewHousehold = user?.profile.role === 'Patient';
 
   // If user doesn't have permission, show access denied message
   if (!canViewHousehold) {
