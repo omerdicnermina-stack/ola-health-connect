@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import olaHealthLogo from '@/assets/ola-health-logo.png';
+import { Badge } from '@/components/ui/badge';
 import {
   LayoutDashboard,
   MessageSquare,
@@ -126,7 +127,9 @@ export function AppSidebar() {
                            {!collapsed && <span>{item.title}</span>}
                          </div>
                          {!collapsed && item.hasNotification && (
-                           <div className="w-2 h-2 bg-destructive rounded-full" />
+                           <Badge variant="destructive" className="text-xs h-4 min-w-[16px] px-1">
+                             1
+                           </Badge>
                          )}
                          {collapsed && item.hasNotification && (
                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full" />

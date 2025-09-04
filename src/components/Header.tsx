@@ -13,11 +13,53 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import olaHealthLogo from '@/assets/ola-health-logo.png';
 
 export function Header() {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const notifications = [
+    {
+      id: 1,
+      title: 'New Message',
+      message: 'You have a new hydration reminder from AI Care Companion',
+      time: 'Just now',
+      type: 'message',
+      isNew: true
+    },
+    {
+      id: 2,
+      title: 'Appointment Reminder',
+      message: 'Your follow-up appointment is scheduled for tomorrow at 2:00 PM',
+      time: '2 hours ago',
+      type: 'appointment',
+      isNew: true
+    },
+    {
+      id: 3,
+      title: 'Lab Results Ready',
+      message: 'Your blood work results are now available for review',
+      time: '1 day ago',
+      type: 'results',
+      isNew: false
+    },
+    {
+      id: 4,
+      title: 'System Update',
+      message: 'The system will be updated tonight from 11 PM to 1 AM',
+      time: '2 days ago',
+      type: 'system',
+      isNew: false
+    }
+  ];
+
+  const handleNotificationClick = (notification: typeof notifications[0]) => {
+    if (notification.type === 'message') {
+      navigate('/messages');
+    }
+  };
 
   const getInitials = (name: string) => {
     return name
@@ -70,13 +112,43 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-4 w-4" />
-            <span className="absolute -top-1 -right-1 h-3 w-3 bg-destructive rounded-full text-[10px] font-medium text-destructive-foreground flex items-center justify-center">
-              4
-            </span>
-            <span className="sr-only">Notifications</span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-4 w-4" />
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-destructive rounded-full text-[10px] font-medium text-destructive-foreground flex items-center justify-center">
+                  4
+                </span>
+                <span className="sr-only">Notifications</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-80" align="end" forceMount>
+              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {notifications.map((notification) => (
+                <DropdownMenuItem 
+                  key={notification.id} 
+                  className="p-3 cursor-pointer"
+                  onClick={() => handleNotificationClick(notification)}
+                >
+                  <div className="flex flex-col space-y-1 w-full">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">{notification.title}</p>
+                      <div className="flex items-center gap-2">
+                        {notification.isNew && (
+                          <Badge variant="destructive" className="text-xs h-4">New</Badge>
+                        )}
+                        <span className="text-xs text-muted-foreground">{notification.time}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {notification.message}
+                    </p>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* User Profile Dropdown */}
           <DropdownMenu>
