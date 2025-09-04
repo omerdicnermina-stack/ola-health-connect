@@ -361,9 +361,9 @@ export default function Organizations() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5" />
-                    <CardTitle>
-                      {filteredOrganizations.find(org => org.id === selectedOrgForEmployees)?.name} Employees
-                    </CardTitle>
+                        <CardTitle>
+                          {filteredOrganizations.find(org => org.id === selectedOrgForEmployees)?.name} Management
+                        </CardTitle>
                   </div>
                   <Button 
                     variant="outline" 
@@ -375,42 +375,163 @@ export default function Organizations() {
                   </Button>
                 </div>
                 <CardDescription>
-                  Employee directory and information
+                  Employee directory and utilization analytics
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Department</TableHead>
-                      <TableHead>Job Title</TableHead>
-                      <TableHead>Employee ID</TableHead>
-                      <TableHead>Hire Date</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {mockEmployees[selectedOrgForEmployees]?.map((employee) => (
-                      <TableRow key={employee.id}>
-                        <TableCell className="font-medium">
-                          {employee.firstName} {employee.lastName}
-                        </TableCell>
-                        <TableCell>{employee.email}</TableCell>
-                        <TableCell>{employee.department}</TableCell>
-                        <TableCell>{employee.jobTitle}</TableCell>
-                        <TableCell>{employee.employeeId}</TableCell>
-                        <TableCell>{employee.hireDate}</TableCell>
-                        <TableCell>
-                          <Badge variant={employee.status === 'Active' ? 'default' : 'secondary'}>
-                            {employee.status}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <Tabs defaultValue="employees" className="space-y-4">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="employees">Employees</TabsTrigger>
+                    <TabsTrigger value="utilization">Utilization Report</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="employees">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Department</TableHead>
+                          <TableHead>Job Title</TableHead>
+                          <TableHead>Employee ID</TableHead>
+                          <TableHead>Hire Date</TableHead>
+                          <TableHead>Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {mockEmployees[selectedOrgForEmployees]?.map((employee) => (
+                          <TableRow key={employee.id}>
+                            <TableCell className="font-medium">
+                              {employee.firstName} {employee.lastName}
+                            </TableCell>
+                            <TableCell>{employee.email}</TableCell>
+                            <TableCell>{employee.department}</TableCell>
+                            <TableCell>{employee.jobTitle}</TableCell>
+                            <TableCell>{employee.employeeId}</TableCell>
+                            <TableCell>{employee.hireDate}</TableCell>
+                            <TableCell>
+                              <Badge variant={employee.status === 'Active' ? 'default' : 'secondary'}>
+                                {employee.status}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TabsContent>
+
+                  <TabsContent value="utilization">
+                    <div className="space-y-6">
+                      {/* Organization KPIs */}
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-2xl font-bold">
+                              {filteredOrganizations.find(org => org.id === selectedOrgForEmployees)?.employees}
+                            </div>
+                            <p className="text-xs text-muted-foreground">Organization staff</p>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-2xl font-bold">
+                              {filteredOrganizations.find(org => org.id === selectedOrgForEmployees)?.activeUsers}
+                            </div>
+                            <p className="text-xs text-muted-foreground">Using the platform</p>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Utilization Rate</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-2xl font-bold">
+                              {filteredOrganizations.find(org => org.id === selectedOrgForEmployees)?.utilization}
+                            </div>
+                            <p className="text-xs text-muted-foreground">Employee engagement</p>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Plan Type</CardTitle>
+                            <Building2 className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-2xl font-bold">
+                              {filteredOrganizations.find(org => org.id === selectedOrgForEmployees)?.plan}
+                            </div>
+                            <p className="text-xs text-muted-foreground">Current subscription</p>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Department Breakdown */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Department Utilization</CardTitle>
+                          <CardDescription>Healthcare usage by department within this organization</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Department</TableHead>
+                                <TableHead>Employees</TableHead>
+                                <TableHead>Active Users</TableHead>
+                                <TableHead>Utilization Rate</TableHead>
+                                <TableHead>Avg Monthly Consultations</TableHead>
+                                <TableHead>Cost Savings</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {(selectedOrgForEmployees === 1 ? [ // Hilton Hotel
+                                { department: 'Front Desk', employees: 45, activeUsers: 38, utilization: '84%', consultations: 24, savings: '$12,400' },
+                                { department: 'Housekeeping', employees: 67, activeUsers: 52, utilization: '78%', consultations: 31, savings: '$18,200' },
+                                { department: 'Food & Beverage', employees: 89, activeUsers: 71, utilization: '80%', consultations: 42, savings: '$24,800' },
+                                { department: 'Maintenance', employees: 34, activeUsers: 28, utilization: '82%', consultations: 18, savings: '$9,600' },
+                                { department: 'HR', employees: 10, activeUsers: 10, utilization: '100%', consultations: 8, savings: '$4,200' }
+                              ] : selectedOrgForEmployees === 2 ? [ // Tech Corp Inc
+                                { department: 'Engineering', employees: 78, activeUsers: 75, utilization: '96%', consultations: 38, savings: '$21,600' },
+                                { department: 'Marketing', employees: 24, activeUsers: 22, utilization: '92%', consultations: 14, savings: '$8,400' },
+                                { department: 'Design', employees: 18, activeUsers: 16, utilization: '89%', consultations: 12, savings: '$6,800' },
+                                { department: 'Sales', employees: 36, activeUsers: 29, utilization: '81%', consultations: 19, savings: '$11,200' }
+                              ] : [ // Metro Hospital
+                                { department: 'Nursing', employees: 45, activeUsers: 43, utilization: '96%', consultations: 28, savings: '$16,800' },
+                                { department: 'Administration', employees: 22, activeUsers: 18, utilization: '82%', consultations: 12, savings: '$7,200' },
+                                { department: 'Laboratory', employees: 22, activeUsers: 15, utilization: '68%', consultations: 9, savings: '$5,400' }
+                              ]).map((dept, i) => (
+                                <TableRow key={i}>
+                                  <TableCell className="font-medium">{dept.department}</TableCell>
+                                  <TableCell>{dept.employees}</TableCell>
+                                  <TableCell>{dept.activeUsers}</TableCell>
+                                  <TableCell>
+                                    <Badge variant={parseFloat(dept.utilization.replace('%', '')) >= 85 ? 'default' : 'secondary'}>
+                                      {dept.utilization}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>{dept.consultations}</TableCell>
+                                  <TableCell className="font-medium text-green-600">{dept.savings}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           ) : (

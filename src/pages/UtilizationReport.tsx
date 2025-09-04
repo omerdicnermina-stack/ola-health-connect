@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
-import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, Activity, Download, Filter } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, Activity, Download, Filter, MessageSquare, BarChart3 } from 'lucide-react';
 
 const utilizationData = [
   { month: 'Jan', consultations: 245, employees: 450, utilization: 54 },
@@ -33,6 +33,12 @@ const departmentData = [
 
 // YTD Data
 const ytdData = {
+  totalEmployees: 525,
+  totalConsultations: 8234,
+  utilizationRate: 73,
+  consultationGrowth: 18,
+  utilizationGrowth: 5.2,
+  healthcareSavings: 68500,
   consultations: 2025,
   employees: 525,
   utilization: 73,
@@ -149,6 +155,93 @@ const UtilizationReport = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Platform Statistics */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Platform Statistics
+          </CardTitle>
+          <CardDescription>Key performance indicators and user engagement metrics</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">New Users This Month</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">+245</div>
+                <p className="text-xs text-muted-foreground">+15% from last month</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Platform Retention</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">92.5%</div>
+                <p className="text-xs text-muted-foreground">+2.1% from last month</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Avg Response Time</CardTitle>
+                <MessageSquare className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">2.8 min</div>
+                <p className="text-xs text-muted-foreground">-0.3 min improvement</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">User Satisfaction</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">4.8/5</div>
+                <p className="text-xs text-muted-foreground">Based on 1,234 reviews</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* User Feedback Section */}
+          <div className="mt-6">
+            <h4 className="font-medium mb-4">Recent User Feedback</h4>
+            <div className="space-y-4">
+              {[
+                { rating: 5, comment: 'Excellent service and very responsive doctors!', user: 'John D.', date: '2024-01-15' },
+                { rating: 4, comment: 'Great platform, helped me get quick care.', user: 'Sarah M.', date: '2024-01-14' },
+                { rating: 5, comment: 'Very professional and efficient consultation.', user: 'Mike R.', date: '2024-01-13' }
+              ].map((feedback, i) => (
+                <div key={i} className="flex items-start justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {Array.from({ length: 5 }).map((_, star) => (
+                          <span key={star} className={`text-sm ${star < feedback.rating ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-sm font-medium">{feedback.user}</span>
+                      <span className="text-xs text-muted-foreground">{feedback.date}</span>
+                    </div>
+                    <p className="text-sm">{feedback.comment}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* YTD and MTD Reports */}
       <div className="grid gap-4 lg:grid-cols-2">

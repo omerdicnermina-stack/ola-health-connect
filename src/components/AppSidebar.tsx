@@ -47,9 +47,9 @@ const navigationItems: NavigationItem[] = [
   { title: 'Messages', url: '/messages', icon: MessageSquare },
   { title: 'Prescriptions', url: '/prescriptions', icon: Pill, permission: 'view_prescriptions' },
   { title: 'Patients', url: '/patients', icon: Users, permission: 'view_patients' },
+  { title: 'Ola EHR/EMR', url: '/ola-ehr', icon: FileText, permission: 'super_admin' },
   { title: 'Users', url: '/users', icon: UserCog, permission: 'manage_users' },
   { title: 'Organizations', url: '/organizations', icon: Building2, permission: 'manage_users' },
-  { title: 'Statistics', url: '/statistics', icon: BarChart3, permission: 'view_statistics' },
   { title: 'Services', url: '/services', icon: Stethoscope, permission: 'manage_services' },
   { title: 'Plans', url: '/plans', icon: CreditCard, permission: 'manage_plans' },
   { title: 'Visits', url: '/visits', icon: FileBarChart },
@@ -63,12 +63,20 @@ const navigationItems: NavigationItem[] = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
-  const { hasPermission } = useAuth();
+  const { hasPermission, user } = useAuth();
   const currentPath = location.pathname;
 
-  const filteredItems = navigationItems.filter(item => 
-    !item.permission || hasPermission(item.permission)
-  );
+  const filteredItems = navigationItems.filter(item => {
+    // Hide Prescriptions and Patients for Super Admin (they get Ola EHR/EMR instead)
+    if (user?.profile?.role === 'Super Admin' && (item.title === 'Prescriptions' || item.title === 'Patients')) {
+      return false;
+    }
+    // Hide Ola EHR/EMR for non-Super Admin users
+    if (item.title === 'Ola EHR/EMR' && user?.profile?.role !== 'Super Admin') {
+      return false;
+    }
+    return !item.permission || hasPermission(item.permission);
+  });
 
   const isActive = (path: string) => {
     if (path === '/') {

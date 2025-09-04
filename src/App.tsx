@@ -16,7 +16,7 @@ import PatientPrescriptions from "./pages/PatientPrescriptions";
 import Patients from "./pages/Patients";
 import Users from "./pages/Users";
 import Organizations from "./pages/Organizations";
-import Statistics from "./pages/Statistics";
+import OlaEHR from "./pages/OlaEHR";
 import Services from "./pages/Services";
 import Plans from "./pages/Plans";
 import Visits from "./pages/Visits";
@@ -62,9 +62,9 @@ const AppContent = () => {
         <Route path="/messages" element={<Messages />} />
         <Route path="/prescriptions" element={isPatient ? <PatientPrescriptions /> : <Prescriptions />} />
         <Route path="/patients" element={<Patients />} />
+        <Route path="/ola-ehr" element={<OlaEHR />} />
         <Route path="/users" element={<Users />} />
         <Route path="/organizations" element={<Organizations />} />
-        <Route path="/statistics" element={<Statistics />} />
         <Route path="/services" element={<Services />} />
         <Route path="/plans" element={<Plans />} />
         <Route path="/visits" element={isPatient ? <PatientVisits /> : <Visits />} />
