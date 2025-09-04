@@ -50,10 +50,8 @@ const navigationItems: NavigationItem[] = [
   { title: 'Patients', url: '/patients', icon: Users, permission: 'view_patients' },
   { title: 'Ola EHR/EMR', url: '/ola-ehr', icon: FileText, permission: 'super_admin' },
   { title: 'Organizations', url: '/organizations', icon: Building2, permission: 'manage_users' },
-  { title: 'Services', url: '/services', icon: Stethoscope, permission: 'manage_services' },
-  { title: 'Plans', url: '/plans', icon: CreditCard, permission: 'manage_plans' },
+  { title: 'Care Modules', url: '/care-modules', icon: Stethoscope, permission: 'manage_services' },
   { title: 'Household', url: '/household', icon: Users, permission: 'manage_household' },
-  { title: 'Questionnaires', url: '/questionnaires', icon: FileText, permission: 'manage_questionnaires' },
   { title: 'Users', url: '/users', icon: UserCog, permission: 'manage_users' },
   { title: 'Utilization Report', url: '/utilization-report', icon: FileBarChart, permission: 'utilization_report' },
   { title: 'Help', url: '/help', icon: HelpCircle }

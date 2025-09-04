@@ -19,6 +19,8 @@ import Organizations from "./pages/Organizations";
 import OlaEHR from "./pages/OlaEHR";
 import Services from "./pages/Services";
 import Plans from "./pages/Plans";
+import CareModules from "./pages/CareModules";
+import VisitTypes from "./pages/VisitTypes";
 import PatientVisits from "./pages/PatientVisits";
 import Household from "./pages/Household";
 import Questionnaires from "./pages/Questionnaires";
@@ -64,8 +66,10 @@ const AppContent = () => {
         <Route path="/ola-ehr" element={<OlaEHR />} />
         <Route path="/users" element={<Users />} />
         <Route path="/organizations" element={<Organizations />} />
+        <Route path="/care-modules" element={<CareModules />} />
         <Route path="/services" element={<Services />} />
         <Route path="/plans" element={<Plans />} />
+        <Route path="/visit-types" element={<VisitTypes />} />
         <Route path="/household" element={<Household />} />
         <Route path="/questionnaires" element={<Questionnaires />} />
         <Route path="/utilization-report" element={<UtilizationReport />} />
