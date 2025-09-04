@@ -4,7 +4,6 @@ import olaHealthLogo from '@/assets/ola-health-logo.png';
 import {
   LayoutDashboard,
   MessageSquare,
-  Settings,
   HelpCircle,
   Pill,
   Users,
@@ -55,7 +54,6 @@ const navigationItems: NavigationItem[] = [
   { title: 'Household', url: '/household', icon: Users, permission: 'manage_household' },
   { title: 'Questionnaires', url: '/questionnaires', icon: FileText, permission: 'manage_questionnaires' },
   { title: 'Utilization Report', url: '/utilization-report', icon: FileBarChart, permission: 'utilization_report' },
-  { title: 'Settings', url: '/settings', icon: Settings },
   { title: 'Help', url: '/help', icon: HelpCircle }
 ];
 
