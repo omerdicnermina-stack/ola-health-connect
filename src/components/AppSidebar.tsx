@@ -67,8 +67,8 @@ export function AppSidebar() {
   const currentPath = location.pathname;
 
   const filteredItems = navigationItems.filter(item => {
-    // Hide Prescriptions and Patients for Super Admin (they get Ola EHR/EMR instead)
-    if (user?.profile?.role === 'Super Admin' && (item.title === 'Prescriptions' || item.title === 'Patients')) {
+    // Hide Prescriptions, Patients, and Household for Super Admin (they get Ola EHR/EMR instead)
+    if (user?.profile?.role === 'Super Admin' && (item.title === 'Prescriptions' || item.title === 'Patients' || item.title === 'Household')) {
       return false;
     }
     // Hide Ola EHR/EMR for non-Super Admin users
