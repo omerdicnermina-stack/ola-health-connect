@@ -5,42 +5,42 @@ import { MessageSquare, Send, Paperclip, Bot, Droplets, Moon, Dumbbell, Heart } 
 
 export default function Messages() {
   const careCompanionMessages = [
-    {
-      id: 1,
-      time: '2 hours ago',
-      icon: Droplets,
-      iconColor: 'text-blue-500',
-      title: 'Hydration Reminder',
-      message: 'Hi Keoni! Remember to drink plenty of water today. Aim for 8-10 glasses to help your body recover from your recent visit. Staying hydrated supports your overall wellbeing! 💧',
-      isNew: true
-    },
-    {
-      id: 2,
-      time: '1 day ago',
-      icon: Moon,
-      iconColor: 'text-purple-500',
-      title: 'Sleep Quality Check',
-      message: 'Good evening! Getting 7-9 hours of quality sleep is crucial for your recovery. Try establishing a relaxing bedtime routine and avoiding screens an hour before bed. Sweet dreams! 🌙',
-      isNew: true
-    },
-    {
-      id: 3,
-      time: '2 days ago',
-      icon: Dumbbell,
-      iconColor: 'text-orange-500',
-      title: 'Gentle Movement Reminder',
-      message: 'Time for some gentle movement! Even a 15-minute walk can boost your mood and energy levels. Listen to your body and start with what feels comfortable. You\'ve got this! 💪',
-      isNew: false
-    },
-    {
-      id: 4,
-      time: '3 days ago',
-      icon: Heart,
-      iconColor: 'text-red-500',
-      title: 'Wellbeing Check-in',
-      message: 'How are you feeling today? Remember to take time for activities that bring you joy and help you relax. Your mental health is just as important as your physical health. 🧘‍♂️',
-      isNew: false
-    },
+      {
+        id: 1,
+        time: 'Just now',
+        icon: Droplets,
+        iconColor: 'text-blue-500',
+        title: 'Hydration Reminder',
+        message: 'Hi Keoni! Remember to drink plenty of water today. Aim for 8-10 glasses to help your body recover from your recent visit. Staying hydrated supports your overall wellbeing! 💧',
+        isNew: true
+      },
+      {
+        id: 2,
+        time: '2 hours ago',
+        icon: Moon,
+        iconColor: 'text-purple-500',
+        title: 'Sleep Quality Check',
+        message: 'Good evening! Getting 7-9 hours of quality sleep is crucial for your recovery. Try establishing a relaxing bedtime routine and avoiding screens an hour before bed. Sweet dreams! 🌙',
+        isNew: true
+      },
+      {
+        id: 3,
+        time: '1 day ago',
+        icon: Dumbbell,
+        iconColor: 'text-orange-500',
+        title: 'Gentle Movement Reminder',
+        message: 'Time for some gentle movement! Even a 15-minute walk can boost your mood and energy levels. Listen to your body and start with what feels comfortable. You\'ve got this! 💪',
+        isNew: false
+      },
+      {
+        id: 4,
+        time: '2 days ago',
+        icon: Heart,
+        iconColor: 'text-red-500',
+        title: 'Wellbeing Check-in',
+        message: 'How are you feeling today? Remember to take time for activities that bring you joy and help you relax. Your mental health is just as important as your physical health. 🧘‍♂️',
+        isNew: false
+      },
     {
       id: 5,
       time: '1 week ago',

@@ -37,22 +37,23 @@ interface NavigationItem {
   url: string;
   icon: React.ComponentType<any>;
   permission?: string;
+  hasNotification?: boolean;
 }
 
 const navigationItems: NavigationItem[] = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
   { title: 'Virtual Queue', url: '/virtual-queue', icon: Clock, permission: 'virtual_queue' },
   { title: 'Calendar', url: '/calendar', icon: Calendar },
-  { title: 'Messages', url: '/messages', icon: MessageSquare },
+  { title: 'Messages', url: '/messages', icon: MessageSquare, hasNotification: true },
   { title: 'Prescriptions', url: '/prescriptions', icon: Pill, permission: 'view_prescriptions' },
   { title: 'Patients', url: '/patients', icon: Users, permission: 'view_patients' },
   { title: 'Ola EHR/EMR', url: '/ola-ehr', icon: FileText, permission: 'super_admin' },
-  { title: 'Users', url: '/users', icon: UserCog, permission: 'manage_users' },
   { title: 'Organizations', url: '/organizations', icon: Building2, permission: 'manage_users' },
   { title: 'Services', url: '/services', icon: Stethoscope, permission: 'manage_services' },
   { title: 'Plans', url: '/plans', icon: CreditCard, permission: 'manage_plans' },
   { title: 'Household', url: '/household', icon: Users, permission: 'manage_household' },
   { title: 'Questionnaires', url: '/questionnaires', icon: FileText, permission: 'manage_questionnaires' },
+  { title: 'Users', url: '/users', icon: UserCog, permission: 'manage_users' },
   { title: 'Utilization Report', url: '/utilization-report', icon: FileBarChart, permission: 'utilization_report' },
   { title: 'Help', url: '/help', icon: HelpCircle }
 ];
@@ -112,19 +113,29 @@ export function AppSidebar() {
           
           <SidebarGroupContent>
             <SidebarMenu>
-              {filteredItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      className={getNavClass(isActive(item.url))}
-                    >
-                      <item.icon className={cn('h-4 w-4', !collapsed && 'mr-3')} />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+               {filteredItems.map((item) => (
+                 <SidebarMenuItem key={item.title}>
+                   <SidebarMenuButton asChild className={item.hasNotification && collapsed ? "relative" : ""}>
+                     <NavLink 
+                       to={item.url} 
+                       className={getNavClass(isActive(item.url))}
+                     >
+                       <div className="flex items-center justify-between w-full">
+                         <div className="flex items-center">
+                           <item.icon className={cn('h-4 w-4', !collapsed && 'mr-3')} />
+                           {!collapsed && <span>{item.title}</span>}
+                         </div>
+                         {!collapsed && item.hasNotification && (
+                           <div className="w-2 h-2 bg-destructive rounded-full" />
+                         )}
+                         {collapsed && item.hasNotification && (
+                           <div className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full" />
+                         )}
+                       </div>
+                     </NavLink>
+                   </SidebarMenuButton>
+                 </SidebarMenuItem>
+               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
