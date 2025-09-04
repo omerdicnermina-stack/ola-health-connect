@@ -19,7 +19,6 @@ import Organizations from "./pages/Organizations";
 import OlaEHR from "./pages/OlaEHR";
 import Services from "./pages/Services";
 import Plans from "./pages/Plans";
-import Visits from "./pages/Visits";
 import PatientVisits from "./pages/PatientVisits";
 import Household from "./pages/Household";
 import Questionnaires from "./pages/Questionnaires";
@@ -67,7 +66,6 @@ const AppContent = () => {
         <Route path="/organizations" element={<Organizations />} />
         <Route path="/services" element={<Services />} />
         <Route path="/plans" element={<Plans />} />
-        <Route path="/visits" element={isPatient ? <PatientVisits /> : <Visits />} />
         <Route path="/household" element={<Household />} />
         <Route path="/questionnaires" element={<Questionnaires />} />
         <Route path="/utilization-report" element={<UtilizationReport />} />

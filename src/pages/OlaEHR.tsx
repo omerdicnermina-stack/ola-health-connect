@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Patients from './Patients';
 import Prescriptions from './Prescriptions';
+import Visits from './Visits';
 
 export default function OlaEHR() {
   return (
@@ -14,9 +15,10 @@ export default function OlaEHR() {
       </div>
 
       <Tabs defaultValue="patients" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="patients">Patients</TabsTrigger>
           <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
+          <TabsTrigger value="visits">Visits</TabsTrigger>
         </TabsList>
         
         <TabsContent value="patients">
@@ -25,6 +27,10 @@ export default function OlaEHR() {
         
         <TabsContent value="prescriptions">
           <Prescriptions />
+        </TabsContent>
+        
+        <TabsContent value="visits">
+          <Visits />
         </TabsContent>
       </Tabs>
     </div>

@@ -52,7 +52,6 @@ const navigationItems: NavigationItem[] = [
   { title: 'Organizations', url: '/organizations', icon: Building2, permission: 'manage_users' },
   { title: 'Services', url: '/services', icon: Stethoscope, permission: 'manage_services' },
   { title: 'Plans', url: '/plans', icon: CreditCard, permission: 'manage_plans' },
-  { title: 'Visits', url: '/visits', icon: FileBarChart },
   { title: 'Household', url: '/household', icon: Users, permission: 'manage_household' },
   { title: 'Questionnaires', url: '/questionnaires', icon: FileText, permission: 'manage_questionnaires' },
   { title: 'Utilization Report', url: '/utilization-report', icon: FileBarChart, permission: 'utilization_report' },
