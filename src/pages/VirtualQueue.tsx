@@ -383,7 +383,7 @@ export default function VirtualQueue() {
 
       {/* Enhanced Call Modal */}
       <Dialog open={callModalOpen} onOpenChange={setCallModalOpen}>
-        <DialogContent className={`${isFullscreen ? 'fixed inset-0 w-screen h-screen max-w-none max-h-none m-0 rounded-none' : 'max-w-7xl max-h-[90vh]'} overflow-y-auto transition-all duration-300`}>
+        <DialogContent className={`${isFullscreen ? '!fixed !inset-0 !w-screen !h-screen !max-w-none !max-h-none !translate-x-0 !translate-y-0 !top-0 !left-0 !m-0 !rounded-none' : 'max-w-7xl max-h-[90vh]'} overflow-y-auto transition-all duration-300`}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Video className="h-5 w-5" />
