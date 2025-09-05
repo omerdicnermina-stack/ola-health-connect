@@ -30,7 +30,9 @@ import {
   Activity,
   Droplets,
   Moon,
-  Coffee
+  Coffee,
+  Maximize,
+  Minimize
 } from 'lucide-react';
 import {
   Select,
@@ -134,6 +136,7 @@ export default function VirtualQueue() {
   const [olaTranscript, setOlaTranscript] = useState('');
   const [olaNotes, setOlaNotes] = useState('');
   const [followUpPlan, setFollowUpPlan] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   if (!hasPermission('virtual_queue')) {
     return (
@@ -197,6 +200,11 @@ export default function VirtualQueue() {
     setCallStarted(false);
     setOlaCompanionActive(false);
     setOlaListening(false);
+    setIsFullscreen(false);
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
   };
 
   const toggleOlaCompanion = () => {
@@ -375,7 +383,7 @@ export default function VirtualQueue() {
 
       {/* Enhanced Call Modal */}
       <Dialog open={callModalOpen} onOpenChange={setCallModalOpen}>
-        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className={`${isFullscreen ? 'fixed inset-0 w-screen h-screen max-w-none max-h-none m-0 rounded-none' : 'max-w-7xl max-h-[90vh]'} overflow-y-auto transition-all duration-300`}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Video className="h-5 w-5" />
@@ -476,23 +484,32 @@ export default function VirtualQueue() {
                       {micMuted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                     </Button>
                     
-                    <Button
-                      variant={videoOff ? "destructive" : "outline"}
-                      size="sm"
-                      onClick={() => setVideoOff(!videoOff)}
-                    >
-                      {videoOff ? <VideoOff className="h-4 w-4" /> : <Video className="h-4 w-4" />}
-                    </Button>
-                    
                      <Button
-                       variant={olaCompanionActive ? "default" : "outline"}
+                       variant={videoOff ? "destructive" : "outline"}
                        size="sm"
-                       onClick={toggleOlaCompanion}
-                       className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0"
+                       onClick={() => setVideoOff(!videoOff)}
                      >
-                       <Bot className="h-4 w-4 mr-2" />
-                       OLA Companion
+                       {videoOff ? <VideoOff className="h-4 w-4" /> : <Video className="h-4 w-4" />}
                      </Button>
+                     
+                     <Button
+                       variant="outline"
+                       size="sm"
+                       onClick={toggleFullscreen}
+                       title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+                     >
+                       {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+                     </Button>
+                     
+                      <Button
+                        variant={olaCompanionActive ? "default" : "outline"}
+                        size="sm"
+                        onClick={toggleOlaCompanion}
+                        className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0"
+                      >
+                        <Bot className="h-4 w-4 mr-2" />
+                        OLA Companion
+                      </Button>
                      
                      <Button
                        variant="destructive"
