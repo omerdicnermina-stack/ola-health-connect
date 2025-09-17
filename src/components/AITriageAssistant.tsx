@@ -38,32 +38,64 @@ interface ServiceRecommendation {
 const triageQuestions: TriageQuestion[] = [
   {
     id: '1',
-    question: 'What type of concern brings you here today?',
+    question: 'Are you experiencing any pain right now?',
     options: [
-      { text: 'Physical symptoms or pain', value: 'physical', weight: { 'general': 3, 'urgent': 2, 'specialty': 1 } },
-      { text: 'Mental health or wellness', value: 'mental', weight: { 'mental': 5, 'general': 1 } },
-      { text: 'Routine check-up or prevention', value: 'routine', weight: { 'preventive': 5, 'general': 2 } },
-      { text: 'Follow-up on existing condition', value: 'followup', weight: { 'specialty': 3, 'general': 2 } }
+      { text: 'Yes, severe pain that is hard to bear', value: 'severe_pain', weight: { 'urgent': 5, 'emergency': 3 } },
+      { text: 'Yes, moderate pain that bothers me', value: 'moderate_pain', weight: { 'general': 4, 'urgent': 2 } },
+      { text: 'Yes, mild pain or discomfort', value: 'mild_pain', weight: { 'general': 3, 'preventive': 1 } },
+      { text: 'No, I am not experiencing pain', value: 'no_pain', weight: { 'preventive': 2, 'mental': 3 } }
     ]
   },
   {
     id: '2',
-    question: 'How urgent do you feel your concern is?',
+    question: 'Where is your pain located? (if applicable)',
     options: [
-      { text: 'Emergency - needs immediate attention', value: 'emergency', weight: { 'urgent': 5, 'emergency': 5 } },
-      { text: 'Urgent - within 24 hours', value: 'urgent', weight: { 'urgent': 4, 'general': 2 } },
-      { text: 'Soon - within a few days', value: 'soon', weight: { 'general': 3, 'specialty': 2 } },
-      { text: 'Routine - can wait a week or more', value: 'routine', weight: { 'preventive': 4, 'general': 2 } }
+      { text: 'Chest or heart area', value: 'chest_pain', weight: { 'urgent': 5, 'emergency': 4 } },
+      { text: 'Head or neck', value: 'head_pain', weight: { 'general': 3, 'urgent': 2 } },
+      { text: 'Stomach or abdomen', value: 'stomach_pain', weight: { 'general': 3, 'urgent': 2 } },
+      { text: 'Back, joints, or muscles', value: 'musculoskeletal', weight: { 'general': 3, 'specialty': 2 } },
+      { text: 'No specific pain location', value: 'no_location', weight: { 'general': 1 } }
     ]
   },
   {
     id: '3',
-    question: 'What type of interaction would work best for you?',
+    question: 'Have you had a fever in the last 24-48 hours?',
     options: [
-      { text: 'Video call from my location', value: 'video', weight: { 'general': 3, 'mental': 2 } },
-      { text: 'Phone consultation', value: 'phone', weight: { 'general': 2, 'mental': 3 } },
-      { text: 'In-person examination', value: 'inperson', weight: { 'specialty': 3, 'urgent': 2 } },
-      { text: 'No preference', value: 'any', weight: { 'general': 1 } }
+      { text: 'Yes, high fever (over 103°F/39.4°C)', value: 'high_fever', weight: { 'urgent': 5, 'emergency': 3 } },
+      { text: 'Yes, moderate fever (100-103°F/37.8-39.4°C)', value: 'moderate_fever', weight: { 'general': 4, 'urgent': 2 } },
+      { text: 'Yes, low-grade fever (99-100°F/37.2-37.8°C)', value: 'low_fever', weight: { 'general': 3 } },
+      { text: 'No fever', value: 'no_fever', weight: { 'general': 1, 'preventive': 2 } }
+    ]
+  },
+  {
+    id: '4',
+    question: 'How well have you been sleeping lately?',
+    options: [
+      { text: 'Very poorly - barely sleeping at all', value: 'very_poor_sleep', weight: { 'mental': 4, 'general': 2 } },
+      { text: 'Poorly - frequent interruptions or trouble falling asleep', value: 'poor_sleep', weight: { 'mental': 3, 'general': 2 } },
+      { text: 'Somewhat well - occasional sleep issues', value: 'okay_sleep', weight: { 'general': 2, 'preventive': 1 } },
+      { text: 'Very well - sleeping normally', value: 'good_sleep', weight: { 'preventive': 3, 'general': 1 } }
+    ]
+  },
+  {
+    id: '5',
+    question: 'Are you experiencing any of these symptoms?',
+    options: [
+      { text: 'Difficulty breathing or shortness of breath', value: 'breathing', weight: { 'urgent': 5, 'emergency': 4 } },
+      { text: 'Nausea, vomiting, or diarrhea', value: 'digestive', weight: { 'general': 4, 'urgent': 2 } },
+      { text: 'Dizziness, weakness, or fatigue', value: 'weakness', weight: { 'general': 3, 'urgent': 1 } },
+      { text: 'Anxiety, stress, or mood changes', value: 'mental_symptoms', weight: { 'mental': 5, 'general': 1 } },
+      { text: 'None of the above', value: 'no_symptoms', weight: { 'preventive': 3, 'general': 1 } }
+    ]
+  },
+  {
+    id: '6',
+    question: 'What brings you to seek care today?',
+    options: [
+      { text: 'New symptoms that just started', value: 'new_symptoms', weight: { 'general': 4, 'urgent': 2 } },
+      { text: 'Ongoing symptoms getting worse', value: 'worsening', weight: { 'urgent': 4, 'general': 2 } },
+      { text: 'Follow-up on existing condition', value: 'followup', weight: { 'specialty': 3, 'general': 2 } },
+      { text: 'Routine wellness or prevention', value: 'wellness', weight: { 'preventive': 5, 'general': 1 } }
     ]
   }
 ];
