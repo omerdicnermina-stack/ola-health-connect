@@ -78,6 +78,16 @@ export default function LastVisitCard() {
             if (provider) {
               setProviderInfo(provider);
             }
+          } else {
+            // Set mock provider info for demo visits
+            const mockProviders: { [key: string]: ProviderProfile } = {
+              'Urgent Care Visit': { name: 'Sarah Johnson', specialty: 'Internal Medicine' },
+              'Dermatology Consultation': { name: 'Carlos Martinez', specialty: 'Dermatology' },
+              'Telehealth Consultation': { name: 'Jennifer Williams', specialty: 'Rheumatology' },
+              'Wellness Check-up': { name: 'Lisa Chen', specialty: 'Family Medicine' },
+              'Mental Health Follow-up': { name: 'Michael Thompson', specialty: 'Psychiatry' }
+            };
+            setProviderInfo(mockProviders[visit.visit_type] || { name: 'Dr. Smith', specialty: 'General Practice' });
           }
         }
       } catch (error) {
