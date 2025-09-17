@@ -7,7 +7,6 @@ import { Progress } from '@/components/ui/progress';
 import { 
   Brain, 
   CheckCircle, 
-  ArrowLeft, 
   ArrowRight,
   Heart,
   Stethoscope,
@@ -157,7 +156,6 @@ interface AITriageAssistantProps {
 
 export default function AITriageAssistant({ trigger }: AITriageAssistantProps) {
   const [open, setOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
   const [showResults, setShowResults] = useState(false);
 
@@ -165,22 +163,15 @@ export default function AITriageAssistant({ trigger }: AITriageAssistantProps) {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 
-  const goToNext = () => {
-    if (currentStep < triageQuestions.length - 1) {
-      setCurrentStep(prev => prev + 1);
-    } else {
+  const handleSubmit = () => {
+    // Check if all questions are answered
+    const allAnswered = triageQuestions.every(q => answers[q.id]);
+    if (allAnswered) {
       setShowResults(true);
     }
   };
 
-  const goToPrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-    }
-  };
-
   const resetTriage = () => {
-    setCurrentStep(0);
     setAnswers({});
     setShowResults(false);
   };
@@ -226,9 +217,9 @@ export default function AITriageAssistant({ trigger }: AITriageAssistantProps) {
     }
   };
 
-  const progress = ((currentStep + 1) / triageQuestions.length) * 100;
-  const currentQuestion = triageQuestions[currentStep];
-  const currentAnswer = answers[currentQuestion?.id];
+  const answeredCount = Object.keys(answers).length;
+  const totalQuestions = triageQuestions.length;
+  const isComplete = answeredCount === totalQuestions;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -245,60 +236,63 @@ export default function AITriageAssistant({ trigger }: AITriageAssistantProps) {
 
         {!showResults ? (
           <div className="space-y-6">
-            {/* Progress Bar */}
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Question {currentStep + 1} of {triageQuestions.length}</span>
-                <span>{Math.round(progress)}% Complete</span>
+            {/* Progress Indicator */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <div className="flex justify-between items-center text-sm">
+                <span className="font-medium">Questions Answered</span>
+                <span className="text-muted-foreground">{answeredCount} of {totalQuestions}</span>
               </div>
-              <Progress value={progress} className="h-2" />
+              <Progress value={(answeredCount / totalQuestions) * 100} className="h-2 mt-2" />
             </div>
 
-            {/* Question Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">{currentQuestion.question}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {currentQuestion.options.map((option) => (
-                  <Button
-                    key={option.value}
-                    variant={currentAnswer === option.value ? "default" : "outline"}
-                    className="w-full justify-start text-left h-auto p-4"
-                    onClick={() => handleAnswer(currentQuestion.id, option.value)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                        currentAnswer === option.value 
-                          ? 'border-primary bg-primary' 
-                          : 'border-muted-foreground'
-                      }`}>
-                        {currentAnswer === option.value && (
-                          <div className="w-2 h-2 rounded-full bg-primary-foreground" />
-                        )}
-                      </div>
-                      <span>{option.text}</span>
-                    </div>
-                  </Button>
-                ))}
-              </CardContent>
-            </Card>
+            {/* All Questions */}
+            <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
+              {triageQuestions.map((question, index) => (
+                <Card key={question.id} className={`${answers[question.id] ? 'ring-2 ring-primary/20' : ''}`}>
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-sm font-bold flex items-center justify-center">
+                        {index + 1}
+                      </span>
+                      {question.question}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {question.options.map((option) => (
+                      <Button
+                        key={option.value}
+                        variant={answers[question.id] === option.value ? "default" : "outline"}
+                        className="w-full justify-start text-left h-auto p-4"
+                        onClick={() => handleAnswer(question.id, option.value)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                            answers[question.id] === option.value 
+                              ? 'border-primary bg-primary' 
+                              : 'border-muted-foreground'
+                          }`}>
+                            {answers[question.id] === option.value && (
+                              <div className="w-2 h-2 rounded-full bg-primary-foreground" />
+                            )}
+                          </div>
+                          <span>{option.text}</span>
+                        </div>
+                      </Button>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-            {/* Navigation */}
-            <div className="flex justify-between">
+            {/* Submit Button */}
+            <div className="flex justify-center pt-4 border-t">
               <Button
-                variant="outline"
-                onClick={goToPrevious}
-                disabled={currentStep === 0}
+                onClick={handleSubmit}
+                disabled={!isComplete}
+                size="lg"
+                className="px-8"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Previous
-              </Button>
-              <Button
-                onClick={goToNext}
-                disabled={!currentAnswer}
-              >
-                {currentStep === triageQuestions.length - 1 ? 'Get Recommendation' : 'Next'}
+                Get My Recommendation
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </div>
