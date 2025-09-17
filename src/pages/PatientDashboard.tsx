@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import InstantVisitFlow from '@/components/InstantVisitFlow';
 import AITriageAssistant from '@/components/AITriageAssistant';
+import LastVisitCard from '@/components/LastVisitCard';
 import { 
   Users, 
   Plus, 
@@ -196,6 +197,9 @@ export default function PatientDashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
+        {/* Last Visit Summary - Full Width */}
+        <LastVisitCard />
+        
         {/* Upcoming Visits */}
         <Card>
           <CardHeader>

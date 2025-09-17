@@ -285,6 +285,63 @@ export type Database = {
         }
         Relationships: []
       }
+      visits: {
+        Row: {
+          chief_complaint: string | null
+          created_at: string
+          diagnosis: string | null
+          follow_up_date: string | null
+          follow_up_needed: boolean | null
+          follow_up_notes: string | null
+          id: string
+          notes: string | null
+          patient_id: string
+          provider_id: string | null
+          status: string
+          treatment_plan: string | null
+          updated_at: string
+          visit_date: string
+          visit_modality: string | null
+          visit_type: string
+        }
+        Insert: {
+          chief_complaint?: string | null
+          created_at?: string
+          diagnosis?: string | null
+          follow_up_date?: string | null
+          follow_up_needed?: boolean | null
+          follow_up_notes?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          provider_id?: string | null
+          status?: string
+          treatment_plan?: string | null
+          updated_at?: string
+          visit_date: string
+          visit_modality?: string | null
+          visit_type: string
+        }
+        Update: {
+          chief_complaint?: string | null
+          created_at?: string
+          diagnosis?: string | null
+          follow_up_date?: string | null
+          follow_up_needed?: boolean | null
+          follow_up_notes?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          provider_id?: string | null
+          status?: string
+          treatment_plan?: string | null
+          updated_at?: string
+          visit_date?: string
+          visit_modality?: string | null
+          visit_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
