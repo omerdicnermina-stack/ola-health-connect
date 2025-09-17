@@ -3,7 +3,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import AIAssessment from '@/components/AIAssessment';
 import InstantVisitFlow from '@/components/InstantVisitFlow';
 import { 
   Users, 
@@ -18,7 +17,6 @@ import {
   Shield,
   Zap,
   Calendar,
-  Brain,
   Pill
 } from 'lucide-react';
 
@@ -185,14 +183,6 @@ export default function PatientDashboard() {
           <Calendar className="h-6 w-6 mr-3" />
           Schedule a Visit
         </Button>
-        <AIAssessment 
-          trigger={
-            <Button size="lg" variant="outline" className="px-12 py-6 text-lg font-semibold h-auto">
-              <Brain className="h-6 w-6 mr-3" />
-              AI Health Assessment
-            </Button>
-          }
-        />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
